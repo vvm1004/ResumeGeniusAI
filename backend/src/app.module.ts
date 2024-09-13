@@ -9,7 +9,7 @@ import {softDeletePlugin} from 'soft-delete-plugin-mongoose';
 import { CompaniesModule } from './companies/companies.module';
 import { JobsModule } from './jobs/jobs.module';
 import { FilesModule } from './files/files.module';
-import { ResumeModule } from './resume/resume.module';
+import { ResumeModule } from './resume-applly/resume-apply.module';
 import { ResumeBuildersModule } from './resume-builders/resume-builders.module';
 
 @Module({
