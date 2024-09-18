@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { ResumeService } from './resume.service';
-import { CreateResumeDto, CreateUserCvDto } from './dto/create-resume.dto';
-import { UpdateResumeDto } from './dto/update-resume.dto';
+import { ResumeService } from './resume-apply.service';
+import { CreateResumeDto, CreateUserCvDto } from './dto/create-resume-apply.dto';
+import { UpdateResumeDto } from './dto/update-resume-apply.dto';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('resumes')
 export class ResumeController {
-  constructor(private readonly resumeService: ResumeService) {}
+  constructor(private readonly resumeService: ResumeService) { }
 
   @Post()
   @ResponseMessage('Create new resume')
@@ -36,13 +36,13 @@ export class ResumeController {
   @Public()
   @Get(':id')
   @ResponseMessage("Fetch resume by id")
-   findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string) {
     return this.resumeService.findOne(id)
   }
 
 
-  @Patch(':id') 
-   @ResponseMessage('Update status resume')
+  @Patch(':id')
+  @ResponseMessage('Update status resume')
 
   updateStatus(@Param('id') id: string, @Body("status") status: string, @User() user: IUser) {
     return this.resumeService.update(id, status, user);
