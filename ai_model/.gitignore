@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+
+
+
+
+# Data
+data/
+*.csv
+*.json
+*.xlsx
+*.xls
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Environment
+.env
+.venv/
+venv/
+env/
+ENV/
+ENV.bak/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Pytest
+.cache/
+*.cover
+*.coverage
+*.pytest_cache/
