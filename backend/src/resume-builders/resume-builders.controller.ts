@@ -2,20 +2,22 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ResumeBuildersService } from './resume-builders.service';
 import { CreateResumeBuilderDto } from './dto/create-resume-builder.dto';
 import { UpdateResumeBuilderDto } from './dto/update-resume-builder.dto';
-import { Public, ResponseMessage } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission } from 'src/decorator/customize';
 
 @Controller('resume-builders')
 export class ResumeBuildersController {
-  constructor(private readonly resumeBuildersService: ResumeBuildersService) {}
+  constructor(private readonly resumeBuildersService: ResumeBuildersService) { }
 
   @Public()
+  @SkipCheckPermission()
   @ResponseMessage("Create a new resume builder")
   @Post()
-  create(@Body() createResumeBuilderDto: CreateResumeBuilderDto) {
+  create(@Body() createResumeBuilderDto) {
     return this.resumeBuildersService.create(createResumeBuilderDto);
   }
 
   @Public()
+  @SkipCheckPermission()
   @ResponseMessage("Fetch List resume builder by userEmail")
   @Get()
   findAllByUserEmail(@Query('userEmail') userEmail: string) {
@@ -23,6 +25,7 @@ export class ResumeBuildersController {
   }
 
   @Public()
+  @SkipCheckPermission()
   @ResponseMessage("Fetch resume builder by id")
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -30,14 +33,16 @@ export class ResumeBuildersController {
   }
 
   @Public()
-  @ResponseMessage("Update a resume builder") 
+  @SkipCheckPermission()
+  @ResponseMessage("Update a resume builder")
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResumeBuilderDto: UpdateResumeBuilderDto) {
+  update(@Param('id') id: string, @Body() updateResumeBuilderDto) {
     return this.resumeBuildersService.update(id, updateResumeBuilderDto);
   }
 
   @Public()
-  @ResponseMessage("Delete a resume builder") 
+  @SkipCheckPermission()
+  @ResponseMessage("Delete a resume builder")
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.resumeBuildersService.remove(id);
