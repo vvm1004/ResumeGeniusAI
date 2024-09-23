@@ -10,4 +10,4 @@ import { ResumeBuilder, ResumeBuilderSchema } from './schemas/resume-builder.sch
   controllers: [ResumeBuildersController],
   providers: [ResumeBuildersService],
 })
-export class ResumeBuildersModule {}
+export class ResumeBuildersModule { }
