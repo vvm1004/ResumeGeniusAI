@@ -1,108 +1,16 @@
 import json
 import time
-
+import os
+import tensorflow as tf
+import numpy as np
+from tensorflow.keras.preprocessing.text import tokenizer_from_json
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 import google.generativeai as genai
 from resume_parser_module import parse_resume 
 # Configure the Google Gemini API
 genai.configure(api_key="AIzaSyBCvwMA6XriY5K6x2JHdd9DuoiN0ag5Lz8")
 
-profile_fields= ["Name", "Contact Information (Phone, Email, LinkedIn)", "Summary/Objective"]
-experience_fields = ["Job Title", "Company", "Period", "Location", "Description"]
-education_fields = ["Degree", "Institution", "Period", "Location", "Description"]
-projects_fields = ["Title", "Company/Organization", "Period", "Description"]
-awards_certifications_fields = ["Title", "Institution", "Date", "Description"]
-experience_fields = ["Role", "Organization", "Period", "Location", "Description"]
 
-def refine_field_text(field_name, field_value):
-    try:
-        generation_config = {
-            "temperature": 0.7,
-            "top_p": 0.9,
-            "top_k": 50,
-            "max_output_tokens": 300,
-            "response_mime_type":  "application/json"
-        }
-
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            generation_config=generation_config
-        )
-
-        chat_session = model.start_chat(history=[])
-
-        prompt = f"use JSON data structure to represent the following information {field_value} of field {field_value} {field_name} in my resume so that it is more beautiful and clear, more professional, identifies the technologies used, time, description...." 
-        response = chat_session.send_message(prompt)
-
-        if response and response.text.strip():
-            return response.text.strip()
-        else:
-            print(f"Unable to refine {field_name}")
-            return field_value
-
-    except Exception as e:
-        print(f"An error occurred while refining {field_name}: {e}")
-        return field_value
-
-def refine_cv_field(field_name, field_value):
-    
-    if isinstance(field_value, list):
-        field_value_str = "\n".join([json.dumps(item, ensure_ascii=False) for item in field_value])
-    else:
-        field_value_str = str(field_value)
-
-    refined_text = refine_field_text(field_name, field_value_str)
-
-    if field_name == "interests":
-        refined_value = [item.strip() for item in refined_text.split("\n") if item.strip()]
-    else:
-        refined_value = refined_text
-
-    return json.dumps({field_name: refined_value}, ensure_ascii=False, indent=4)
-
-
-
-
-def refine_field(job_name, field_name, field_structure, field_value):
-    try:
-        # Define generation configuration
-        generation_config = {
-            "temperature": 0.7,
-            "top_p": 0.9,
-            "top_k": 50,
-            "max_output_tokens": 300,
-            "response_mime_type": "application/json"
-        }
-
-        # Initialize the Generative Model
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            generation_config=generation_config
-        )
-
-        # Start a chat session
-        chat_session = model.start_chat(history=[])
-
-        # Determine if the field is presented as text or JSON
-        if isinstance(field_value, list) or isinstance(field_value, dict):
-            # JSON structure
-            prompt = f"I have the following {field_name} data for a {job_name} position presented in JSON format: {field_value}. Please refine the structure, grammar, and style according to the best practices for CV writing, keeping the following fields intact: {field_structure}."
-        else:
-            # Plain text
-            prompt = f"I have the following {field_name} data for a {job_name} position: '{field_value}'. Please refine the grammar, style, and make it more professional."
-
-        # Send the prompt to Gemini API
-        response = chat_session.send_message(prompt)
-
-        # Check the response and return the refined text or structure
-        if response and response.text.strip():
-            return response.text.strip()
-        else:
-            print(f"Unable to refine {field_name}")
-            return field_value
-
-    except Exception as e:
-        print(f"An error occurred while refining {field_name}: {e}")
-        return field_value
 
 def analysField(field_name, job_name):
     try:
@@ -159,9 +67,6 @@ def get_job_position(data):
 
     # Trường hợp không tìm thấy key nào phù hợp
     return ""
-
-
-
 def process_data(data):
     new_data = {}
     
@@ -186,28 +91,111 @@ def process_data(data):
 
 
 
-if __name__ == "__main__":
-    field_name = "skills"
-    field_name = "certification"
-    field_name = "Personal Information"
-    field_name = "Education"
-    field_name = "Projects"
-    field_name = "Activities"
-    field_name = "References"
-    field_name = "experiences"
+def test_model(model, tokenizer, field_name, field_data):
+    if model is None:
+        raise ValueError("Model not loaded properly")
+    if tokenizer is None:
+        raise ValueError("Tokenizer not loaded properly")
 
-    field_value = [
-        {
-            "title": "Software Gaminnn store",
-            "company": "Axon",
-            "period": "January 2022 - Present",
-            "description": "Developed and maintained a game store management software application using Java, MySQL, and NetBeans. Utilized Git for version control and collaborative development. Contributed to all phases of the software development lifecycle, including design, implementation, testing, and deployment."
-        }
-    ]
+    # Chuyển field_name và field_data thành sequence
+    sequences = tokenizer.texts_to_sequences([field_name, field_data])
     
+    # Lấy kích thước padding cho các input
+    key_input_shape = model.input[0].shape[1]
+    value_input_shape = model.input[1].shape[1]
+    
+    # Padding sequences cho key và value riêng biệt
+    padded_key_sequence = pad_sequences(
+        [sequences[0]], 
+        maxlen=key_input_shape, 
+        padding='post'
+    )
+    padded_value_sequence = pad_sequences(
+        [sequences[1]], 
+        maxlen=value_input_shape, 
+        padding='post'
+    )
+    
+    key_sequence = np.array(padded_key_sequence)
+    value_sequence = np.array(padded_value_sequence)
+    
+    # Dự đoán
+    try:
+        prediction = model.predict([key_sequence, value_sequence])[0][0]
+    except Exception as e:
+        print(f"Error during prediction: {e}")
+        return None
+
+    is_valid = prediction > 0.5
+    
+    # Xác định corrected_field_name dựa trên dự đoán
+    corrected_field_name = []
+    if is_valid:
+        corrected_field_name = [field_name]
+    
+    # Kết quả trả về
+    result = {
+        "corrected_field_name": corrected_field_name,
+        "is_valid": is_valid,
+        "field_name": field_name,
+        "prediction": float(prediction),
+        "value": field_data
+    }
+    
+    return result
+def process_and_test_model(model, tokenizer, key, value):
+    if value is None:
+        print(f"Value for key='{key}' is None. Skipping...")
+        return
+    
+    if isinstance(value, dict):
+        for sub_key, sub_value in value.items():
+            process_and_test_model(model, tokenizer, sub_key, sub_value)
+    elif isinstance(value, list):
+        check_value=False
+        for item in value:
+            if isinstance(item, dict):
+                item_str = str(item)  
+                result = test_model(model, tokenizer, key, item_str)
+                print(f"\nResult (list dict) for key=\t'{key}' \nand value=\t'{item_str}':\n\n\n\t", result)
+            else:
+                check_value= True
+                
+        if(check_value):
+            item_str = str(value) 
+            result = test_model(model, tokenizer, key, item_str)
+            print(f"\nResult (list) for key=\t'{key}' \nand value=\t'{item_str}':\n\n\n\t", result)
+    else:
+        result = test_model(model, tokenizer, key, value)
+        print(f"\nResult for key=\t'{key}' \nand value=\t'{value}':\n\n\n\t", result)
+
+if __name__ == "__main__":
+    model_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'model')
+    model_path = os.path.join(model_dir, 'check_meaning.keras')
+    tokenizer_path = os.path.join(model_dir, 'check_meaning_tokenizer.json')
+# Tải mô hình và tokenizer
+    try:
+        model = tf.keras.models.load_model(model_path)
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        model = None
+
+    try:
+        with open(tokenizer_path, 'r') as f:
+            tokenizer_json = f.read()
+        tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(tokenizer_json)
+    except Exception as e:
+        print(f"Error loading tokenizer: {e}")
+        tokenizer = None
+
+
+
+
+
+
     nomalFields=["Name","Email","Phone","Linkedin","Location","Title","Github"]
   
-    pdf_path = 'E:\\Certificate\\TRAN-DUONG-TRUONG-CV.pdf'
+    pdf_path = 'E:\\Certificate\\10076271.pdf'
     resume_data = parse_resume(pdf_path)
     print(resume_data)
     resume_data1=normalize_keys(resume_data)
@@ -220,16 +208,12 @@ if __name__ == "__main__":
         if key in nomalFields: continue
         print(f"\n\n\tKey: {key},\n Value: {value}")
 
-       
+    print(f"\n\n\------------------------------------\n\n\n")
   
-    # jobName= get_job_position(resume_data1)
-    # fields=analysField(field_name, jobName)
-    # print(fields)
-    # print(fields[1])
-    # fields=analysField(field_name, "INTERN BACK-END DEVELOPER")
-    # print(fields)
-    # result =refine_field("INTERN BACK-END DEVELOPER",field_name, fields, field_value)
-    # print("\n"+result)
+    for key, value in resume_data1.items():
+        print("\t\tNEW DATA: \n\n\n",key,"\n\n",value,"\n\n")
+        process_and_test_model(model, tokenizer, key, value)
+
     
 
  
