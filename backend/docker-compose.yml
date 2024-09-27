@@ -21,7 +21,7 @@ services:
     environment:
       - PORT=8080
       - NODE_ENV=production
-      - MONGO_URL=mongodb://127.0.0.1:27017/Job_Finding
+      - MONGO_URL=mongodb://127.0.0.1:27017/AI_Resume
       # - DB_HOST=host.docker.internal
     expose:
       - 8080
