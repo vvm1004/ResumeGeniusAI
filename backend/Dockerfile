@@ -2,7 +2,7 @@
 FROM node:16-alpine
 
 # Create app directory
-WORKDIR /job_finding
+WORKDIR /AI_Resume
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
