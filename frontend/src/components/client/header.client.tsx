@@ -31,21 +31,50 @@ const Header = (props: any) => {
 
     const items: MenuProps['items'] = [
         {
-            label: <Link to={'/'}>Trang Chủ</Link>,
+            label: <Link to={'/'}>Home Page</Link>,
             key: '/',
             icon: <TwitterOutlined />,
         },
         {
-            label: <Link to={'/job'}>Việc Làm IT</Link>,
+            label: <Link to={'/jobSearch'}>Find Jobs</Link>,
+            key: '/jobSearch',
+            icon: <CodeOutlined />,
+        },
+        {
+            label: <Link to={'/job'}>Job Application</Link>,
             key: '/job',
             icon: <CodeOutlined />,
         },
         {
-            label: <Link to={'/company'}>Top Công ty IT</Link>,
+            label: <Link to={'/company'}>Top IT Companies</Link>,
             key: '/company',
             icon: <RiseOutlined />,
+        },
+        {
+            label: 'Resume',
+            key: 'resume',
+            icon: <ContactsOutlined />,
+            children: [
+                {
+                    label: <Link to={'/resume/create'}>Create Resume</Link>,
+                    key: '/resume/create',
+                },
+                {
+                    label: <Link to={'/resume/upgrade'}>Upgrade Resume</Link>,
+                    key: '/resume/upgrade',
+                },
+                {
+                    label: <Link to={'/resume/management'}>Resume Management</Link>,
+                    key: '/resume/management',
+                },
+                {
+                    label: <Link to={'/resume/templates'}>Resume Template</Link>,
+                    key: '/resume/templates',
+                },
+            ]
         }
     ];
+
 
 
 
