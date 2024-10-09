@@ -1,6 +1,6 @@
+import { DataContext } from "@/context/DataContext";
 import { Editor } from "@tinymce/tinymce-react";
 import { useContext, useState } from "react";
-import { DataContext } from "../../../context/DataContext";
 
 function ProfessionalSummary() {
   const { data, setData } = useContext(DataContext); 

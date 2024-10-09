@@ -33,7 +33,7 @@ function FormSection() {
           );
         })}
 
-        <AddSection onAddSection={handleAddSection} />
+        {/* <AddSection onAddSection={handleAddSection} /> */}
       </div>
     </>
   );

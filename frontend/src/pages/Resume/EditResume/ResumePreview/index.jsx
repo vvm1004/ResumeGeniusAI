@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../styles/client.module.scss";      
 import PersonalDetailPreview from "./PersonalDetailPreview";
 import ProfessionalSummaryPreview from "./ProfessionSumaryPreview";
 import EmploymentHistoryPreview from "./EmployeeHistoryPreview";
