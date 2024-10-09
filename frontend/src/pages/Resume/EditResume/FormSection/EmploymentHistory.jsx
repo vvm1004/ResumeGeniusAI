@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { DataContext } from "../../../context/DataContext";
+import { DataContext } from "@/context/DataContext";
 
 function formatMonthYear(monthYear) {
   if (!monthYear) return ""; 
@@ -10,24 +10,25 @@ function formatMonthYear(monthYear) {
   return date.toLocaleDateString("en-US", options); 
 }
 
-function Education() {
+function EmploymentHistory() {
   const { data, setData } = useContext(DataContext);
+  console.log(data.experience);
 
-  const handleUpdateEducation = (index, updatedField) => {
-    const updatedEducation = (data.education || []).map((item, i) =>
+  const handleUpdateExperience = (index, updatedField) => {
+    const updatedExperience = (data.experience || []).map((item, i) =>
       i === index ? { ...item, ...updatedField } : item
     );
-    setData({ ...data, education: updatedEducation });
+    setData({ ...data, experience: updatedExperience });
   };
 
-  const toggleEducation = (index) => {
-    handleUpdateEducation(index, { isOpen: !data.education[index].isOpen });
+  const toggleEmploymentHistory = (index) => {
+    handleUpdateExperience(index, { isOpen: !data.experience[index].isOpen });
   };
 
-  const addEducation = () => {
-    const newEducation = {
-      universityName: "",
-      degree: "",
+  const addEmploymentHistory = () => {
+    const newEmployment = {
+      title: "",
+      employer: "",
       startDate: "",
       endDate: "",
       city: "",
@@ -36,44 +37,46 @@ function Education() {
     };
     setData({
       ...data,
-      education: [...(data.education || []), newEducation],
+      experience: [...(data.experience || []), newEmployment],
     });
   };
 
-  const removeEducation = (index) => {
-    const updatedEducation = (data.education || []).filter((_, i) => i !== index);
-    setData({ ...data, education: updatedEducation });
+  const removeEmploymentHistory = (index) => {
+    const updatedExperience = (data.experience || []).filter((_, i) => i !== index);
+    setData({ ...data, experience: updatedExperience });
   };
 
   return (
     <>
       <div className="max-w-4xl mx-auto p-6 pb-0">
-        <h2 className="text-2xl font-bold mb-2">Education</h2>
+        <h2 className="text-2xl font-bold mb-2">Employment History</h2>
         <p className="text-sm text-gray-500 mb-4">
-          A varied education on your resume sums up the value that your learnings and background will bring to the job.
+          Show your relevant experience (last 10 years). Use bullet points to
+          note your achievements, if possible - use numbers/facts (Achieved X,
+          measured by Y, by doing Z).
         </p>
       </div>
 
-      {(data.education && data.education.length > 0) ? (
-        data.education.map((item, index) => (
+      {(data.experience && data.experience.length > 0) ? (
+        data.experience.map((item, index) => (
           <div
             key={index}
-            className="education relative max-w-4xl mx-auto p-6 pt-0 bg-white rounded-lg shadow-md mt-6 group"
+            className="employment-history relative max-w-4xl mx-auto p-6 pt-0 bg-white rounded-lg shadow-md mt-6 group"
           >
             <button
-              onClick={() => removeEducation(index)}
+              onClick={() => removeEmploymentHistory(index)}
               className="absolute top-4 right-4 text-red-500 hidden group-hover:block"
             >
               X
             </button>
 
             <div
-              onClick={() => toggleEducation(index)}
+              onClick={() => toggleEmploymentHistory(index)}
               className="cursor-pointer mb-4"
             >
               <h3 className="text-lg font-semibold">
-                {item.degree || "(No specified)"}{" "}
-                {item.universityName ? `at ${item.universityName}` : ""}
+                {item.title || "(No specified)"}{" "}
+                {item.companyName ? `at ${item.companyName}` : ""}
               </h3>
               <p className="text-gray-500">
                 {formatMonthYear(item.startDate)} - {formatMonthYear(item.endDate)}
@@ -82,32 +85,34 @@ function Education() {
 
             {item.isOpen && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* University Name */}
+                {/* Job Title */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    University
+                    Job title
                   </label>
                   <input
                     type="text"
                     className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    value={item.universityName}
+                    value={item.title}
                     onChange={(e) =>
-                      handleUpdateEducation(index, { universityName: e.target.value })
+                      handleUpdateExperience(index, { title: e.target.value })
                     }
                   />
                 </div>
 
-                {/* Degree */}
+                {/* Employer */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Degree
+                    Employer
                   </label>
                   <input
                     type="text"
                     className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    value={item.degree}
+                    value={item.companyName}
                     onChange={(e) =>
-                      handleUpdateEducation(index, { degree: e.target.value })
+                      handleUpdateExperience(index, {
+                        companyName: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -123,7 +128,9 @@ function Education() {
                       className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       value={item.startDate}
                       onChange={(e) =>
-                        handleUpdateEducation(index, { startDate: e.target.value })
+                        handleUpdateExperience(index, {
+                          startDate: e.target.value,
+                        })
                       }
                     />
                     <input
@@ -131,7 +138,9 @@ function Education() {
                       className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       value={item.endDate}
                       onChange={(e) =>
-                        handleUpdateEducation(index, { endDate: e.target.value })
+                        handleUpdateExperience(index, {
+                          endDate: e.target.value,
+                        })
                       }
                     />
                   </div>
@@ -147,7 +156,7 @@ function Education() {
                     className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     value={item.city}
                     onChange={(e) =>
-                      handleUpdateEducation(index, { city: e.target.value })
+                      handleUpdateExperience(index, { city: e.target.value })
                     }
                   />
                 </div>
@@ -163,7 +172,7 @@ function Education() {
 
                 <Editor
                   apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
-                  placeholder="e.g. Graduated with HIgh Honors."
+                  placeholder="e.g. Created and implemented lesson plans based on child-led interests and curiosities."
                   init={{
                     menubar: false,
                     plugins: [
@@ -183,7 +192,7 @@ function Education() {
                   }}
                   value={item.description}
                   onEditorChange={(content) =>
-                    handleUpdateEducation(index, { description: content })
+                    handleUpdateExperience(index, { description: content })
                   }
                 />
 
@@ -196,19 +205,19 @@ function Education() {
           </div>
         ))
       ) : (
-        <p className="text-center text-gray-500">No education history available.</p>
+        <p className="text-center text-gray-500">No employment history available.</p>
       )}
 
       <div className="max-w-4xl mx-auto p-6 pb-0 ml-2">
         <button
           className="text-blue-600 text-sm"
-          onClick={addEducation}
+          onClick={addEmploymentHistory}
         >
-          + Add one more education
+          + Add one more employment
         </button>
       </div>
     </>
   );
 }
 
-export default Education;
+export default EmploymentHistory;

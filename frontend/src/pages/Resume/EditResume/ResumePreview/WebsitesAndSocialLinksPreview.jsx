@@ -1,12 +1,12 @@
+import { DataContext } from "@/context/DataContext";
 import { useContext } from "react";
-import { DataContext } from "../../../context/DataContext";
 
 function WebsitesAndSocialLinksPreview() {
   const { data } = useContext(DataContext);
 
   return (
     <div className="mb-6">
-      <h2 className="text-xl font-semibold mb-4">Websites & Social Links</h2>
+      <h2 className="text-3xl font-bold mb-4">Websites & Social Links</h2>
 
       {data?.website && data.website.length > 0 ? (
         data.website.map((item, index) => (
