@@ -58,7 +58,7 @@ def normalize_keys(data):
         return data
 def get_job_position(data):
   
-    possible_keys = ['Job_Position', 'Job_Title', 'Job','job_title','job_position','job','Job_title','Job_position', 'Title']
+    possible_keys = ['Job_Position', 'Job_Title', 'Job','job_title','job_position','job','Job_title','Job_position', 'Title','Jobtitle','JobTitle']
 
     for key in possible_keys:
         if key in data:
