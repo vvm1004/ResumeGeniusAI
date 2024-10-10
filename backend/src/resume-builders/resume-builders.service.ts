@@ -19,7 +19,7 @@ export class ResumeBuildersService {
   }
 
   findByUserId(userId: string) {
-    return this.resumeBuidlerModel.findOne({ user: userId }).exec();
+    return this.resumeBuidlerModel.find({ user: userId }).exec();
 
   }
 

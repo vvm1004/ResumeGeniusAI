@@ -23,8 +23,8 @@ export class ResumeBuildersController {
   @Public()
   @SkipCheckPermission()
   @ResponseMessage("Fetch List resume builder by userId")
-  @Get()
-  findByUserId(@Query('userId') userId: string) {
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string) {
     return this.resumeBuildersService.findByUserId(userId);
   }
 
