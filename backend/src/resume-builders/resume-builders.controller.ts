@@ -3,6 +3,10 @@ import { ResumeBuildersService } from './resume-builders.service';
 import { CreateResumeBuilderDto } from './dto/create-resume-builder.dto';
 import { UpdateResumeBuilderDto } from './dto/update-resume-builder.dto';
 import { Public, ResponseMessage, SkipCheckPermission } from 'src/decorator/customize';
+import { ApiTags } from '@nestjs/swagger';
+
+
+@ApiTags('resume-builders')
 
 @Controller('resume-builders')
 export class ResumeBuildersController {
@@ -18,10 +22,18 @@ export class ResumeBuildersController {
 
   @Public()
   @SkipCheckPermission()
-  @ResponseMessage("Fetch List resume builder by userEmail")
+  @ResponseMessage("Fetch List resume builder by userId")
   @Get()
-  findAllByUserEmail(@Query('userEmail') userEmail: string) {
-    return this.resumeBuildersService.findAllByUserEmail(userEmail);
+  findByUserId(@Query('userId') userId: string) {
+    return this.resumeBuildersService.findByUserId(userId);
+  }
+
+  @Public()
+  @SkipCheckPermission()
+  @ResponseMessage("Fetch All Resume Builder")
+  @Get()
+  findAll() {
+    return this.resumeBuildersService.findAll();
   }
 
   @Public()

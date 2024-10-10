@@ -18,8 +18,13 @@ export class ResumeBuildersService {
     return newResumeBuilder
   }
 
-  findAllByUserEmail(userEmail: string) {
-    return this.resumeBuidlerModel.find({ userEmail }).exec();
+  findByUserId(userId: string) {
+    return this.resumeBuidlerModel.findOne({ user: userId }).exec();
+
+  }
+
+  findAll() {
+    return this.resumeBuidlerModel.find().exec();
 
   }
 
