@@ -1,12 +1,9 @@
-# python src/model_training/check_meaning/model.py
-
 import json
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Dense, Embedding, LSTM, concatenate
 from tensorflow.keras.models import Model
 import os
-
 
 # Tạo và huấn luyện mô hình
 def create_and_train_model(keys, values, labels, tokenizer):
@@ -54,14 +51,23 @@ def create_and_train_model(keys, values, labels, tokenizer):
 
 #create_sample_data()
 # Tải dữ liệu huấn luyện
-data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'data','training_data.json')
+data_dir = os.path.join('dataHandling', 'merged_data.json')
 
-
-with open(data_dir, 'r') as f:
+with open(data_dir, 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 keys = [d['field_name'] for d in data]
-values = [d['field_data'] for d in data]
+values = []
+
+for d in data:
+    field_data = d.get('field_data')
+    if field_data is None:
+        print("Skipping entry with missing 'field_data'\n",d)
+        continue  # Skip to the next iteration
+    field_data = str(field_data)
+    # print("\n\n\t value: ", field_data)
+    values.append(field_data)
+
 labels = [d['label'] for d in data]
 corrected_keys = [d['corrected_field_name'] for d in data]
 
@@ -72,17 +78,10 @@ tokenizer.fit_on_texts(keys + values + corrected_keys)
 # Tạo và huấn luyện mô hình
 model = create_and_train_model(keys, values, labels, tokenizer)
 
-
-model_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'model')
-model_path = os.path.join(model_dir, 'check_meaning.keras')
-tokenizer_path = os.path.join(model_dir, 'check_meaning_tokenizer.json')
-
-
-
+model_dir = os.path.join('final', 'final_model.keras')
+tokenizer_dir=os.path.join('final', 'final_tokenizer.json')
 # Lưu mô hình và tokenizer
-model.save(model_path)
-
-
+model.save(model_dir)
 tokenizer_json = tokenizer.to_json()
-with open(tokenizer_path, 'w') as f:
+with open(tokenizer_dir, 'w') as f:
     f.write(tokenizer_json)

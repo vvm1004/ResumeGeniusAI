@@ -31,7 +31,8 @@ import ClientJobPage from './pages/job';
 import ClientJobDetailPage from './pages/job/detail';
 import ClientCompanyPage from './pages/company';
 import ClientCompanyDetailPage from './pages/company/detail';
-import Resume from './pages/Resume/index';
+import DashboardResumes from './pages/Resume';
+import EditResume from './pages/Resume/EditResume';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -82,7 +83,8 @@ export default function App() {
         { path: "job/:id", element: <ClientJobDetailPage /> },
         { path: "company", element: <ClientCompanyPage /> },
         { path: "company/:id", element: <ClientCompanyDetailPage /> },
-        { path: "resume/", element: <Resume /> }
+        { path: "resumes", element: <DashboardResumes /> },
+        { path: "resumes/edit/:id", element: <EditResume /> },
       ],
     },
 

@@ -28,7 +28,7 @@ def parse_resume(pdf_path):
 
     # Extract text from the PDF
     resume_text1 = extract_text(pdf_path)
-    print(resume_text1)
+    # print(resume_text1)
     # Send the resume text to the model and ask for JSON format
     response = chat_session.send_message(
         resume_text1 + " THERE IS A data I read from a resume, please present it  as a json file according to specific fields and identify the job position in this resume "

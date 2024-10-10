@@ -1,12 +1,12 @@
+import { DataContext } from "@/context/DataContext";
 import { useContext } from "react";
-import { DataContext } from "../../../context/DataContext";
 
 function EducationPreview() {
   const { data } = useContext(DataContext);
 
   return (
     <div className="mb-6">
-      <h2 className="text-xl font-semibold mb-4">Education</h2>
+      <h2 className="text-3xl font-bold mb-4">Education</h2>
 
       {data?.education && data.education.length > 0 ? (
         data.education.map((item, index) => (

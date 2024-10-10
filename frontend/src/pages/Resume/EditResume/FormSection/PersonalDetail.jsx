@@ -1,4 +1,4 @@
-import { DataContext } from "../../../context/DataContext";
+import { DataContext } from "@/context/DataContext";
 import { useContext, useState } from "react";
 
 function PersonalDetail() {

@@ -1,5 +1,5 @@
+import { DataContext } from "@/context/DataContext";
 import { useContext } from "react";
-import { DataContext } from "../../../context/DataContext";
 
 function WebsitesAndSocialLinks() {
   const { data, setData } = useContext(DataContext);
