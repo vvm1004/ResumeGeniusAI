@@ -2,9 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ResumeBuildersService } from './resume-builders.service';
 import { CreateResumeBuilderDto } from './dto/create-resume-builder.dto';
 import { UpdateResumeBuilderDto } from './dto/update-resume-builder.dto';
-import { Public, ResponseMessage, SkipCheckPermission } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { ApiTags } from '@nestjs/swagger';
- 
+
+import { IUser } from 'src/users/users.interface';
+
 
 @ApiTags('resume-builders')
 
@@ -12,23 +14,23 @@ import { ApiTags } from '@nestjs/swagger';
 export class ResumeBuildersController {
   constructor(private readonly resumeBuildersService: ResumeBuildersService) { }
 
-  @Public()
+  // @Public()
   @SkipCheckPermission()
   @ResponseMessage("Create a new resume builder")
   @Post()
-  create(@Body() createResumeBuilderDto) {
-    return this.resumeBuildersService.create(createResumeBuilderDto);
+  create(@Body() createResumeBuilderDto, @User() user: IUser) {
+    return this.resumeBuildersService.create(createResumeBuilderDto, user);
   }
 
-  @Public()
+  // @Public()
   @SkipCheckPermission()
   @ResponseMessage("Fetch List resume builder by userId")
-  @Get()
-  findByUserId(@Query('userId') userId: string) {
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string) {
     return this.resumeBuildersService.findByUserId(userId);
   }
 
-  @Public()
+  // @Public()
   @SkipCheckPermission()
   @ResponseMessage("Fetch All Resume Builder")
   @Get()
@@ -36,7 +38,7 @@ export class ResumeBuildersController {
     return this.resumeBuildersService.findAll();
   }
 
-  @Public()
+  // @Public()
   @SkipCheckPermission()
   @ResponseMessage("Fetch resume builder by id")
   @Get(':id')
@@ -44,19 +46,19 @@ export class ResumeBuildersController {
     return this.resumeBuildersService.findOne(id);
   }
 
-  @Public()
+  // @Public()
   @SkipCheckPermission()
   @ResponseMessage("Update a resume builder")
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResumeBuilderDto) {
-    return this.resumeBuildersService.update(id, updateResumeBuilderDto);
+  update(@Param('id') id: string, @Body() updateResumeBuilderDto, @User() user: IUser) {
+    return this.resumeBuildersService.update(id, updateResumeBuilderDto, user);
   }
 
-  @Public()
+  // @Public()
   @SkipCheckPermission()
   @ResponseMessage("Delete a resume builder")
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.resumeBuildersService.remove(id);
+  remove(@Param('id') id: string, @User() user: IUser) {
+    return this.resumeBuildersService.remove(id, user);
   }
 }
