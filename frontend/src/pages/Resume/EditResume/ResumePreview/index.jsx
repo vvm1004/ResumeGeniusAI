@@ -41,16 +41,15 @@
 // };
 
 import React, { useContext, useState } from "react";
-import "../../../styles/client.module.scss";
-import { DataContext } from "../../../context/DataContext";
-import TemplateSelection from "../TemplateSelection/TemplateSelection";
+import "../../../../styles/client.module.scss";
+import { DataContext } from "../../../../context/DataContext";
+import TemplateSelection from "../../TemplateSelection/TemplateSelection";
 import { AiFillAppstore } from "react-icons/ai";
-import { FaFileExport } from "react-icons/fa6";
 import jsPDF from "jspdf";
 
 // Import tất cả templates
-import Template1 from "../Template/Template1";
-import Template2 from "../Template/Template2";
+import Template1 from "../../Template/Template1";
+import Template2 from "../../Template/Template2";
 
 const ResumePreview = () => {
   const { data } = useContext(DataContext);
@@ -106,11 +105,7 @@ const ResumePreview = () => {
         onClick={handleIconClick}
         className="cursor-pointer"
       />
-      <FaFileExport
-        size={30}
-        className="cursor-pointer"
-        onClick={exportToPDF} // Add onClick handler to export
-      />
+
 
       {showTemplateSelection ? (
         <TemplateSelection onSelectTemplate={handleSelectTemplate} />
