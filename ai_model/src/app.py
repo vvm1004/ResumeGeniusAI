@@ -558,14 +558,38 @@ def process_resume():
             results2["CustomFields"].append(custom_field_item)
 
     return jsonify({
-        'results': results,
-        'results2': results2,
-        're':esdata
+        'data': results2
+        
     })
        
 
         # Thêm các trường tùy chỉnh
     
+
+@app.route('/upgrade_sentence', methods=['POST'])
+def upgrade_sentences():
+    data = request.json
+    sentence = data.get('sentence')
+    new_sentence=upgrade_sentence(sentence)
+    return jsonify({
+        'new_sentence':new_sentence
+    })
+
+@app.route('/check_spell', methods=['POST'])
+def check_spell():
+    data = request.json
+    sentence = data.get('sentence')
+    corrected_sentence, corrections=check_and_correct_spelling_with_positions(sentence)
+    return jsonify({
+        'corrected_sentence': corrected_sentence,
+        'corrections': corrections
+        
+    })
+
+@app.route('/generate_summary', methods=['POST'])
+def generate_summary():
+    data = request.json
+    key_words = data.get('sentence')
 
 
 

@@ -10,11 +10,9 @@ def create_and_train_model(keys, values, labels, tokenizer):
     key_sequences = tokenizer.texts_to_sequences(keys)
     value_sequences = tokenizer.texts_to_sequences(values)
     
-    # Padding các sequence
     key_sequences = tf.keras.preprocessing.sequence.pad_sequences(key_sequences, padding='post')
     value_sequences = tf.keras.preprocessing.sequence.pad_sequences(value_sequences, padding='post')
     
-    # Chuyển labels thành numpy array
     labels = np.array(labels)
     
     vocab_size = len(tokenizer.word_index) + 1
@@ -22,7 +20,6 @@ def create_and_train_model(keys, values, labels, tokenizer):
     key_input_length = key_sequences.shape[1]
     value_input_length = value_sequences.shape[1]
 
-    # Xây dựng mô hình
     key_input = Input(shape=(key_input_length,), name='key_input')
     value_input = Input(shape=(value_input_length,), name='value_input')
     
@@ -43,14 +40,12 @@ def create_and_train_model(keys, values, labels, tokenizer):
     model = Model(inputs=[key_input, value_input], outputs=output)
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
     
-    # Huấn luyện mô hình
     model.fit([key_sequences, value_sequences], labels, epochs=10, batch_size=32, validation_split=0.2)
     
     return model
 
 
-#create_sample_data()
-# Tải dữ liệu huấn luyện
+
 data_dir = os.path.join('dataHandling', 'merged_data.json')
 
 with open(data_dir, 'r', encoding='utf-8') as f:
