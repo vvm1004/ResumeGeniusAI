@@ -44,9 +44,6 @@ import React, { useContext, useState } from "react";
 import "../../../../styles/client.module.scss";
 import { DataContext } from "../../../../context/DataContext";
 import TemplateSelection from "../../TemplateSelection/TemplateSelection";
-import "../../../../styles/client.module.scss";
-import { DataContext } from "../../../../context/DataContext";
-import TemplateSelection from "../../TemplateSelection/TemplateSelection";
 import { AiFillAppstore } from "react-icons/ai";
 import jsPDF from "jspdf";
 
