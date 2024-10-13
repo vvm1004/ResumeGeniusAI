@@ -41,16 +41,17 @@
 // };
 
 import React, { useContext, useState } from "react";
-import "../../../styles/client.module.scss";
-import { DataContext } from "../../../context/DataContext";
-import TemplateSelection from "../TemplateSelection/TemplateSelection";
+import "../../../../styles/client.module.scss";
+import { DataContext } from "../../../../context/DataContext";
+import TemplateSelection from "../../TemplateSelection/TemplateSelection";
 import { AiFillAppstore } from "react-icons/ai";
-import { FaFileExport } from "react-icons/fa6";
 import jsPDF from "jspdf";
 
 // Import tất cả templates
-import Template1 from "../Template/Template1";
-import Template2 from "../Template/Template2";
+import Template1 from "../../Template/Template1";
+import Template2 from "../../Template/Template2";
+import { FaFileExport } from "react-icons/fa";
+import { IoIosMore } from "react-icons/io";
 
 const ResumePreview = () => {
   const { data } = useContext(DataContext);
@@ -101,25 +102,35 @@ const ResumePreview = () => {
 
   return (
     <div>
-      <AiFillAppstore
-        size={30}
-        onClick={handleIconClick}
-        className="cursor-pointer"
-      />
-      <FaFileExport
-        size={30}
-        className="cursor-pointer"
-        onClick={exportToPDF} // Add onClick handler to export
-      />
+      <div className="flex justify-center items-center cursor-pointer text-white p-2">
+        <div
+          className="flex justify-center items-center"
+          onClick={handleIconClick}
+        >
+          <AiFillAppstore className="text-2xl mr-2" />
+          Select Template
+        </div>
+        <span className="ml-2 mr-2">|</span>
+        <button
+          className="bg-blue-500 rounded-sm p-2 font-semibold mr-1"
+          onClick={exportToPDF}
+        >
+          Download PDF
+        </button>
+        <button className="bg-blue-500 rounded-sm p-2 font-semibold">
+          <IoIosMore className="text-2xl" />
+        </button>
+      </div>
 
       {showTemplateSelection ? (
         <TemplateSelection onSelectTemplate={handleSelectTemplate} />
       ) : (
         <div className="flex justify-center items-center h-screen">
-          <div className="resume-container w-full h-[150%] transform scale-[0.6] origin-top-bottom p-6">
+          {/* translate-y-[-23%] */}
+          <div className="w-[100%] h-[150%] transform scale-[0.6]">
             {renderSelectedTemplate()}
           </div>
-        </div>
+         </div>
       )}
     </div>
   );

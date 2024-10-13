@@ -4,8 +4,9 @@ import Education from "./Education";
 import EmploymentHistory from "./EmploymentHistory";
 import PersonalDetail from "./PersonalDetail";
 import Skills from "./Skills";
-import WebsitesAndSocialLinks from "./WebsitesAndSocialLinks";
 import ProfessionalSummary from "./ProfessionalSumary";
+import Languages from "./Languages";
+import Projects from "./Projects";
 
 function FormSection() {
   const [sections, setSections] = useState([]);
@@ -22,8 +23,9 @@ function FormSection() {
         <ProfessionalSummary />
         <EmploymentHistory />
         <Education />
-        <WebsitesAndSocialLinks />
+        <Projects />
         <Skills />
+        {/* <Languages /> */}
 
         {sections.map((section, index) => {
           return (

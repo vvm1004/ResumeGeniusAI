@@ -13,19 +13,36 @@ function EditResume() {
   useEffect(() => {
     const fetchResume = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/api/v1/resumes/${id}`
-        );
-        console.log(response.data.data);
-        setData(response.data.data);
+        if (id !== "undefined") {
+          const response = await axios.get(
+            `http://localhost:8000/api/v1/resume-builders/${id}`
+          );
+          setData(response.data.data);
+        }
       } catch (error) {
         console.error("Error fetching resume data!", error);
       }
     };
 
     fetchResume();
-  }, [id]); 
+  }, [id]);
 
+  useEffect(() => {
+    const updateResume = async () => {
+      if (data && id !== "undefined") {
+        try {
+          await axios.patch(
+            `http://localhost:8000/api/v1/resume-builders/${id}`,
+            data 
+          );
+          console.log("Resume updated successfully!");
+        } catch (error) {
+          console.error("Error updating resume!", error);
+        }
+      }
+    };
+    updateResume();
+  }, [data, id]);
   return (
     <>
       <DataContext.Provider value={{ data, setData }}>
@@ -34,10 +51,7 @@ function EditResume() {
             <FormSection />
           </div>
 
-          <div
-            className="w-1/2 mt-10 p-4 bg-gray-500 fixed top-0 right-0 h-screen"
-            style={{ height: "100vh" }}
-          >
+          <div className="w-1/2 h-screen mt-12 p-4 bg-gray-500 fixed top-0 right-0">
             <ResumePreview />
           </div>
         </div>

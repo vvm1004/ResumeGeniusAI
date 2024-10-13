@@ -75,7 +75,7 @@ export default function App() {
     {
       path: "/",
       element: (<LayoutApp><LayoutClient /></LayoutApp>),
-      errorElement: <NotFound />,
+      //errorElement: <NotFound />,
       children: [
         { index: true, element: <HomePage /> },
         { path: "jobSearch", element: <JobHomePage /> },
@@ -91,7 +91,7 @@ export default function App() {
     {
       path: "/admin",
       element: (<LayoutApp><LayoutAdmin /> </LayoutApp>),
-      errorElement: <NotFound />,
+      // errorElement: <NotFound />,
       children: [
         {
           index: true, element:

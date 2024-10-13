@@ -4,12 +4,15 @@ import { useContext, useState } from "react";
 
 function ProfessionalSummary() {
   const { data, setData } = useContext(DataContext); 
-  const [charCount, setCharCount] = useState(data.summery?.length || 0);
+  const [charCount, setCharCount] = useState(data?.summary?.length || 0);
 
   const handleEditorChange = (content) => {
-    setCharCount(content.length); 
-    setData({ ...data, summery: content }); 
+    if (content.length <= 600  && content !== data.summary) { 
+      setCharCount(content.length); 
+      setData({ ...data, summary: content }); 
+    }
   };
+  
 
   return (
     <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-md mt-6">
@@ -35,12 +38,14 @@ function ProfessionalSummary() {
           setup: (editor) => {
             editor.ui.registry.addButton("customButton", {
               text: "AI pre-written phrases +",
-              onAction: () => {},
+              onAction: () => {
+                alert("Feature coming soon!");
+              },
               classes: "rounded-lg font-bold text-blue-500",
             });
           },
         }}
-        value={data.summery}
+        value={data?.summary || ""}
         onEditorChange={handleEditorChange}
       />
 

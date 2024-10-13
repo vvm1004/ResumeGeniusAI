@@ -5,40 +5,90 @@ import { MdDashboard } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { IoIosMore } from "react-icons/io";
 import { FaRegFilePdf } from "react-icons/fa";
-import { BsFiletypeDocx } from "react-icons/bs";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { useSelector } from "react-redux";
 
 const DashboardResumes = () => {
   const [data, setData] = useState([]);
   const [activeMenuItem, setActiveMenuItem] = useState("resumes");
   const navigate = useNavigate();
 
+  const userId = useSelector((state) => {
+    if (!state.account.user._id) return "";
+    return state.account.user._id;
+  });
+
   useEffect(() => {
     const fetchApi = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/resumes"
-        );
-        setData(response.data.data.result);
+        if (userId) {
+          const response = await axios.get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/api/v1/resume-builders/user/${userId}`
+          );
+          setData(response.data.data);
+        }
       } catch {
         console.log("Error!");
       }
     };
     fetchApi();
-  }, []);
+  }, [userId]);
 
-  const handleNewResumeClick = () => {
+  const handleNewResumeClick = async () => {
     const confirmCreate = window.confirm("Bạn có tạo CV mới không?");
 
     if (confirmCreate) {
-      // const newResume = {
-      //   _id: Date.now().toString(),
-      //   resumeId: `RES${Math.floor(Math.random() * 100000)}`,
-      //   updatedAt: new Date().toISOString(),
-      // };
+      try {
+        const newResume = {
+          title: "",
+          user: userId,
+          personalInformation: {
+            name: "",
+            email: "",
+            address: "",
+            phone: "",
+            github: "",
+            linkedin: "",
+          },
+          summary: "",
+          templateId: "template123",
+          experience: [],
+          education: [],
+          projects: [],
+          activities: [],
+          awards: [],
+          skills: [],
+          languages: [],
+          interests: [],
+          references: [],
+          certifications: [],
+          customFields: [],
+          // createdBy: {
+          //   _id: "",
+          //   email: ""
+          // },
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          isDeleted: false,
+          deletedAt: null,
+        };
 
-      // setData((prevData) => [...prevData, newResume]);
+        console.log(newResume);
 
-      navigate(`edit/${newResume._id}`);
+        if (userId) {
+          const response = await axios.post(
+            "http://localhost:8000/api/v1/resume-builders",
+            newResume
+          );
+        }
+
+        navigate(`edit/${newResume._id}`);
+      } catch (error) {
+        console.error("Lỗi khi tạo CV!");
+        alert("Có lỗi xảy ra khi tạo CV.");
+      }
     }
   };
 
@@ -51,6 +101,21 @@ const DashboardResumes = () => {
     const confirmEdit = window.confirm("Bạn có muốn chỉnh sửa CV này không?");
     if (confirmEdit) {
       navigate(`edit/${id}`);
+    }
+  };
+
+  const handleDeleteClick = async (id) => {
+    const confirmDelete = window.confirm("Bạn có muốn xóa CV này không?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(
+          `http://localhost:8000/api/v1/resume-builders/${id}`
+        );
+        alert("CV đã được xóa thành công.");
+      } catch (error) {
+        console.error("Lỗi khi xóa CV:", error);
+        alert("Có lỗi xảy ra khi xóa CV.");
+      }
     }
   };
 
@@ -84,7 +149,8 @@ const DashboardResumes = () => {
               }`}
               onClick={() => handleMenuClick("resumes", "/resumes")}
             >
-              <IoDocumentTextOutline className="mr-4 text-xl" />My Resumes
+              <IoDocumentTextOutline className="mr-4 text-xl" />
+              My Resumes
             </li>
             <li
               className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
@@ -105,7 +171,9 @@ const DashboardResumes = () => {
             </li>
             <li
               className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "interviewPrep" ? "rounded-md bg-blue-100" : ""
+                activeMenuItem === "interviewPrep"
+                  ? "rounded-md bg-blue-100"
+                  : ""
               }`}
               onClick={() => handleMenuClick("interviewPrep", "/interviewPrep")}
             >
@@ -132,73 +200,76 @@ const DashboardResumes = () => {
         </div>
 
         <div className="rounded-lg grid grid-cols-2 gap-4">
-          {data && data.length > 0 ? (
-            data.map(
-              (resume) =>
-                resume._id &&
-                resume.title && (
-                  <div
-                    className="w-full flex items-center p-4 cursor-pointer"
-                    key={resume._id}
+          {data.length > 0 ? (
+            data.map((resume) => (
+              <div
+                className="w-full flex items-center p-4 cursor-pointer"
+                key={resume._id}
+              >
+                <div
+                  className="mr-6"
+                  onClick={() => handleResumeClick(resume._id)}
+                >
+                  <img
+                    src={
+                      resume.image ||
+                      "https://th.bing.com/th/id/OIP.wzvz7KNJz_DYS_M6MibRXAAAAA?rs=1&pid=ImgDetMain"
+                    }
+                    alt="Resume"
+                    className="w-44 h-60 object-cover border-2"
+                  />
+                </div>
+                <div className="flex-1 pl-4">
+                  <h2
+                    className="text-xl font-bold"
+                    onClick={() => handleResumeClick(resume._id)}
                   >
-                    <div
-                      className="mr-6"
-                      onClick={() => handleResumeClick(resume._id)}
-                    >
-                      <img
-                        src={
-                          resume.image ||
-                          "https://th.bing.com/th/id/OIP.wzvz7KNJz_DYS_M6MibRXAAAAA?rs=1&pid=ImgDetMain"
-                        }
-                        alt="Resume"
-                        className="w-44 h-60 object-cover border-2"
-                      />
-                    </div>
-                    <div className="flex-1 pl-4">
-                      <h2
-                        className="text-xl font-bold"
-                        onClick={() => handleResumeClick(resume._id)}
-                      >
-                        {resume.title}
-                      </h2>
-                      <div
-                        className="text-gray-500"
-                        onClick={() => handleResumeClick(resume._id)}
-                      >
-                        Updated{" "}
-                        {resume.updatedAt
-                          ? new Date(resume.updatedAt).toLocaleString()
-                          : "Unknown"}
-                      </div>
-                      <div className="mt-2 text-green-600 font-medium">
-                        {resume.score !== undefined ? resume.score : 100}% Your
-                        resume score
-                      </div>
+                    {resume.title}
+                  </h2>
+                  <div
+                    className="text-gray-500"
+                    onClick={() => handleResumeClick(resume._id)}
+                  >
+                    Updated{" "}
+                    {resume.updatedAt
+                      ? new Date(resume.updatedAt).toLocaleString()
+                      : "Unknown"}
+                  </div>
+                  <div className="mt-2 text-green-600 font-medium">
+                    {resume.score !== undefined ? resume.score : 100}% Your
+                    resume score
+                  </div>
 
-                      <div className="mt-4">
-                        <button className="text-blue-600 font-medium flex items-center">
-                          Tailor to job listing
-                          <span className="ml-2 bg-gray-200 text-xs px-2 py-1 rounded-full">
-                            NEW
-                          </span>
-                        </button>
-                        <button className="flex items-center block mt-2 text-blue-600 font-medium">
-                          <FaRegFilePdf className="mr-2 text-xl" />
-                          Download PDF
-                        </button>
-                        <button className="flex items-center block mt-2 text-blue-600 font-medium">
+                  <div className="mt-4">
+                    <button className="text-blue-600 font-medium flex items-center">
+                      Tailor to job listing
+                      <span className="ml-2 bg-gray-200 text-xs px-2 py-1 rounded-full">
+                        NEW
+                      </span>
+                    </button>
+                    <button className="flex items-center block mt-2 text-blue-600 font-medium">
+                      <FaRegFilePdf className="mr-2 text-xl" />
+                      Download PDF
+                    </button>
+                    {/* <button className="flex items-center block mt-2 text-blue-600 font-medium">
                           <BsFiletypeDocx className="mr-2 text-xl" />
                           Export to DOCX
-                        </button>
-                        <button className="flex items-center block mt-2 text-blue-600 font-medium">
-                          <IoIosMore className="mr-2 text-xl" />
-                          More
-                        </button>
-                      </div>
-                    </div>
+                        </button> */}
+                    <button
+                      className="flex items-center block mt-2 text-blue-600 font-medium"
+                      onClick={() => handleDeleteClick(resume._id)}
+                    >
+                      <RiDeleteBin6Line className="mr-2 text-xl" />
+                      Delete
+                    </button>
+                    <button className="flex items-center block mt-2 text-blue-600 font-medium">
+                      <IoIosMore className="mr-2 text-xl" />
+                      More
+                    </button>
                   </div>
-                )
-            )
+                </div>
+              </div>
+            ))
           ) : (
             <></>
           )}

@@ -26,7 +26,7 @@ const Resume = ({ data }) => {
   };
   return (
     <>
-      <div className="resume-container">
+      {/* <div className="resume-container">
         <div className="t1">
           <section className="main-section">
             <div className="left-part">
@@ -218,7 +218,7 @@ const Resume = ({ data }) => {
             </div>
           </section>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
