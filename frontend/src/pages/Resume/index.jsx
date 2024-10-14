@@ -18,6 +18,10 @@ const DashboardResumes = () => {
     return state.account.user._id;
   });
 
+  const user = useSelector((state) => state.account.user);
+
+  const access_token = localStorage.getItem("access_token");
+
   useEffect(() => {
     const fetchApi = async () => {
       try {
@@ -25,7 +29,12 @@ const DashboardResumes = () => {
           const response = await axios.get(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/api/v1/resume-builders/user/${userId}`
+            }/api/v1/resume-builders/user/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
           );
           setData(response.data.data);
         }
@@ -34,7 +43,7 @@ const DashboardResumes = () => {
       }
     };
     fetchApi();
-  }, [userId]);
+  }, [userId, access_token]);
 
   const handleNewResumeClick = async () => {
     const confirmCreate = window.confirm("Bạn có tạo CV mới không?");
@@ -42,7 +51,7 @@ const DashboardResumes = () => {
     if (confirmCreate) {
       try {
         const newResume = {
-          title: "",
+          title: "New CV",
           user: userId,
           personalInformation: {
             name: "",
@@ -65,26 +74,23 @@ const DashboardResumes = () => {
           references: [],
           certifications: [],
           customFields: [],
-          // createdBy: {
-          //   _id: "",
-          //   email: ""
-          // },
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          isDeleted: false,
-          deletedAt: null,
         };
-
-        console.log(newResume);
 
         if (userId) {
           const response = await axios.post(
             "http://localhost:8000/api/v1/resume-builders",
-            newResume
+            newResume,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
           );
+          setData((prevData) => [...prevData, response.data.data]);
+          navigate(`edit/${response?.data?.data._id}`);
+        } else {
+          navigate(`edit/${newResume._id}`);
         }
-
-        navigate(`edit/${newResume._id}`);
       } catch (error) {
         console.error("Lỗi khi tạo CV!");
         alert("Có lỗi xảy ra khi tạo CV.");
@@ -109,8 +115,14 @@ const DashboardResumes = () => {
     if (confirmDelete) {
       try {
         await axios.delete(
-          `http://localhost:8000/api/v1/resume-builders/${id}`
+          `http://localhost:8000/api/v1/resume-builders/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          }
         );
+        setData((prevData) => prevData.filter((resume) => resume._id !== id));
         alert("CV đã được xóa thành công.");
       } catch (error) {
         console.error("Lỗi khi xóa CV:", error);
@@ -125,11 +137,15 @@ const DashboardResumes = () => {
         <div className="flex justify-between items-center">
           <img
             className="w-12 h-12 object-contain border-2 rounded-full font-12"
-            src="https://tse2.mm.bing.net/th?id=OIP.xv5ky4lYh1TkiIZW6wwYJAAAAA&pid=Api&P=0&h=180"
+            // src="https://tse2.mm.bing.net/th?id=OIP.xv5ky4lYh1TkiIZW6wwYJAAAAA&pid=Api&P=0&h=180"
+            src={
+              user?.image ||
+              "https://tse2.mm.bing.net/th?id=OIP.xv5ky4lYh1TkiIZW6wwYJAAAAA&pid=Api&P=0&h=180"
+            }
             alt="Ảnh đại diện"
           />
           <div className="text-center">
-            <h2 className="font-bold">Tạ Đình Tài</h2>
+            <h2 className="font-bold">{user.name}</h2>
             <h3 className="text-gray-500">Set your target role</h3>
           </div>
         </div>

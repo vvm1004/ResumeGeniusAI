@@ -9,13 +9,19 @@ import { useParams } from "react-router-dom";
 function EditResume() {
   const { id } = useParams();
   const [data, setData] = useState([]);
+  const access_token = localStorage.getItem("access_token");
 
   useEffect(() => {
     const fetchResume = async () => {
       try {
         if (id !== "undefined") {
           const response = await axios.get(
-            `http://localhost:8000/api/v1/resume-builders/${id}`
+            `http://localhost:8000/api/v1/resume-builders/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
           );
           setData(response.data.data);
         }
@@ -33,7 +39,12 @@ function EditResume() {
         try {
           await axios.patch(
             `http://localhost:8000/api/v1/resume-builders/${id}`,
-            data 
+            data,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
           );
           console.log("Resume updated successfully!");
         } catch (error) {
