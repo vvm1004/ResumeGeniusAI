@@ -1,48 +1,39 @@
 import { DataContext } from "@/context/DataContext";
 import { useContext } from "react";
 
+const languageLevels = ["Beginner", "Intermediate", "Advanced", "Fluent", "Native"];
+
 function Languages() {
   const { data, setData } = useContext(DataContext);
 
   const handleUpdateLanguages = (index, updatedField) => {
-    const updateLanguages = (data.languages || []).map((item, i) =>
+    const updateLanguages = (data?.languages || [])?.map((item, i) =>
       i === index ? { ...item, ...updatedField } : item
     );
     setData({ ...data, languages: updateLanguages });
   };
 
   const toggleLanguages = (index) => {
-    handleUpdateLanguages(index, { isOpen: !data.languages[index].isOpen });
+    handleUpdateLanguages(index, { isOpen: !data?.languages[index].isOpen });
   };
 
   const addSkill = () => {
     const newSkill = {
-      name: "",
-      rating: 1,
+      title: "",
+      level: "Begginer",
       isOpen: true,
     };
     setData({
       ...data,
-      languages: [...(data.languages || []), newSkill],
+      languages: [...(data?.languages || []), newSkill],
     });
   };
 
   const removeLanguages = (index) => {
-    const updateLanguages = (data.languages || []).filter(
+    const updateLanguages = (data?.languages || []).filter(
       (_, i) => i !== index
     );
     setData({ ...data, languages: updateLanguages });
-  };
-
-  const getLevelLabel = (rating) => {
-    switch (rating) {
-      case 1:
-        return "Native";
-      case 2:
-        return "Fluent";
-      default:
-        return "Unknown";
-    }
   };
 
   return (
@@ -56,8 +47,8 @@ function Languages() {
           </p>
         </div>
 
-        {data.languages && data.languages.length > 0 ? (
-          data.languages.map((item, index) => (
+        {data?.languages && data?.languages.length > 0 ? (
+          data?.languages.map((item, index) => (
             <div
               key={index}
               className="skill relative max-w-4xl mx-auto p-6 pt-0 bg-white rounded-lg shadow-md mt-6 group"
@@ -74,14 +65,12 @@ function Languages() {
                 className="cursor-pointer mb-4"
               >
                 <h3 className="text-lg font-semibold">
-                  {item.title || "(No specified skill)"}{" "}
+                  {item?.title || "(No specified skill)"}{" "}
                 </h3>
-                <p className="text-gray-500">
-                  Level - {getLevelLabel(item.level)}
-                </p>
+                <p className="text-gray-500">Level - {item?.level}</p>
               </div>
 
-              {item.isOpen && (
+              {item?.isOpen && (
                 <div className="flex items-center gap-4">
                   {/* Title */}
                   <div className="flex-1">
@@ -94,7 +83,7 @@ function Languages() {
                       className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       value={item?.title}
                       onChange={(e) =>
-                        handleUpdateLanguages(index, { name: e.target.value })
+                        handleUpdateLanguages(index, { title: e.target.value })
                       }
                     />
                   </div>
@@ -102,16 +91,16 @@ function Languages() {
                   {/* Level */}
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-gray-700">
-                      Level - {getLevelLabel(item.level)}
+                      Level - {item.level}
                     </label>
                     <input
                       type="range"
-                      min="1"
-                      max="5"
-                      value={item.level}
+                      min="0"
+                      max="4"
+                      value={languageLevels.indexOf(item?.level)}
                       onChange={(e) =>
                         handleUpdateLanguages(index, {
-                          level: parseInt(e.target.value),
+                          level: languageLevels[e.target.value],
                         })
                       }
                       className="flex items-center w-full"

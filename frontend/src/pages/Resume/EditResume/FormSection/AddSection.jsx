@@ -1,18 +1,22 @@
-import CustomSection from "./CustomSection";
-import Courses from "./Courses";
-import ExtraCurricularActivities from "./ExtraCurricularActivities";
+import { LucideSettings2 } from "lucide-react";
+import { FaAward } from "react-icons/fa";
+import { TbCertificate } from "react-icons/tb";
+import { RxThickArrowRight } from "react-icons/rx";
+import Awards from "./Awards";
+import References from "./References";
+import Certifications from "./Certifications";
 
 function AddSection({ onAddSection }) {
   const handleButtonClick = (sectionName) => {
     switch (sectionName) {
-      case "Custom Section":
-        onAddSection(<CustomSection />);
+      case "Awards":
+        onAddSection({ type: "Awards" });
         break;
-      case "Courses":
-        onAddSection(<Courses />);
+      case "References":
+        onAddSection({ type: "References" });
         break;
-      case "Extra-curricular Activities":
-        onAddSection(<ExtraCurricularActivities />);
+      case "Certifications":
+        onAddSection({ type: "Certifications" });
         break;
       default:
         break;
@@ -22,25 +26,39 @@ function AddSection({ onAddSection }) {
   return (
     <>
       <div>
-        <h2 className="font-bold mb-4 gap-6">Add Section</h2>
+        <h1 className="text-xl font-semibold mb-2">Add Section</h1>
         <div className="grid grid-cols-2">
           <button
-            className="btn btn-primary text-left  ml-4 mb-2"
+            className="flex items-center btn text-lg"
             onClick={() => handleButtonClick("Custom Section")}
           >
+            <span>
+              <LucideSettings2 className="text-blue-600 mr-2" size={30} />
+            </span>
             Custom Section
           </button>
           <button
-            className="btn btn-primary text-left ml-4 mb-2"
-            onClick={() => handleButtonClick("Courses")}
+            className="flex items-center btn text-lg"
+            onClick={() => handleButtonClick("Awards")}
           >
-            Courses
+            <span>
+              <FaAward className="text-blue-600 mr-2" size={30} />
+            </span>
+            Awards
           </button>
           <button
-            className="btn btn-primary text-left ml-4 mb-2"
-            onClick={() => handleButtonClick("Extra-curricular Activities")}
+            className="flex items-center btn text-lg"
+            onClick={() => handleButtonClick("References")}
           >
-            Extra-curricular Activities
+            <RxThickArrowRight className="text-blue-600 mr-2" size={30} />
+            References
+          </button>
+          <button
+            className="flex items-center btn text-lg"
+            onClick={() => handleButtonClick("Certifications")}
+          >
+            <TbCertificate className="text-blue-600 mr-2" size={30} />
+            Certifications
           </button>
         </div>
       </div>

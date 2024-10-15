@@ -1,62 +1,19 @@
-// import React, { useContext } from "react";
-// import "../../../styles/client.module.scss";
-// import PersonalDetailPreview from "./PersonalDetailPreview";
-// import ProfessionalSummaryPreview from "./ProfessionSumaryPreview";
-// import EmploymentHistoryPreview from "./EmployeeHistoryPreview";
-// import EducationPreview from "./EducationPreview";
-// import WebsitesAndSocialLinksPreview from "./WebsitesAndSocialLinksPreview";
-// import SkillsPreview from "./SkillsPreview";
-// import { DataContext } from "../../../context/DataContext";
-// import Template from "../SelectTemplate/Template";
-// import { AiFillAppstore } from "react-icons/ai";
-
-// const ResumePreview = () => {
-//   const { data } = useContext(DataContext);
-//   //   return (
-//   //     <div className="flex justify-center items-center h-screen">
-//   //       <div className="resume-container w-full h-[150%] transform scale-[0.6] origin-top-bottom bg-white shadow-lg p-6">
-//   //         <PersonalDetailPreview />
-//   //         <ProfessionalSummaryPreview />
-//   //         <EmploymentHistoryPreview />
-//   //         <EducationPreview />
-//   //         <WebsitesAndSocialLinksPreview />
-//   //         <SkillsPreview />
-//   //       </div>
-//   //     </div>
-//   //   );
-//   // };
-//   return (
-//     <div>
-//       <AiFillAppstore size={30} />
-//       <div className="flex justify-center items-center h-screen">
-
-//         <div className="resume-container w-full h-[150%] transform scale-[0.6] origin-top-bottom p-6">
-
-//           <Template data={data} />
-//         </div>
-//       </div>
-//     </div>
-
-//   );
-// };
-
 import React, { useContext, useState } from "react";
 import "../../../../styles/client.module.scss";
 import { DataContext } from "../../../../context/DataContext";
 import TemplateSelection from "../../TemplateSelection/TemplateSelection";
 import { AiFillAppstore } from "react-icons/ai";
 import jsPDF from "jspdf";
-
-// Import tất cả templates
+import { IoIosMore } from "react-icons/io";
 import Template1 from "../../Template/Template1";
 import Template2 from "../../Template/Template2";
-import { FaFileExport } from "react-icons/fa";
-import { IoIosMore } from "react-icons/io";
+import Template3 from "../../Template/Template3";
 
 const ResumePreview = () => {
   const { data } = useContext(DataContext);
+
   const [showTemplateSelection, setShowTemplateSelection] = useState(false);
-  const [selectedTemplateId, setSelectedTemplateId] = useState(1); // State for selected template
+  const [selectedTemplateId, setSelectedTemplateId] = useState(3); // State for selected template
 
   const handleIconClick = () => {
     setShowTemplateSelection(!showTemplateSelection);
@@ -73,10 +30,13 @@ const ResumePreview = () => {
         return <Template1 data={data} />;
       case 2:
         return <Template2 data={data} />;
+      case 3:
+        return <Template3 data={data} />;
       default:
         return <div>Select a template to preview</div>;
     }
   };
+
   const exportToPDF = () => {
     const pdf = new jsPDF({
       orientation: "portrait",
@@ -86,23 +46,22 @@ const ResumePreview = () => {
       floatPrecision: 16,
     });
 
-    const resumeContent = document.querySelector(".resume-container");
+    const resumeContent = document.querySelector(".resume-cv");
 
-    // Use the html method to convert the content
     pdf.html(resumeContent, {
       callback: (doc) => {
         doc.save("resume.pdf");
       },
-      x: 0, // No left margin
-      y: 0, // No top margin
-      width: pdf.internal.pageSize.getWidth(), // Full width
-      windowWidth: resumeContent.clientWidth, // Full width of the content
+      x: 0,
+      y: 10,
+      width: pdf.internal.pageSize.getWidth(),
+      windowWidth: resumeContent.clientWidth,
     });
   };
 
   return (
     <div>
-      <div className="flex justify-center items-center cursor-pointer text-white p-2">
+      <div className="w-full h-full flex justify-center items-center cursor-pointer text-white p-2">
         <div
           className="flex justify-center items-center"
           onClick={handleIconClick}
@@ -125,12 +84,14 @@ const ResumePreview = () => {
       {showTemplateSelection ? (
         <TemplateSelection onSelectTemplate={handleSelectTemplate} />
       ) : (
-        <div className="flex justify-center items-center h-screen">
-          {/* translate-y-[-23%] */}
-          <div className="w-[100%] h-[150%] transform scale-[0.6]">
+        <div className="relative w-full h-full flex justify-center items-center mt-2">
+          <div
+            className="resume-cv w-[210mm] h-[297mm] absolute top-0 rounded-xl overflow-hidden
+               left-center bg-white shadow-lg transform scale-50 -translate-y-1/4"
+          >
             {renderSelectedTemplate()}
           </div>
-         </div>
+        </div>
       )}
     </div>
   );

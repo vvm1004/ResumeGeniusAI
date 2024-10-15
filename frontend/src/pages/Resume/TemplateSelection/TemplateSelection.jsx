@@ -1,6 +1,5 @@
 import React from "react";
 
-// Đây là component TemplateSelection để hiển thị danh sách các template
 const TemplateSelection = ({ onSelectTemplate }) => {
   // Giả sử bạn có 3 template khác nhau để hiển thị
   const templates = [

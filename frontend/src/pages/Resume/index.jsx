@@ -133,7 +133,7 @@ const DashboardResumes = () => {
 
   return (
     <div className="flex min-h-screen">
-      <div className="w-1/6 p-6 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto z-10">
+      <div className="w-1/6 p-6 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto z-100">
         <div className="flex justify-between items-center">
           <img
             className="w-12 h-12 object-contain border-2 rounded-full font-12"
@@ -210,9 +210,14 @@ const DashboardResumes = () => {
       <div className="flex-1 p-8 overflow-auto">
         <div className="ml-6 flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Resumes</h1>
-          <button className="bg-blue-500 text-white px-6 py-2 rounded-lg">
-            + Create New
-          </button>
+          <div>
+            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2">
+              Upload Resume
+            </button>
+            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg">
+              + Create New
+            </button>
+          </div>
         </div>
 
         <div className="rounded-lg grid grid-cols-2 gap-4">
@@ -292,7 +297,7 @@ const DashboardResumes = () => {
 
           <div className="w-full flex items-center p-4 cursor-pointer">
             <div
-              className="w-44 h-60 border border-dashed rounded-lg h-full flex justify-center items-center cursor-pointer"
+              className="w-44 min-h-60 border border-dashed rounded-lg h-full flex justify-center items-center cursor-pointer"
               onClick={handleNewResumeClick}
             >
               <span className="w-16 h-16 text-blue-600 text-3xl bg-gray-200 rounded-full flex justify-center items-center">
