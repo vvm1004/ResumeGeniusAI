@@ -2,9 +2,6 @@ import { LucideSettings2 } from "lucide-react";
 import { FaAward } from "react-icons/fa";
 import { TbCertificate } from "react-icons/tb";
 import { RxThickArrowRight } from "react-icons/rx";
-import Awards from "./Awards";
-import References from "./References";
-import Certifications from "./Certifications";
 
 function AddSection({ onAddSection }) {
   const handleButtonClick = (sectionName) => {
@@ -18,6 +15,9 @@ function AddSection({ onAddSection }) {
       case "Certifications":
         onAddSection({ type: "Certifications" });
         break;
+      case "CustomFields":
+        onAddSection({ type: "CustomFields" });
+        break;
       default:
         break;
     }
@@ -30,7 +30,7 @@ function AddSection({ onAddSection }) {
         <div className="grid grid-cols-2">
           <button
             className="flex items-center btn text-lg"
-            onClick={() => handleButtonClick("Custom Section")}
+            onClick={() => handleButtonClick("CustomFields")}
           >
             <span>
               <LucideSettings2 className="text-blue-600 mr-2" size={30} />

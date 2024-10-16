@@ -8,6 +8,9 @@ export class ResumeBuilder {
     @Prop({ required: true })
     title: string;
 
+    @Prop()
+    imageResume: string;
+
     @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
     user: mongoose.Schema.Types.ObjectId;
 

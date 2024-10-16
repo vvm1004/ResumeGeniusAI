@@ -46,7 +46,6 @@ function EditResume() {
               },
             }
           );
-          console.log("Resume updated successfully!");
         } catch (error) {
           console.error("Error updating resume!", error);
         }

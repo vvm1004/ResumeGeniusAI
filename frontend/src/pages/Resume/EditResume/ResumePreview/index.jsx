@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../../../../styles/client.module.scss";
 import { DataContext } from "../../../../context/DataContext";
 import TemplateSelection from "../../TemplateSelection/TemplateSelection";
@@ -8,12 +8,16 @@ import { IoIosMore } from "react-icons/io";
 import Template1 from "../../Template/Template1";
 import Template2 from "../../Template/Template2";
 import Template3 from "../../Template/Template3";
+import html2canvas from "html2canvas";
+import axios from "axios";
 
 const ResumePreview = () => {
-  const { data } = useContext(DataContext);
+  const { data, setData } = useContext(DataContext);
 
   const [showTemplateSelection, setShowTemplateSelection] = useState(false);
   const [selectedTemplateId, setSelectedTemplateId] = useState(3); // State for selected template
+  const [imageCV, setImageCV] = useState(null);
+  const access_token = localStorage.getItem("access_token");
 
   const handleIconClick = () => {
     setShowTemplateSelection(!showTemplateSelection);
@@ -58,6 +62,52 @@ const ResumePreview = () => {
       windowWidth: resumeContent.clientWidth,
     });
   };
+
+  const saveResumeAsImage = async () => {
+    const resumeContent = document.querySelector(".resume-cv");
+    const canvas = await html2canvas(resumeContent);
+    const imgData = canvas.toDataURL("image/png");
+
+    if (imgData) {
+      setImageCV(imgData);
+    }
+  };
+
+  useEffect(() => {
+    const saveImageAndUpdateResume = async () => {
+      await saveResumeAsImage();
+    };
+
+    saveImageAndUpdateResume();
+  }, [data]);
+
+  useEffect(() => {
+    const updateResume = async () => {
+      if (imageCV) {
+        try {
+          const updatedResume = { imageResume: imageCV };
+          const response = await axios.patch(
+            `http://localhost:8000/api/v1/resume-builders/${data._id}`,
+            updatedResume,
+            {
+              headers: { Authorization: `Bearer ${access_token}` },
+            }
+          );
+          setData((prevData) => ({
+            ...prevData,
+            imageResume: imageCV,
+          }));
+        } catch (error) {
+          console.error("Lỗi cập nhật resume:", error);
+        }
+      }
+    };
+
+    updateResume();
+  }, [imageCV]);
+
+  console.log("imageResume",data?.imageResume);
+  console.log(data);
 
   return (
     <div>
