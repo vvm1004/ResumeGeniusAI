@@ -256,52 +256,46 @@ const DashboardResumes = () => {
         <div className="mt-8">
           <ul className="text-gray-600 font-medium">
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <MdDashboard className="mr-4 text-xl" /> Dashboard
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "resumes" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "resumes" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("resumes", "/resumes")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" />
               My Resumes
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "recommended" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "recommended" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("recommended", "/recommended")}
             >
               <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended Jobs
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "jobTracked" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "jobTracked" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("jobTracked", "/jobTracked")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" /> Job Tracked
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "interviewPrep"
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "interviewPrep"
                   ? "rounded-md bg-blue-100"
                   : ""
-              }`}
+                }`}
               onClick={() => handleMenuClick("interviewPrep", "/interviewPrep")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" /> Interview Prep
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <IoIosMore className="mr-4 text-xl" /> Other
@@ -321,18 +315,7 @@ const DashboardResumes = () => {
               handleFileChange={handleFileChange}
               handleButtonClick={handleButtonClick}
               fileInputRef={fileInputRef} />
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              style={{ display: 'none' }} // Ẩn input file
-            />
-            <button
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button"
-              onClick={handleButtonClick}
-            >
-              Upload Resume
-            </button>
+
             <button className="bg-blue-500 text-white px-6 py-2 rounded-lg">
               + Create New
             </button>
