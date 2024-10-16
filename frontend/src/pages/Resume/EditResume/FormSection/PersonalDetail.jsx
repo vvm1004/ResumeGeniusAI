@@ -1,6 +1,11 @@
 import { DataContext } from "@/context/DataContext";
-import { useContext, useState } from "react";
-import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { useContext, useEffect, useState } from "react";
+import {
+  MdDeleteOutline,
+  MdExpandLess,
+  MdExpandMore,
+  MdOutlineModeEdit,
+} from "react-icons/md";
 
 const InputField = ({ label, name, type = "text", value, onChange }) => (
   <div>
@@ -21,6 +26,12 @@ function PersonalDetail() {
   const [selectedImage, setSelectedImage] = useState(
     data?.personalInformation?.image || null
   );
+
+  useEffect(() => {
+    if (data?.personalInformation?.image && !selectedImage) {
+      setSelectedImage(data.personalInformation.image);
+    }
+  }, [data?.personalInformation?.image, selectedImage]);
 
   const handleAddMoreDetails = () => {
     setShowMoreDetails(!showMoreDetails);
@@ -54,16 +65,16 @@ function PersonalDetail() {
     const { name, value } = e.target;
 
     if (name === "title") {
-      setData(prev => ({
+      setData((prev) => ({
         ...prev,
-        [name]: value, 
+        [name]: value,
       }));
     } else {
-      setData(prev => ({
+      setData((prev) => ({
         ...prev,
         personalInformation: {
           ...prev.personalInformation,
-          [name]: value, 
+          [name]: value,
         },
       }));
     }
@@ -125,15 +136,21 @@ function PersonalDetail() {
             {selectedImage ? (
               <div className="ml-4 flex flex-col space-y-2">
                 <button
-                  className="text-sm text-blue-600"
+                  className="flex items-center text-md text-blue-600 hover:text-gray-600"
                   onClick={triggerFileInput}
                 >
-                  Edit
+                  <span className="mr-2">
+                    <MdOutlineModeEdit size={20} />
+                  </span>
+                  Edit photo
                 </button>
                 <button
-                  className="text-sm text-red-600"
+                  className="flex items-center text-md text-gray-600 hover:text-red-600"
                   onClick={handleDeleteImage}
                 >
+                  <span className="mr-2">
+                    <MdDeleteOutline size={20} />
+                  </span>
                   Delete
                 </button>
               </div>
@@ -295,12 +312,12 @@ function PersonalDetail() {
               {showMoreDetails ? (
                 <div className="flex justify-left items-center">
                   <span>Hide additional details</span>
-                  <MdExpandLess className="text-xl"/>
+                  <MdExpandLess className="text-xl" />
                 </div>
               ) : (
                 <div className="flex justify-left items-center">
                   <span>Add more detail</span>
-                  <MdExpandMore className="text-xl"/>
+                  <MdExpandMore className="text-xl" />
                 </div>
               )}
             </a>
