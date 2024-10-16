@@ -10,11 +10,14 @@ import { useLocation } from 'react-router-dom';
 
 
 const Footer: React.FC = () => {
+
+
     const location = useLocation();
 
     if (location.pathname.startsWith("/resumes/edit/")) {
         return null;
     }
+
     return (
         <footer className="footer bg-dark text-light py-4">
             <Container className='main-content'>
