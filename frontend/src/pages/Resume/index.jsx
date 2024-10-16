@@ -243,7 +243,10 @@ const DashboardResumes = () => {
             <button className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2">
               Upload Resume
             </button>
-            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg">
+            <button
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg"
+              onClick={handleNewResumeClick}
+            >
               + Create New
             </button>
           </div>

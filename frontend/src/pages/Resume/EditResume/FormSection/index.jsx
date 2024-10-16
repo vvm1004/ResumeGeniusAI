@@ -11,6 +11,7 @@ import Awards from "./Awards";
 import References from "./References";
 import Certifications from "./Certifications";
 import { DataContext } from "@/context/DataContext";
+import CustomFields from "./CustomFields";
 
 function FormSection() {
   const [sections, setSections] = useState([]);
@@ -58,6 +59,8 @@ function FormSection() {
         return <References />;
       case "Certifications":
         return <Certifications />;
+      case "CustomFields":
+        return <CustomFields />;
       default:
         return null;
     }
