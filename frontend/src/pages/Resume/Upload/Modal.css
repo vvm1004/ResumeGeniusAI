@@ -1,0 +1,106 @@
+/* Modal.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    /* Darker overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    /* Ensure it stays on top */
+}
+
+.modal-content {
+    position: relative;
+    /* Needed for positioning the close button */
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    /* Responsive width */
+    max-width: 500px;
+    /* Maximum width */
+    max-height: 80%;
+    /* Maximum height */
+    overflow-y: auto;
+    /* Scrollable if content exceeds */
+    text-align: center;
+    /* Center align text */
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    /* Size of the X */
+    color: #555;
+    /* Default color */
+    cursor: pointer;
+    transition: color 0.3s ease;
+    /* Smooth color transition */
+}
+
+.close-button:hover {
+    color: red;
+    /* Change to red on hover */
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    /* Larger title */
+    margin-bottom: 10px;
+}
+
+.modal-description {
+    margin-bottom: 20px;
+    /* Spacing below description */
+}
+
+.custom-button {
+    background-color: #3b82f6;
+    /* Tailwind blue */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+    background-color: #2563eb;
+    /* Darker blue on hover */
+}
+
+/* Modal.css */
+.drop-area {
+    border: 2px dashed #3b82f6;
+    /* Đường viền */
+    padding: 20px;
+    margin-bottom: 20px;
+    /* Khoảng cách dưới khu vực kéo thả */
+    border-radius: 8px;
+    text-align: center;
+    color: #555;
+    /* Màu chữ */
+    transition: background-color 0.3s ease;
+}
+
+.drop-area:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    /* Màu nền sáng khi hover */
+}
+
+/* Thêm hiệu ứng cho khi kéo file vào khu vực */
+.drop-area.dragging {
+    background-color: rgba(59, 130, 246, 0.3);
+    /* Màu nền khi có file được kéo vào */
+}

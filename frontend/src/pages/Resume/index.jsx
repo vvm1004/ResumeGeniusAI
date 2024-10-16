@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -7,11 +7,15 @@ import { IoIosMore } from "react-icons/io";
 import { FaRegFilePdf } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
-
+import React from 'react';
+import './index.scss';
+import Modal from "./Upload/Modal";
 const DashboardResumes = () => {
   const [data, setData] = useState([]);
+
   const [activeMenuItem, setActiveMenuItem] = useState("resumes");
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   const userId = useSelector((state) => {
     if (!state.account.user._id) return "";
@@ -27,8 +31,7 @@ const DashboardResumes = () => {
       try {
         if (userId) {
           const response = await axios.get(
-            `${
-              import.meta.env.VITE_BACKEND_URL
+            `${import.meta.env.VITE_BACKEND_URL
             }/api/v1/resume-builders/user/${userId}`,
             {
               headers: {
@@ -75,6 +78,7 @@ const DashboardResumes = () => {
           certifications: [],
           customFields: [],
         };
+        console.log("\t\t\tuserId1111:\n\t", userId)
 
         if (userId) {
           const response = await axios.post(
@@ -131,6 +135,64 @@ const DashboardResumes = () => {
     }
   };
 
+  const handleButtonClick = () => {
+    fileInputRef.current.click(); // Mở hộp thoại chọn file
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('userId', String(userId));
+    console.log("\t\t\tuserId:\n\t", String(userId))
+
+    try {
+      const response = await axios.post('http://localhost:8000/api/v1/resume-upgrade/upload-resume',
+
+        formData
+      );
+      console.log("\n\n\nres:", response)
+
+
+      const uploadData = response.data.data;
+      console.log(response)
+      console.log(uploadData)
+      try {
+        if (userId) {
+          const response2 = await axios.post(
+            "http://localhost:8000/api/v1/resume-builders",
+            uploadData,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          );
+          setData((prevData) => [...prevData, response2.data.data]);
+          navigate(`edit/${response2?.data?.data._id}`);
+        } else {
+
+        }
+      } catch (error) {
+        console.log("lỗi: ", error)
+        console.log("Lỗi khi tạo CV:", error.response ? error.response.data : error.message);
+        alert("Có lỗi xảy ra khi tạo CV.");
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+
+
+  };
+
+
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
   return (
     <div className="flex min-h-screen">
       <div className="w-1/6 p-6 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto z-100">
@@ -152,53 +214,47 @@ const DashboardResumes = () => {
         <div className="mt-8">
           <ul className="text-gray-600 font-medium">
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <MdDashboard className="mr-4 text-xl" /> Dashboard
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "resumes" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "resumes" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("resumes", "/resumes")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" />
               My Resumes
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "recommended" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "recommended" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("recommended", "/recommended")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" /> Recommended
               Jobs
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "jobTracked" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "jobTracked" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("jobTracked", "/jobTracked")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" /> Job Tracked
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "interviewPrep"
-                  ? "rounded-md bg-blue-100"
-                  : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "interviewPrep"
+                ? "rounded-md bg-blue-100"
+                : ""
+                }`}
               onClick={() => handleMenuClick("interviewPrep", "/interviewPrep")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" /> Interview Prep
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${
-                activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
+                }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <IoIosMore className="mr-4 text-xl" /> Other
@@ -210,13 +266,33 @@ const DashboardResumes = () => {
       <div className="flex-1 p-8 overflow-auto">
         <div className="ml-6 flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Resumes</h1>
-          <div>
-            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2">
+          <div className="d-flex">
+
+            <button onClick={openModal} className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button">Upload Resume</button>
+            <Modal isOpen={isModalOpen}
+              onClose={closeModal}
+              handleFileChange={handleFileChange}
+              handleButtonClick={handleButtonClick}
+              fileInputRef={fileInputRef} />
+            {/* <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: 'none' }} // Ẩn input file
+            />
+            <button
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button"
+              onClick={handleButtonClick}
+            >
               Upload Resume
-            </button>
-            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg">
+            </button> */}
+
+
+
+            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg custom-button">
               + Create New
             </button>
+
           </div>
         </div>
 

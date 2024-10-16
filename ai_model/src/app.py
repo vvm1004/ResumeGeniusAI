@@ -14,6 +14,14 @@ def normalize_phrase(phrase):
     normalized_words = [word.capitalize() for word in words]
     # Nối lại thành chuỗi
     return ' '.join(normalized_words)
+def convert_keys_to_lowercase(data):
+    if isinstance(data, dict):
+        return {key.lower(): convert_keys_to_lowercase(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [convert_keys_to_lowercase(item) for item in data if isinstance(item, dict)] + \
+               [item for item in data if not isinstance(item, dict)]
+    else:
+        return data
 
 app = Flask(__name__)
 @app.route('/process_resume', methods=['POST'])
@@ -558,7 +566,7 @@ def process_resume():
             results2["CustomFields"].append(custom_field_item)
 
     return jsonify({
-        'data': results2
+        'data': results2,
         
     })
        

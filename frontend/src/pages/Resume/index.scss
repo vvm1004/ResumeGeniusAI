@@ -1,0 +1,19 @@
+.custom-button {
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.custom-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Làm mờ nền */
+
+}
