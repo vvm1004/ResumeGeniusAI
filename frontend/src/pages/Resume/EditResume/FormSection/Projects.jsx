@@ -152,7 +152,7 @@ function Projects() {
                           });
                         },
                       }}
-                      value={data?.description || ""}
+                      value={item?.description || ""}
                       onEditorChange={(content) =>
                         handleUpdateProjects(index, { description: content })
                       }

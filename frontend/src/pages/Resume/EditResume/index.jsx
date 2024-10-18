@@ -33,32 +33,34 @@ function EditResume() {
     fetchResume();
   }, [id]);
 
-  useEffect(() => {
-    const updateResume = async () => {
-      if (data && id !== "undefined") {
-        try {
-          await axios.patch(
-            `http://localhost:8000/api/v1/resume-builders/${id}`,
-            data,
-            {
-              headers: {
-                Authorization: `Bearer ${access_token}`,
-              },
-            }
-          );
-        } catch (error) {
-          console.error("Error updating resume!", error);
-        }
-      }
-    };
-    updateResume();
-  }, [data, id]);
+  // useEffect(() => {
+  //   const updateResume = async () => {
+  //     if (data && id !== "undefined") {
+  //       try {
+  //         await axios.patch(
+  //           `http://localhost:8000/api/v1/resume-builders/${id}`,
+  //           data,
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${access_token}`,
+  //             },
+  //           }
+  //         );
+  //       } catch (error) {
+  //         console.error("Error updating resume!", error);
+  //       }
+  //     }
+  //   };
+  //   updateResume();
+  // }, [data, id]);
+
+
   return (
     <>
       <DataContext.Provider value={{ data, setData }}>
         <div className="resume min-h-screen flex">
           <div className="w-1/2 p-4">
-            <FormSection />
+            <FormSection id={id} access_token={access_token}/>
           </div>
 
           <div className="w-1/2 h-screen mt-12 p-4 bg-gray-500 fixed top-0 right-0">

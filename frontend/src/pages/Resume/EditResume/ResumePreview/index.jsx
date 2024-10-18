@@ -106,9 +106,6 @@ const ResumePreview = () => {
     updateResume();
   }, [imageCV]);
 
-  console.log("imageResume",data?.imageResume);
-  console.log(data);
-
   return (
     <div>
       <div className="w-full h-full flex justify-center items-center cursor-pointer text-white p-2">

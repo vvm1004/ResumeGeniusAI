@@ -12,10 +12,36 @@ import References from "./References";
 import Certifications from "./Certifications";
 import { DataContext } from "@/context/DataContext";
 import CustomFields from "./CustomFields";
+import axios from "axios";
 
-function FormSection() {
+function FormSection(props) {
   const [sections, setSections] = useState([]);
   const { data, setData } = useContext(DataContext);
+  const { id, access_token } = props;
+
+  const handleSave = async () => {
+    const confirmSave = window.confirm("Do you want to save the changes?");
+
+    if (confirmSave) {
+      if (data && id !== "undefined") {
+        try {
+          await axios.patch(
+            `http://localhost:8000/api/v1/resume-builders/${id}`,
+            data,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          );
+          alert("Resume updated successfully!");
+        } catch (error) {
+          console.error("Error updating resume!", error);
+          alert("There was an error updating your resume. Please try again.");
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     // Load sections từ localStorage và kiểm tra với data._id
@@ -89,6 +115,15 @@ function FormSection() {
             {renderSection(section)}
           </div>
         ))}
+
+        <div className="mt-6 text-right mr-10">
+          <button
+            className="pl-10 pr-10 text-lg text-black bg-blue-500 rounded-sm p-2 font-semibold hover:text-white "
+            onClick={handleSave}
+          >
+            Save
+          </button>
+        </div>
 
         <div className="max-w-3xl mx-auto p-8 mt-6 bg-white rounded-lg shadow-md">
           <AddSection onAddSection={handleAddSection} />
