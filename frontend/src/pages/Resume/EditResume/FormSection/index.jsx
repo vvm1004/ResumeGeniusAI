@@ -14,10 +14,9 @@ import { DataContext } from "@/context/DataContext";
 import CustomFields from "./CustomFields";
 import axios from "axios";
 
-function FormSection(props) {
+function FormSection() {
   const [sections, setSections] = useState([]);
-  const { data, setData } = useContext(DataContext);
-  const { id, access_token } = props;
+  const { data, setData, id, access_token } = useContext(DataContext);
 
   const handleSave = async () => {
     const confirmSave = window.confirm("Do you want to save the changes?");
@@ -44,7 +43,6 @@ function FormSection(props) {
   };
 
   useEffect(() => {
-    // Load sections từ localStorage và kiểm tra với data._id
     const savedSections = JSON.parse(localStorage.getItem("sections"));
     if (savedSections && savedSections[data._id]) {
       setSections(savedSections[data._id]);
@@ -58,7 +56,6 @@ function FormSection(props) {
       const updatedSections = [...sections, { type: section.type }];
       setSections(updatedSections);
 
-      // Lưu sections cùng với data._id vào localStorage
       const savedSections = JSON.parse(localStorage.getItem("sections")) || {};
       savedSections[data._id] = updatedSections;
       localStorage.setItem("sections", JSON.stringify(savedSections));
@@ -71,7 +68,6 @@ function FormSection(props) {
     const updatedSections = sections.filter((_, i) => i !== index);
     setSections(updatedSections);
 
-    // Cập nhật localStorage sau khi xóa section
     const savedSections = JSON.parse(localStorage.getItem("sections")) || {};
     savedSections[data._id] = updatedSections;
     localStorage.setItem("sections", JSON.stringify(savedSections));

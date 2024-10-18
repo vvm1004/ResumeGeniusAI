@@ -1,4 +1,5 @@
 import { DataContext } from "@/context/DataContext";
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import {
   MdDeleteOutline,
@@ -21,11 +22,12 @@ const InputField = ({ label, name, type = "text", value, onChange }) => (
 );
 
 function PersonalDetail() {
-  const { data, setData } = useContext(DataContext);
+  const { data, setData, access_token } = useContext(DataContext);
   const [showMoreDetails, setShowMoreDetails] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
     data?.personalInformation?.image || null
   );
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (data?.personalInformation?.image && !selectedImage) {
@@ -37,15 +39,40 @@ function PersonalDetail() {
     setShowMoreDetails(!showMoreDetails);
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-      setData((prev) => ({
-        ...prev,
-        personalInformation: { ...prev.personalInformation, image: imageUrl },
-      }));
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("fileUpload", file);
+
+      const headers = {
+        "Content-Type": "multipart/form-data",
+        folder_type: "image_personal_details",
+        Authorization: `Bearer ${access_token}`,
+      };
+
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/files/upload",
+          formData,
+          {
+            headers,
+          }
+        );
+
+        const imageUrl = response.data.data.fileName;
+
+        setSelectedImage(imageUrl);
+        setData((prev) => ({
+          ...prev,
+          personalInformation: { ...prev.personalInformation, image: imageUrl },
+        }));
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -113,7 +140,7 @@ function PersonalDetail() {
             >
               {selectedImage ? (
                 <img
-                  src={selectedImage}
+                  src={`http://localhost:8000/images/image_personal_details/${selectedImage}`}
                   alt="Uploaded"
                   className="h-full w-full object-cover"
                 />

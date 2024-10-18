@@ -31,36 +31,14 @@ function EditResume() {
     };
 
     fetchResume();
-  }, [id]);
-
-  // useEffect(() => {
-  //   const updateResume = async () => {
-  //     if (data && id !== "undefined") {
-  //       try {
-  //         await axios.patch(
-  //           `http://localhost:8000/api/v1/resume-builders/${id}`,
-  //           data,
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${access_token}`,
-  //             },
-  //           }
-  //         );
-  //       } catch (error) {
-  //         console.error("Error updating resume!", error);
-  //       }
-  //     }
-  //   };
-  //   updateResume();
-  // }, [data, id]);
-
+  }, [id, access_token]);
 
   return (
     <>
-      <DataContext.Provider value={{ data, setData }}>
+      <DataContext.Provider value={{ data, setData, id, access_token }}>
         <div className="resume min-h-screen flex">
           <div className="w-1/2 p-4">
-            <FormSection id={id} access_token={access_token}/>
+            <FormSection />
           </div>
 
           <div className="w-1/2 h-screen mt-12 p-4 bg-gray-500 fixed top-0 right-0">

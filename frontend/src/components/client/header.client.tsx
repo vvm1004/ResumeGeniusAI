@@ -52,24 +52,24 @@ const Header = (props: any) => {
         },
         {
             label: 'Resume',
-            key: 'resume',
+            key: 'resumes',
             icon: <ContactsOutlined />,
             children: [
                 {
-                    label: <Link to={'/resume/create'}>Create Resume</Link>,
-                    key: '/resume/create',
+                    label: <Link to={'/resumes/create'}>Create Resume</Link>,
+                    key: '/resumes/create',
                 },
                 {
-                    label: <Link to={'/resume/upgrade'}>Upgrade Resume</Link>,
-                    key: '/resume/upgrade',
+                    label: <Link to={'/resumes/upgrade'}>Upgrade Resume</Link>,
+                    key: '/resumes/upgrade',
                 },
                 {
-                    label: <Link to={'/resume/management'}>Resume Management</Link>,
-                    key: '/resume/management',
+                    label: <Link to={'/resumes'}>My Resumes</Link>,
+                    key: '/resumes',
                 },
                 {
-                    label: <Link to={'/resume/templates'}>Resume Template</Link>,
-                    key: '/resume/templates',
+                    label: <Link to={'/resumes/templates'}>Resume Template</Link>,
+                    key: '/resumes/templates',
                 },
             ]
         }

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   MdDashboard,
   MdDriveFileRenameOutline,
@@ -8,11 +8,11 @@ import {
 } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { IoIosMore } from "react-icons/io";
-import { FaRegFilePdf } from "react-icons/fa";
+import { FaLeaf, FaRegFilePdf } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
-import React from 'react';
-import './index.scss';
+import React from "react";
+import "./index.scss";
 import Modal from "./Upload/Modal";
 const DashboardResumes = () => {
   const [data, setData] = useState([]);
@@ -20,24 +20,43 @@ const DashboardResumes = () => {
   const [activeMenuItem, setActiveMenuItem] = useState("resumes");
   const [editTitleId, setEditTitleId] = useState(null);
   const [newTitle, setNewTitle] = useState("");
+
   const navigate = useNavigate();
+  const location = useLocation();
   const fileInputRef = useRef(null);
+
+  const user = useSelector((state) => state.account.user);
+  const access_token = localStorage.getItem("access_token");
+  const isInitialRender = useRef(true);
 
   const userId = useSelector((state) => {
     if (!state.account.user._id) return "";
     return state.account.user._id;
   });
 
-  const user = useSelector((state) => state.account.user);
+  useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
 
-  const access_token = localStorage.getItem("access_token");
+    const handleNewResume = () => {
+      handleNewResumeClick();
+    };
+
+    if (location.state?.shouldCallHandleNewResumeClick) {
+      navigate("/resumes", { state: { shouldCallHandleNewResumeClick: false} });
+      handleNewResume();
+    }
+  }, [location.state?.shouldCallHandleNewResumeClick]);
 
   useEffect(() => {
     const fetchApi = async () => {
       try {
         if (userId) {
           const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL
+            `${
+              import.meta.env.VITE_BACKEND_URL
             }/api/v1/resume-builders/user/${userId}`,
             {
               headers: {
@@ -91,7 +110,7 @@ const DashboardResumes = () => {
   };
 
   const handleNewResumeClick = async () => {
-    const confirmCreate = window.confirm("Bạn có tạo CV mới không?");
+    const confirmCreate = window.confirm("Do you want to create a new CV?");
 
     if (confirmCreate) {
       try {
@@ -120,7 +139,6 @@ const DashboardResumes = () => {
           certifications: [],
           customFields: [],
         };
-        console.log("\t\t\tuserId1111:\n\t", userId)
 
         if (userId) {
           const response = await axios.post(
@@ -138,8 +156,8 @@ const DashboardResumes = () => {
           navigate(`edit/${newResume._id}`);
         }
       } catch (error) {
-        console.error("Lỗi khi tạo CV!");
-        alert("Có lỗi xảy ra khi tạo CV.");
+        console.error("Error creating CV!");
+        alert("Error creating CV!");
       }
     }
   };
@@ -150,14 +168,14 @@ const DashboardResumes = () => {
   };
 
   const handleResumeClick = async (id) => {
-    const confirmEdit = window.confirm("Bạn có muốn chỉnh sửa CV này không?");
+    const confirmEdit = window.confirm("Would you like to edit this CV?");
     if (confirmEdit) {
       navigate(`edit/${id}`);
     }
   };
 
   const handleDeleteClick = async (id) => {
-    const confirmDelete = window.confirm("Bạn có muốn xóa CV này không?");
+    const confirmDelete = window.confirm("Do you want to delete this CV?");
     if (confirmDelete) {
       try {
         await axios.delete(
@@ -169,37 +187,37 @@ const DashboardResumes = () => {
           }
         );
         setData((prevData) => prevData.filter((resume) => resume._id !== id));
-        alert("CV đã được xóa thành công.");
+        alert("CV was deleted successfully.");
       } catch (error) {
-        console.error("Lỗi khi xóa CV:", error);
-        alert("Có lỗi xảy ra khi xóa CV.");
+        console.error("Error when deleting CV:", error);
+        alert("Error when deleting CV!");
       }
     }
   };
 
   const handleButtonClick = () => {
-    fileInputRef.current.click(); // Mở hộp thoại chọn file
+    fileInputRef.current.click();
   };
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('userId', String(userId));
-    console.log("\t\t\tuserId:\n\t", String(userId))
+    formData.append("file", file);
+    formData.append("userId", String(userId));
+    console.log("\t\t\tuserId:\n\t", String(userId));
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/resume-upgrade/upload-resume',
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/resume-upgrade/upload-resume",
 
         formData
       );
-      console.log("\n\n\nres:", response)
-
+      console.log("\n\n\nres:", response);
 
       const uploadData = response.data.data;
-      console.log(response)
-      console.log(uploadData)
+      console.log(response);
+      console.log(uploadData);
       try {
         if (userId) {
           const response2 = await axios.post(
@@ -214,21 +232,19 @@ const DashboardResumes = () => {
           setData((prevData) => [...prevData, response2.data.data]);
           navigate(`edit/${response2?.data?.data._id}`);
         } else {
-
         }
       } catch (error) {
-        console.log("lỗi: ", error)
-        console.log("Lỗi khi tạo CV:", error.response ? error.response.data : error.message);
+        console.log("lỗi: ", error);
+        console.log(
+          "Lỗi khi tạo CV:",
+          error.response ? error.response.data : error.message
+        );
         alert("Có lỗi xảy ra khi tạo CV.");
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error("Error uploading file:", error);
     }
-
-
   };
-
-
 
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -256,46 +272,34 @@ const DashboardResumes = () => {
         <div className="mt-8">
           <ul className="text-gray-600 font-medium">
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
-                }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
+                activeMenuItem === "dashboard" ? "rounded-md bg-blue-100 text-blue-600" : ""
+              }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <MdDashboard className="mr-4 text-xl" /> Dashboard
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "resumes" ? "rounded-md bg-blue-100" : ""
-                }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
+                activeMenuItem === "resumes" ? "rounded-md bg-blue-100 text-blue-600" : ""
+              }`}
               onClick={() => handleMenuClick("resumes", "/resumes")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" />
               My Resumes
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "recommended" ? "rounded-md bg-blue-100" : ""
-                }`}
-              onClick={() => handleMenuClick("recommended", "/recommended")}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
+                activeMenuItem === "recommendedJob" ? "rounded-md bg-blue-100 text-blue-600" : ""
+              }`}
+              onClick={() => handleMenuClick("recommendedJob", "/recommendedJob")}
             >
               <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended Jobs
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "jobTracked" ? "rounded-md bg-blue-100" : ""
-                }`}
-              onClick={() => handleMenuClick("jobTracked", "/jobTracked")}
-            >
-              <IoDocumentTextOutline className="mr-4 text-xl" /> Job Tracked
-            </li>
-            <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "interviewPrep"
-                  ? "rounded-md bg-blue-100"
-                  : ""
-                }`}
-              onClick={() => handleMenuClick("interviewPrep", "/interviewPrep")}
-            >
-              <IoDocumentTextOutline className="mr-4 text-xl" /> Interview Prep
-            </li>
-            <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md hover:bg-blue-100 cursor-pointer ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100" : ""
-                }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
+                activeMenuItem === "dashboard" ? "rounded-md bg-blue-100 text-blue-600" : ""
+              }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <IoIosMore className="mr-4 text-xl" /> Other
@@ -308,18 +312,23 @@ const DashboardResumes = () => {
         <div className="ml-6 flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Resumes</h1>
           <div className="d-flex">
-
-            <button onClick={openModal} className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button">Upload Resume</button>
-            <Modal isOpen={isModalOpen}
+            <button
+              onClick={openModal}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button"
+            >
+              Upload Resume
+            </button>
+            <Modal
+              isOpen={isModalOpen}
               onClose={closeModal}
               handleFileChange={handleFileChange}
               handleButtonClick={handleButtonClick}
-              fileInputRef={fileInputRef} />
+              fileInputRef={fileInputRef}
+            />
 
-            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg">
+            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg" onClick={handleNewResumeClick}>
               + Create New
             </button>
-
           </div>
         </div>
 

@@ -12,12 +12,11 @@ import html2canvas from "html2canvas";
 import axios from "axios";
 
 const ResumePreview = () => {
-  const { data, setData } = useContext(DataContext);
+  const { data, setData, access_token } = useContext(DataContext);
 
   const [showTemplateSelection, setShowTemplateSelection] = useState(false);
-  const [selectedTemplateId, setSelectedTemplateId] = useState(3); // State for selected template
+  const [selectedTemplateId, setSelectedTemplateId] = useState(3);
   const [imageCV, setImageCV] = useState(null);
-  const access_token = localStorage.getItem("access_token");
 
   const handleIconClick = () => {
     setShowTemplateSelection(!showTemplateSelection);
@@ -63,17 +62,17 @@ const ResumePreview = () => {
     });
   };
 
-  const saveResumeAsImage = async () => {
-    const resumeContent = document.querySelector(".resume-cv");
-    const canvas = await html2canvas(resumeContent);
-    const imgData = canvas.toDataURL("image/png");
-
-    if (imgData) {
-      setImageCV(imgData);
-    }
-  };
-
   useEffect(() => {
+    const saveResumeAsImage = async () => {
+      const resumeContent = document.querySelector(".resume-cv");
+      const canvas = await html2canvas(resumeContent);
+      const imgData = canvas.toDataURL("image/png");
+
+      if (imgData) {
+        setImageCV(imgData);
+      }
+    };
+
     const saveImageAndUpdateResume = async () => {
       await saveResumeAsImage();
     };
