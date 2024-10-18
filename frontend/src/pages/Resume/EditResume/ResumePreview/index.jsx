@@ -5,61 +5,76 @@ import TemplateSelection from "../../TemplateSelection/TemplateSelection";
 import { AiFillAppstore } from "react-icons/ai";
 import jsPDF from "jspdf";
 import { IoIosMore } from "react-icons/io";
+import html2canvas from "html2canvas";
+import axios from "axios";
+
 import Template1 from "../../Template/Template1";
 import Template2 from "../../Template/Template2";
 import Template3 from "../../Template/Template3";
-import html2canvas from "html2canvas";
-import axios from "axios";
+import Template4 from "../../Template/Template4";
+import Template5 from "../../Template/Template5";
+import Template6 from "../../Template/Template6";
 
 const ResumePreview = () => {
   const { data, setData } = useContext(DataContext);
 
   const [showTemplateSelection, setShowTemplateSelection] = useState(false);
-  const [selectedTemplateId, setSelectedTemplateId] = useState(3); // State for selected template
+  // const [selectedTemplateId, setSelectedTemplateId] = useState(null); // State for selected template
   const [imageCV, setImageCV] = useState(null);
   const access_token = localStorage.getItem("access_token");
+  const [loader, setLoader] = useState(false);// thêm loader để tạo hiệu ứng khi export pdf
+
 
   const handleIconClick = () => {
     setShowTemplateSelection(!showTemplateSelection);
   };
 
-  const handleSelectTemplate = (templateId) => {
-    setSelectedTemplateId(templateId);
+  const handleSelectTemplate = async (templateId) => {
+    // setSelectedTemplateId(templateId);
     setShowTemplateSelection(false);
+    await updateTemplateId(templateId);
   };
 
   const renderSelectedTemplate = () => {
-    switch (selectedTemplateId) {
-      case 1:
+    switch (data?.templateId) {
+      case "1":
         return <Template1 data={data} />;
-      case 2:
+      case "2":
         return <Template2 data={data} />;
-      case 3:
+      case "3":
         return <Template3 data={data} />;
+      case "4":
+        return <Template4 data={data} />;
+      case "5":
+        return <Template5 data={data} />;
+      case "6":
+        return <Template6 data={data} />;
       default:
         return <div>Select a template to preview</div>;
     }
   };
 
   const exportToPDF = () => {
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-      putOnlyUsedFonts: true,
-      floatPrecision: 16,
-    });
-
-    const resumeContent = document.querySelector(".resume-cv");
-
-    pdf.html(resumeContent, {
-      callback: (doc) => {
-        doc.save("resume.pdf");
-      },
-      x: 0,
-      y: 10,
-      width: pdf.internal.pageSize.getWidth(),
-      windowWidth: resumeContent.clientWidth,
+    const element = document.querySelector(".resume-cv");
+    setLoader(true);
+    html2canvas(element, {
+      scale: 3,
+      useCORS: true
+    }).then(canvas => {
+      const imgData = canvas.toDataURL("image/png");
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const doc = new jsPDF({
+        orientation: imgWidth > imgHeight ? 'landscape' : 'portrait',
+        unit: 'px',
+        format: [imgWidth, imgHeight]
+      });
+      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      setLoader(false);
+      doc.save('download.pdf');
+    }).catch(error => {
+      console.error("Error in generating PDF", error);
+      setLoader(false);
     });
   };
 
@@ -106,6 +121,28 @@ const ResumePreview = () => {
     updateResume();
   }, [imageCV]);
 
+  //Update Template Id
+
+  const updateTemplateId = async (templateId) => {
+    try {
+      const updatedData = { templateId };
+
+      await axios.patch(
+        `http://localhost:8000/api/v1/resume-builders/${data._id}`,
+        updatedData,
+        {
+          headers: { Authorization: `Bearer ${access_token}` },
+        }
+      );
+
+      setData((prevData) => ({
+        ...prevData,
+        templateId,
+      }));
+    } catch (error) {
+      console.error("Error updating template ID:", error);
+    }
+  };
   return (
     <div>
       <div className="w-full h-full flex justify-center items-center cursor-pointer text-white p-2">
@@ -120,8 +157,14 @@ const ResumePreview = () => {
         <button
           className="bg-blue-500 rounded-sm p-2 font-semibold mr-1"
           onClick={exportToPDF}
+          disabled={!(loader === false)}
         >
-          Download PDF
+          {loader ? (
+            <span>Downloading...</span>
+          ) : (
+            <span>Download PDF</span>
+          )
+          }
         </button>
         <button className="bg-blue-500 rounded-sm p-2 font-semibold">
           <IoIosMore className="text-2xl" />
