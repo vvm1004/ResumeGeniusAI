@@ -73,6 +73,7 @@ import { ResumeUpgradeModule } from './resume-upgrade/resume-upgrade.module';
     ResumeBuildersModule,
 
     ResumeUpgradeModule,
+
   ],
   controllers: [AppController],
   providers: [AppService,

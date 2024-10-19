@@ -4,11 +4,15 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import React, { useState } from 'react';
 import Slider from 'react-slick';
+import { useNavigate } from "react-router-dom";
 
 import resume1 from '../../assets/template.png';
 import resume2 from '../../assets/template1.png';
 import resume3 from '../../assets/template2.png';
-
+import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import Modal from '../Resume/Upload/Modal';
 
 const resumeImages = [
     resume1,
@@ -29,6 +33,65 @@ const Home: React.FC = () => {
         slidesToScroll: 1,
         draggable: true, // Kích hoạt tính năng kéo thả
     };
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const access_token = localStorage.getItem("access_token");
+    const userId = useSelector((state: any) => state.account.user._id || "");
+
+    const navigate = useNavigate();
+
+
+    const handleButtonClick = () => {
+        fileInputRef.current?.click(); // Mở hộp thoại chọn file
+    };
+
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('userId', String(userId));
+
+        try {
+            const response = await axios.post('http://localhost:8000/api/v1/resume-upgrade/upload-resume', formData);
+            const uploadData = response.data.data;
+
+            if (userId) {
+                const response2 = await axios.post(
+                    "http://localhost:8000/api/v1/resume-builders",
+                    uploadData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${access_token}`,
+                        },
+                    }
+                );
+                navigate(`resumes/edit/${response2.data.data._id}`);
+            } else {
+                alert("User ID không hợp lệ.");
+            }
+        } catch (error: unknown) { // Ép kiểu cho error
+            if (axios.isAxiosError(error)) {
+                // Nếu là lỗi từ axios, có thể truy cập response
+                console.error('Error uploading file:', error);
+                alert(error.response ? error.response.data : "Có lỗi xảy ra khi upload file.");
+            } else {
+                console.error('Unexpected error:', error);
+                alert("Có lỗi xảy ra, vui lòng thử lại.");
+            }
+        }
+    };
+    const [isModalOpen, setModalOpen] = useState(false);
+
+    const openModal = () => setModalOpen(true);
+    const closeModal = () => setModalOpen(false);
+
+
+
+
+
+
+
     return (
 
         <div className="container homepage">
@@ -44,9 +107,10 @@ const Home: React.FC = () => {
                             Get Started
                             <svg className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                         </a>
-                        <a href="https://youtu.be/Q5LM985yUmQ" className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                        <a onClick={openModal} className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                             Upgrade Resume
                         </a>
+
                     </div>
                 </div>
             </section>
@@ -140,7 +204,7 @@ const Home: React.FC = () => {
                                     Create my resume
                                 </a>
 
-                                <a className="inline-flex  ms-4 justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                <a onClick={openModal} className="inline-flex  ms-4 justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                                     Upgrade Resume
                                 </a>
                             </div>
@@ -225,9 +289,10 @@ const Home: React.FC = () => {
                                 Quickly upgrade and create the perfect fresh resume that employers love.
                             </p>
                             <div className="d-flex justify-content-center">
-                                <a className="inline-flex ms-4 justify-center items-center py-3 px-5 text-base font-medium text-center bg-purple text-white rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                <a onClick={openModal} className="inline-flex ms-4 justify-center items-center py-3 px-5 text-base font-medium text-center bg-purple text-white rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                                     Upgrade my resume
                                 </a>
+
                                 <a className="inline-flex  ms-4 justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                                     Resume Examples
                                 </a>                            </div>
@@ -377,7 +442,11 @@ const Home: React.FC = () => {
                 </form>
             </section>
 
-
+            <Modal isOpen={isModalOpen}
+                onClose={closeModal}
+                handleFileChange={handleFileChange}
+                handleButtonClick={handleButtonClick}
+                fileInputRef={fileInputRef} />
 
         </div>
     );

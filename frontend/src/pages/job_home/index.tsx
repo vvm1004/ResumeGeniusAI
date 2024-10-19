@@ -5,6 +5,8 @@ import JobCard from '@/components/client/card/job.card';
 import CompanyCard from '@/components/client/card/company.card';
 
 const JobHomePage = () => {
+
+    
     return (
         <div className={`${styles["container"]} ${styles["home-section"]}`}>
             <div className="search-content" style={{ marginTop: 20 }}>
