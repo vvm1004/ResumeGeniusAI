@@ -25,7 +25,7 @@ export class TemplateController {
     return this.templateService.findAll();
   }
 
-  // @Public()
+  @Public()
   @SkipCheckPermission()
   @ResponseMessage("Fetch Template by id")
   @Get(':id')
