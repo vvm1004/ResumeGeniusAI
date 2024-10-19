@@ -79,7 +79,7 @@ function Skills() {
                       className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       value={item?.title}
                       onChange={(e) =>
-                        handleUpdateSkills(index, { name: e.target.value })
+                        handleUpdateSkills(index, { title: e.target.value })
                       }
                     />
                   </div>
