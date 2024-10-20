@@ -577,7 +577,43 @@ export const INIT_PERMISSIONS = [
         },
         "isDeleted": false,
         "deletedAt": null,
-    }
+    },
+    {
+        "name": "Create a template",
+        "apiPath": "/api/v1/template",
+        "method": "POST",
+        "module": "TEMPLATE",
+        "createdBy": {
+            "_id": "647b5108a8a243e8191855b5",
+            "email": "vovanminhv23@gmail.com"
+        },
+        "isDeleted": false,
+        "deletedAt": null,
+    },
+    {
+        "name": "Update a template",
+        "apiPath": "/api/v1/template",
+        "method": "PATCH",
+        "module": "TEMPLATE",
+        "createdBy": {
+            "_id": "647b5108a8a243e8191855b5",
+            "email": "vovanminhv23@gmail.com"
+        },
+        "isDeleted": false,
+        "deletedAt": null,
+    },
+    {
+        "name": "Delete a template",
+        "apiPath": "/api/v1/template",
+        "method": "DELETE",
+        "module": "TEMPLATE",
+        "createdBy": {
+            "_id": "647b5108a8a243e8191855b5",
+            "email": "vovanminhv23@gmail.com"
+        },
+        "isDeleted": false,
+        "deletedAt": null,
+    },
 ]
 
 export const INIT_COMPANY =
