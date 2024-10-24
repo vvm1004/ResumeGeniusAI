@@ -21,6 +21,7 @@ const ResumePreview = () => {
   const [showTemplateSelection, setShowTemplateSelection] = useState(false);
   const [selectedTemplateId, setSelectedTemplateId] = useState(3);
   const [imageCV, setImageCV] = useState(null);
+  const [loader, setLoader] = useState(false);
 
   const handleIconClick = () => {
     setShowTemplateSelection(!showTemplateSelection);
