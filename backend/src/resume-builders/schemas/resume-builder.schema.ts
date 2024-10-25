@@ -11,7 +11,7 @@ export class ResumeBuilder {
     @Prop()
     imageResume: string;
 
-    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
     user: mongoose.Schema.Types.ObjectId;
 
     @Prop({ type: Object, required: true })
@@ -28,8 +28,8 @@ export class ResumeBuilder {
     @Prop()
     summary: string;
 
-    @Prop()
-    templateId: string;
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Template' })
+    template: mongoose.Schema.Types.ObjectId;
 
     @Prop([{ title: String, company: String, position: String, date: String, description: String, responsibilities: [String] }])
     experience: Array<any>;
