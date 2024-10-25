@@ -32,6 +32,4 @@ def process_text(text):
 
     return coherent_text
 
-# input_text = "Fish is a great source of nutrition. Fruits provide vitamins."
-# output_text = process_text(input_text)
-# print(output_text)
+

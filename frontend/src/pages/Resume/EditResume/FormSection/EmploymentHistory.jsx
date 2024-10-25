@@ -222,7 +222,7 @@ function EmploymentHistory() {
     setIsCheckSpell(2)
     setText(contentText.replace(/<\/?p>/g, ''))
     setOriginalText(contentText.replace(/<\/?p>/g, ''))
-    //console.log("aaaaaa", contentText.replace(/<\/?p>/g, ''))
+    console.log("check1", editorValues)
 
 
     try {
@@ -236,7 +236,9 @@ function EmploymentHistory() {
 
       // console.log("editorValues:\n", editorValues)
       highlightedText = highlightedText.replace(/<\/?p>/g, '')
-      console.log(index, "highlightedText:\n", highlightedText)
+      //console.log(index, "highlightedText:\n", highlightedText)
+      highlightedText = highlightedText.replace(/&lt;p&gt;/g, '').replace(/&lt;\/p&gt;/g, '');
+      //console.log(index, "highlightedText:\n", highlightedText)
 
       setEditorValues((prev) => {
         const newValues = [...prev];
@@ -250,6 +252,8 @@ function EmploymentHistory() {
     } catch (error) {
       console.error('Error while checking spelling:', error);
     } finally {
+      console.log("check2", editorValues)
+
       setIsLoading(false)
       updateShowApplyCancelValueAtIndex(index, true)
 
