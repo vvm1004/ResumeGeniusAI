@@ -311,14 +311,3 @@ def improve_sentence(text):
 
 
 
-# original_sentence = (
-#     "Increase annual sales to nearly $5.7 million through strategic marketing & sales campaigns. Launched aggressive growth plans that helped increase customer base from 0 to 15,000 customers. Created strategies to develop and expand existing customer sales, which resulted in a 200% sales growth in less than 12 months."
-# )
-
-# # Process the sentence
-# improved_sentence = enhance_sentence_rule_based(original_sentence)
-# improved_sentence = improve_sentence_with_language_tool(improved_sentence)
-# improved_sentence = abbreviate_if_present(improved_sentence)
-
-# print("Original Sentence:", original_sentence)
-# print("Improved Sentence:", improved_sentence)

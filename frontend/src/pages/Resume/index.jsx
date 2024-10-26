@@ -45,7 +45,7 @@ const DashboardResumes = () => {
     };
 
     if (location.state?.shouldCallHandleNewResumeClick) {
-      navigate("/resumes", { state: { shouldCallHandleNewResumeClick: false} });
+      navigate("/resumes", { state: { shouldCallHandleNewResumeClick: false } });
       handleNewResume();
     }
   }, [location.state?.shouldCallHandleNewResumeClick]);
@@ -55,8 +55,7 @@ const DashboardResumes = () => {
       try {
         if (userId) {
           const response = await axios.get(
-            `${
-              import.meta.env.VITE_BACKEND_URL
+            `${import.meta.env.VITE_BACKEND_URL
             }/api/v1/resume-builders/user/${userId}`,
             {
               headers: {
@@ -272,34 +271,30 @@ const DashboardResumes = () => {
         <div className="mt-8">
           <ul className="text-gray-600 font-medium">
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
-                activeMenuItem === "dashboard" ? "rounded-md bg-blue-100 text-blue-600" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100 text-blue-600" : ""
+                }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <MdDashboard className="mr-4 text-xl" /> Dashboard
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
-                activeMenuItem === "resumes" ? "rounded-md bg-blue-100 text-blue-600" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "resumes" ? "rounded-md bg-blue-100 text-blue-600" : ""
+                }`}
               onClick={() => handleMenuClick("resumes", "/resumes")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" />
               My Resumes
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
-                activeMenuItem === "recommendedJob" ? "rounded-md bg-blue-100 text-blue-600" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob" ? "rounded-md bg-blue-100 text-blue-600" : ""
+                }`}
               onClick={() => handleMenuClick("recommendedJob", "/recommendedJob")}
             >
               <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended Jobs
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
-                activeMenuItem === "dashboard" ? "rounded-md bg-blue-100 text-blue-600" : ""
-              }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100 text-blue-600" : ""
+                }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <IoIosMore className="mr-4 text-xl" /> Other

@@ -57,7 +57,7 @@ const TemplateSelection = ({ onSelectTemplate }) => {
   //     return;
   //   }
 
-    // Tạo một div tạm thời để render template
+  // Tạo một div tạm thời để render template
   //   const templateElement = document.createElement('div');
   //   document.body.appendChild(templateElement); // Thêm element vào body
   //   const root = createRoot(templateElement); // Sử dụng createRoot
