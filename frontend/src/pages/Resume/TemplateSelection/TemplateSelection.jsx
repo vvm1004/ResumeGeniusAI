@@ -17,8 +17,8 @@ const TemplateSelection = ({ onSelectTemplate }) => {
     const fetchTemplates = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/v1/template");
-        setTemplates(response.data.data);
-        await updateTemplates(response.data.data); // Cập nhật các template
+        setTemplates(response.data.data.result);
+        await updateTemplates(response.data.data.result); // Cập nhật các template
       } catch (error) {
         console.error("Error fetching templates:", error);
       }
