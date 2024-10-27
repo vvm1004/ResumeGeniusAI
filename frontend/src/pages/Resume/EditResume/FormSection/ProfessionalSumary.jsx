@@ -1,9 +1,10 @@
 import { DataContext } from "@/context/DataContext";
 import { Editor } from "@tinymce/tinymce-react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 
 import { spellCheckText, improveSentence } from "../handleContent"
 import "./loading.css"
+import { cleanContent, applyImproveSentence, escapeHtml, applyCorrections } from "./handleText"
 function ProfessionalSummary() {
   const { data, setData } = useContext(DataContext);
   const [charCount, setCharCount] = useState(data?.summary?.length || 0);
@@ -21,11 +22,14 @@ function ProfessionalSummary() {
 
 
   const [isLoading, setIsLoading] = useState(false);
-  const [ísCheckSpell, setIsCheckSpell] = useState(0);
+  const [isCheckSpell, setIsCheckSpell] = useState(0);
 
   const [showApplyCancel, setShowApplyCancel] = useState(false);
 
   const [editorValues, setEditorValues] = useState('');
+  const [isHandling, setIsHandling] = useState(false);
+  const [notification, setNotification] = useState('');
+  const isHandlingRef = useRef(false);
 
   useEffect(() => {
     if (editorValues == data.summary) return;
@@ -33,19 +37,42 @@ function ProfessionalSummary() {
 
   }, [data]);
 
+  // useEffect(() => {
+  //   console.log("isHandling updated: ", isHandling);
+
+  // }, [isHandling]);
+
+
+  useEffect(() => {
+    isHandlingRef.current = isHandling;
+  }, [isHandling]);
+
   const [contentText, setText] = useState('');
   const [originalText, setOriginalText] = useState('');
+  useEffect(() => {
+    console.log("contentText updated: ", contentText);
+  }, [contentText]);
 
   const [correctedText, setCorrectedText] = useState('');
   const [index, setIndex] = useState(0)
+  const handleEditorClick = () => {
+    console.log("handleEditorClick: ", isHandlingRef.current)
 
+    if (isHandlingRef.current) {
+      setNotification('Is handling...');
+      setTimeout(() => {
+        setNotification('');
+      }, 5000);
+    }
+  };
 
 
   const handleSpellCheck = async () => {
+    setIsHandling(true)
     setIsLoading(true)
-    setIsCheckSpell(1)
     setText(contentText.replace(/<\/?p>/g, ''))
     setOriginalText(contentText.replace(/<\/?p>/g, ''))
+    console.log("han2: ", isHandling)
 
 
     try {
@@ -67,40 +94,15 @@ function ProfessionalSummary() {
     } finally {
       setIsLoading(false)
       setShowApplyCancel(true)
-      console.log("\nindex:", index, "\nshow: ", showApplyCancel[index], "\nischeck: ", ísCheckSpell)
+      setIsCheckSpell(1)
+
+      console.log("\nindex:", index, "\nshow: ", showApplyCancel[index], "\nischeck: ", isCheckSpell)
     }
   };
-  const applyCorrections = (sentence, corrections) => {
-    let highlightedSentence = sentence; // Bắt đầu với câu gốc
-    console.log("corrections:\n", corrections)
 
-    corrections.forEach(([wrongWord, correctWord]) => {
-      const wrongSpan = `<span style="background-color: rgb(224, 62, 45);" >${escapeHtml(wrongWord)}</span>`;
-      const correctSpan = `<span style="background-color: rgb(45, 194, 107);" >${escapeHtml(correctWord)}</span>`;
-      highlightedSentence = highlightedSentence.replace(
-        new RegExp(`\\b${escapeRegExp(wrongWord)}\\b`, 'g'),
-        `${wrongSpan} ${correctSpan}`
-      );
-      console.log("highlightedSentence:\n", wrongWord, "\t\t", correctWord)
-
-    });
-
-    return highlightedSentence;
-  };
-  // Hàm escape HTML
-  const escapeHtml = (unsafe) => {
-    return unsafe
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  };
-  // Hàm escape ký tự trong biểu thức chính quy
-  const escapeRegExp = (string) => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  };
   const handleApply = async () => {
+    setIsHandling(false)
+
     setShowApplyCancel(false)
     if (contentText.length < 2) return;
     setEditorValues(correctedText);
@@ -110,6 +112,8 @@ function ProfessionalSummary() {
   };
 
   const handleCancel = async () => {
+    setIsHandling(false)
+
     setShowApplyCancel(false)
 
     if (contentText.length < 2) return;
@@ -121,23 +125,24 @@ function ProfessionalSummary() {
   const handleImproveSentence = async () => {
 
     if (contentText.length < 2) return;
+    setIsHandling(true)
+    console.log("han3: ", isHandling)
+
     setIsLoading(true)
-    setIsCheckSpell(2)
-    setText(contentText.replace(/<\/?p>/g, ''))
-    setOriginalText(contentText.replace(/<\/?p>/g, ''))
+    //console.log("content11: ", contentText)
+
+    var hanText = cleanContent(contentText)
+
+    setText(hanText)
+    setOriginalText(hanText)
 
 
     try {
 
-      const result = await improveSentence(contentText.replace(/<\/?p>/g, ''));
-      console.log("result", result)
-
+      const result = await improveSentence(hanText);
       setCorrectedText(result.data);
-
-      var highlightedText = applyImproveSentence(contentText, result.data);
-
-      highlightedText = highlightedText.replace(/<\/?p>/g, '')
-
+      var highlightedText = applyImproveSentence(hanText, result.data);
+      highlightedText = highlightedText.replace(/&lt;p&gt;/g, '').replace(/&lt;\/p&gt;/g, '');
       setEditorValues(highlightedText);
 
 
@@ -147,18 +152,11 @@ function ProfessionalSummary() {
     } finally {
       setIsLoading(false)
       setShowApplyCancel(true)
+      setIsCheckSpell(2)
+
 
     }
 
-  };
-  const applyImproveSentence = (originalSentence, improveSentence) => {
-
-    originalSentence = `<span style="background-color: rgb(224, 62, 45);" >${escapeHtml(originalSentence)}</span>`;
-    improveSentence = `<span style="background-color: rgb(45, 194, 107);" >${escapeHtml(improveSentence)}</span>`;
-
-    let highlightedSentence = originalSentence + "\n\n" + improveSentence; // Bắt đầu với câu gốc
-
-    return highlightedSentence;
   };
 
 
@@ -191,7 +189,7 @@ function ProfessionalSummary() {
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm font-medium text-gray-700"></label>
             <div>
-              {showApplyCancel && ísCheckSpell == 1 ? (
+              {showApplyCancel && isCheckSpell == 1 ? (
                 <>
                   <button
                     className="ml-1 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
@@ -206,15 +204,16 @@ function ProfessionalSummary() {
                     Cancel
                   </button>
                 </>
-              ) : (
+              ) : isCheckSpell !== 2 ? (
                 <button
                   className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                   onClick={handleSpellCheck}
                 >
                   Check Spelling
                 </button>
-              )}
-              {showApplyCancel && ísCheckSpell == 2 ? (
+              ) : null}
+
+              {showApplyCancel && isCheckSpell == 2 ? (
                 <>
                   <button
                     className="ml-1 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
@@ -229,17 +228,19 @@ function ProfessionalSummary() {
                     Cancel
                   </button>
                 </>
-              ) : (
+              ) : isCheckSpell !== 1 ? (
                 <button
                   className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                   onClick={handleImproveSentence}
                 >
                   Upgrade
                 </button>
-              )}
+              ) : null}
 
             </div>
           </div>
+          {notification && <div className="notification">{notification}</div>}
+
           <Editor
             apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
             placeholder="Curious science teacher with 8+ years of experience and a track record of..."
@@ -260,6 +261,13 @@ function ProfessionalSummary() {
                   },
                   classes: "rounded-lg font-bold text-blue-500",
                 });
+                editor.on('keydown', (event) => {
+                  if (isHandlingRef.current == true) {
+                    event.preventDefault();
+                  }
+                });
+
+                editor.on('click', handleEditorClick);
               },
             }}
             value={editorValues || ""}
