@@ -1,9 +1,11 @@
 import { Editor } from "@tinymce/tinymce-react";
 import { DataContext } from "@/context/DataContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 
 import { spellCheckText, improveSentence } from "../handleContent"
 import "./loading.css"
+import { cleanContent, applyImproveSentence, escapeHtml, applyCorrections } from "./handleText"
+
 function Education() {
   const { data, setData } = useContext(DataContext);
 
@@ -82,7 +84,7 @@ function Education() {
 
 
   const [isLoading, setIsLoading] = useState(false);
-  const [ísCheckSpell, setIsCheckSpell] = useState(0);
+  const [isCheckSpell, setIsCheckSpell] = useState(0);
 
   const [showApplyCancel, setShowApplyCancel] = useState([]);
 
@@ -102,6 +104,12 @@ function Education() {
 
   const [correctedText, setCorrectedText] = useState('');
   const [index, setIndex] = useState(0)
+  const [isHandling, setIsHandling] = useState(false);
+  const [notification, setNotification] = useState('');
+  const isHandlingRef = useRef(false);
+  useEffect(() => {
+    isHandlingRef.current = isHandling;
+  }, [isHandling]);
 
 
   const updateShowApplyCancelValueAtIndex = (index, newValue) => {
@@ -111,7 +119,8 @@ function Education() {
   };
   const handleSpellCheck = async () => {
     setIsLoading(true)
-    setIsCheckSpell(1)
+    setIsHandling(true)
+
     setText(contentText.replace(/<\/?p>/g, ''))
     setOriginalText(contentText.replace(/<\/?p>/g, ''))
 
@@ -138,42 +147,16 @@ function Education() {
       console.error('Error while checking spelling:', error);
     } finally {
       setIsLoading(false)
+      setIsCheckSpell(1)
+
       updateShowApplyCancelValueAtIndex(index, true)
-      console.log("\nindex:", index, "\nshow: ", showApplyCancel[index], "\nischeck: ", ísCheckSpell)
+      console.log("\nindex:", index, "\nshow: ", showApplyCancel[index], "\nischeck: ", isCheckSpell)
     }
   };
-  const applyCorrections = (sentence, corrections) => {
-    let highlightedSentence = sentence; // Bắt đầu với câu gốc
-    console.log("corrections:\n", corrections)
 
-    corrections.forEach(([wrongWord, correctWord]) => {
-      const wrongSpan = `<span style="background-color: rgb(224, 62, 45);" >${escapeHtml(wrongWord)}</span>`;
-      const correctSpan = `<span style="background-color: rgb(45, 194, 107);" >${escapeHtml(correctWord)}</span>`;
-      highlightedSentence = highlightedSentence.replace(
-        new RegExp(`\\b${escapeRegExp(wrongWord)}\\b`, 'g'),
-        `${wrongSpan} ${correctSpan}`
-      );
-      console.log("highlightedSentence:\n", wrongWord, "\t\t", correctWord)
-
-    });
-
-    return highlightedSentence;
-  };
-  // Hàm escape HTML
-  const escapeHtml = (unsafe) => {
-    return unsafe
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  };
-  // Hàm escape ký tự trong biểu thức chính quy
-  const escapeRegExp = (string) => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  };
   const handleApply = async () => {
     updateShowApplyCancelValueAtIndex(index, false)
+    setIsHandling(false)
 
     if (contentText.length < 2) return;
     setEditorValues((prev) => {
@@ -187,6 +170,7 @@ function Education() {
 
   const handleCancel = async () => {
     updateShowApplyCancelValueAtIndex(index, false)
+    setIsHandling(false)
 
     if (contentText.length < 2) return;
     setEditorValues((prev) => {
@@ -201,21 +185,24 @@ function Education() {
 
     if (contentText.length < 2) return;
     setIsLoading(true)
-    setIsCheckSpell(2)
-    setText(contentText.replace(/<\/?p>/g, ''))
-    setOriginalText(contentText.replace(/<\/?p>/g, ''))
+    setIsHandling(true)
 
+    var hanText = cleanContent(contentText)
+
+    setText(hanText)
+    setOriginalText(hanText)
 
     try {
 
-      const result = await improveSentence(contentText.replace(/<\/?p>/g, ''));
+      const result = await improveSentence(hanText);
       console.log("result", result)
 
       setCorrectedText(result.data);
 
-      var highlightedText = applyImproveSentence(contentText, result.data);
+      var highlightedText = applyImproveSentence(hanText, result.data);
 
-      highlightedText = highlightedText.replace(/<\/?p>/g, '')
+      highlightedText = highlightedText.replace(/&lt;p&gt;/g, '').replace(/&lt;\/p&gt;/g, '');
+
       console.log(index, "highlightedText:\n", highlightedText)
 
       setEditorValues((prev) => {
@@ -229,31 +216,23 @@ function Education() {
       console.error('Error while checking spelling:', error);
     } finally {
       setIsLoading(false)
+      setIsCheckSpell(2)
+
       updateShowApplyCancelValueAtIndex(index, true)
 
     }
 
   };
-  const applyImproveSentence = (originalSentence, improveSentence) => {
+  const handleEditorClick = () => {
+    console.log("handleEditorClick: ", isHandlingRef.current)
 
-    originalSentence = `<span style="background-color: rgb(224, 62, 45);" >${escapeHtml(originalSentence)}</span>`;
-    improveSentence = `<span style="background-color: rgb(45, 194, 107);" >${escapeHtml(improveSentence)}</span>`;
-
-    let highlightedSentence = originalSentence + "\n\n" + improveSentence; // Bắt đầu với câu gốc
-
-    return highlightedSentence;
+    if (isHandlingRef.current) {
+      setNotification('Is handling...');
+      setTimeout(() => {
+        setNotification('');
+      }, 5000);
+    }
   };
-
-
-
-
-
-
-
-
-
-
-
 
   return (
     <>
@@ -394,7 +373,7 @@ function Education() {
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-sm font-medium text-gray-700">Description</label>
                       <div>
-                        {showApplyCancel[index] && ísCheckSpell == 1 ? (
+                        {showApplyCancel[index] && isCheckSpell == 1 ? (
                           <>
                             <button
                               className="ml-1 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
@@ -409,15 +388,15 @@ function Education() {
                               Cancel
                             </button>
                           </>
-                        ) : (
+                        ) : isCheckSpell !== 2 ? (
                           <button
                             className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                             onClick={handleSpellCheck}
                           >
                             Check Spelling
                           </button>
-                        )}
-                        {showApplyCancel[index] && ísCheckSpell == 2 ? (
+                        ) : null}
+                        {showApplyCancel[index] && isCheckSpell == 2 ? (
                           <>
                             <button
                               className="ml-1 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
@@ -432,17 +411,18 @@ function Education() {
                               Cancel
                             </button>
                           </>
-                        ) : (
+                        ) : isCheckSpell !== 1 ? (
                           <button
                             className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                             onClick={handleImproveSentence}
                           >
                             Upgrade
                           </button>
-                        )}
+                        ) : null}
 
                       </div>
                     </div>
+                    {notification && <div className="notification">{notification}</div>}
 
                     <Editor
                       apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
@@ -462,6 +442,13 @@ function Education() {
                             onAction: () => { },
                             classes: "rounded-lg font-bold text-blue-500",
                           });
+                          editor.on('keydown', (event) => {
+                            if (isHandlingRef.current == true) {
+                              event.preventDefault();
+                            }
+                          });
+
+                          editor.on('click', handleEditorClick);
                         },
                       }}
                       value={editorValues[index] || ""}
