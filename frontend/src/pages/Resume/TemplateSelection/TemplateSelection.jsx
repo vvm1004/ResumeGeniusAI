@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import html2canvas from "html2canvas";
-import { createRoot } from 'react-dom/client';
+import { createRoot } from "react-dom/client";
 
 import Template1 from "../Template/Template1";
 import Template2 from "../Template/Template2";
@@ -16,9 +16,11 @@ const TemplateSelection = ({ onSelectTemplate }) => {
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/template");
+        const response = await axios.get(
+          "http://localhost:8000/api/v1/template"
+        );
         setTemplates(response.data.data.result);
-        await updateTemplates(response.data.data.result); // Cập nhật các template
+        // await updateTemplates(response.data.data.result); // Cập nhật các template
       } catch (error) {
         console.error("Error fetching templates:", error);
       }
@@ -87,23 +89,29 @@ const TemplateSelection = ({ onSelectTemplate }) => {
   //   }
   // };
 
-  // Sử dụng các class của Tailwind CSS
   return (
-    <div className="p-8">
-      <h2 className="text-center text-3xl font-bold text-gray-800 mb-5">Select a Template</h2>
-      <div className="grid grid-cols-3 gap-6">
+    <div className="p-8 ">
+      <h2 className="text-center text-3xl font-bold text-gray-800 mb-5">
+        Select a Template
+      </h2>
+      <div className=" grid grid-cols-1 lg:grid-cols-3 gap-6 scroll-snap-y">
         {templates.map((template) => (
           <div
             key={template.id}
-            className=" border-gray-300 overflow-hidden  transform transition duration-300 hover:scale-105 cursor-pointer"
+            className=" border-gray-300 overflow-hidden transform transition duration-300 hover:scale-105 cursor-pointer"
             onClick={() => onSelectTemplate(template.id)}
           >
-            <img
-              className="w-44 h-60 object-cover border-2 rounded-md"
-              src={template.preview}
-              alt={template.name}
-            />
-            <p className="text-center font-semibold text-lg p-2">{template.name}</p>
+            <div className="flex items-center justify-center">
+              <img
+                className="block-20 h-40 object-cover border-2 rounded-md"
+                src={template.preview}
+                alt={template.name}
+              />
+            </div>
+
+            <p className="text-center font-semibold text-lg p-2">
+              {template.name}
+            </p>
           </div>
         ))}
       </div>

@@ -16,6 +16,7 @@ import "./index.scss";
 import Modal from "./Upload/Modal";
 const DashboardResumes = () => {
   const [data, setData] = useState([]);
+  const [template, setTemplate] = useState([]);
 
   const [activeMenuItem, setActiveMenuItem] = useState("resumes");
   const [editTitleId, setEditTitleId] = useState(null);
@@ -45,7 +46,9 @@ const DashboardResumes = () => {
     };
 
     if (location.state?.shouldCallHandleNewResumeClick) {
-      navigate("/resumes", { state: { shouldCallHandleNewResumeClick: false } });
+      navigate("/resumes", {
+        state: { shouldCallHandleNewResumeClick: false },
+      });
       handleNewResume();
     }
   }, [location.state?.shouldCallHandleNewResumeClick]);
@@ -55,7 +58,8 @@ const DashboardResumes = () => {
       try {
         if (userId) {
           const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL
+            `${
+              import.meta.env.VITE_BACKEND_URL
             }/api/v1/resume-builders/user/${userId}`,
             {
               headers: {
@@ -63,7 +67,8 @@ const DashboardResumes = () => {
               },
             }
           );
-          setData(response.data.data);
+
+          setData(response.data.data.result);
         }
       } catch {
         console.log("Error!");
@@ -71,7 +76,20 @@ const DashboardResumes = () => {
     };
     fetchApi();
   }, [userId, access_token]);
+  useEffect(() => {
+    const fetchTemplate = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/template/${templateId}`
+        );
+        setTemplate(response.data.data);
+      } catch (error) {
+        console.error("Failed to fetch template:", error);
+      }
+    };
 
+    fetchTemplate();
+  }, []);
   const handleTitleEditClick = (resumeId, title) => {
     setEditTitleId(resumeId);
     setNewTitle(title);
@@ -107,7 +125,7 @@ const DashboardResumes = () => {
       handleTitleBlur(resumeId);
     }
   };
-
+  const templateId = "67125252513c2654c1ddd087";
   const handleNewResumeClick = async () => {
     const confirmCreate = window.confirm("Do you want to create a new CV?");
 
@@ -125,7 +143,7 @@ const DashboardResumes = () => {
             linkedin: "",
           },
           summary: "",
-          templateId: "template123",
+          template: template,
           experience: [],
           education: [],
           projects: [],
@@ -252,7 +270,8 @@ const DashboardResumes = () => {
 
   return (
     <div className="flex min-h-screen">
-      <div className="w-1/6 p-6 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto z-100">
+      <div className="w-1/6 p-6 sticky top-14 h-[calc(100vh-3.5rem)] ">
+        {/* overflow-y-auto z-100 */}
         <div className="flex justify-between items-center">
           <img
             className="w-12 h-12 object-contain border-2 rounded-full font-12"
@@ -271,30 +290,44 @@ const DashboardResumes = () => {
         <div className="mt-8">
           <ul className="text-gray-600 font-medium">
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100 text-blue-600" : ""
-                }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
+                activeMenuItem === "dashboard"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+              }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <MdDashboard className="mr-4 text-xl" /> Dashboard
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "resumes" ? "rounded-md bg-blue-100 text-blue-600" : ""
-                }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
+                activeMenuItem === "resumes"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+              }`}
               onClick={() => handleMenuClick("resumes", "/resumes")}
             >
               <IoDocumentTextOutline className="mr-4 text-xl" />
               My Resumes
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob" ? "rounded-md bg-blue-100 text-blue-600" : ""
-                }`}
-              onClick={() => handleMenuClick("recommendedJob", "/recommendedJob")}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
+                activeMenuItem === "recommendedJob"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+              }`}
+              onClick={() =>
+                handleMenuClick("recommendedJob", "/recommendedJob")
+              }
             >
               <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended Jobs
             </li>
             <li
-              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard" ? "rounded-md bg-blue-100 text-blue-600" : ""
-                }`}
+              className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
+                activeMenuItem === "dashboard"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+              }`}
               onClick={() => handleMenuClick("dashboard", "/dashboard")}
             >
               <IoIosMore className="mr-4 text-xl" /> Other
@@ -321,7 +354,10 @@ const DashboardResumes = () => {
               fileInputRef={fileInputRef}
             />
 
-            <button className="bg-blue-500 text-white px-6 py-2 rounded-lg" onClick={handleNewResumeClick}>
+            <button
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg"
+              onClick={handleNewResumeClick}
+            >
               + Create New
             </button>
           </div>
