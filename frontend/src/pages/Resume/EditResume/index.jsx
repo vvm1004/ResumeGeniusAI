@@ -35,7 +35,7 @@ function EditResume() {
   return (
     <>
       <DataContext.Provider value={{ data, setData, id, access_token }}>
-        <div className="resume min-h-screen flex overflow-auto">
+        <div className="resume min-h-screen flex">
           <div className="w-1/2 p-4">
             <FormSection />
           </div>

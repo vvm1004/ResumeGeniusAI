@@ -197,7 +197,7 @@ const ResumePreview = () => {
         ) : (
           <div className="relative w-full h-full flex justify-center items-center mt-2">
             <div
-              className="resume-cv w-[210mm] h-[297mm] absolute top-0 rounded-xl overflow-hidden
+              className="resume-cv w-[210mm] h-[297mm] absolute top-0 rounded-xl 
           left-center bg-white shadow-lg transform scale-50 -translate-y-1/4"
             >
               {renderSelectedTemplate()}
