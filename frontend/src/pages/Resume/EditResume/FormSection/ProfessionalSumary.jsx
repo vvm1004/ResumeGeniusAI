@@ -251,7 +251,7 @@ function ProfessionalSummary() {
           {notification && <div className="notification">{notification}</div>}
 
           <Editor
-            apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
+            apiKey={`${import.meta.env.VITE_EDITOR}`}
             placeholder="Curious science teacher with 8+ years of experience and a track record of..."
             init={{
               menubar: false,
