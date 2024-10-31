@@ -26,16 +26,25 @@ export class ResumeBuildersController {
   @SkipCheckPermission()
   @ResponseMessage("Fetch List resume builder by userId")
   @Get('user/:userId')
-  findByUserId(@Param('userId') userId: string) {
-    return this.resumeBuildersService.findByUserId(userId);
+  findByUserId(
+    @Param('userId') userId: string,
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string
+  ) {
+    return this.resumeBuildersService.findByUserId(userId, +currentPage, +limit, qs);
   }
 
-  // @Public()
-  @SkipCheckPermission()
-  @ResponseMessage("Fetch All Resume Builder")
   @Get()
-  findAll() {
-    return this.resumeBuildersService.findAll();
+  //@Public()
+  @SkipCheckPermission()
+  @ResponseMessage('Fetch List Resume Builder with paginate')
+  findAll(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string
+  ) {
+    return this.resumeBuildersService.findAll(+currentPage, +limit, qs);
   }
 
   // @Public()

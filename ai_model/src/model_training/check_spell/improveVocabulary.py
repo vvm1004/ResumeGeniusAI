@@ -171,7 +171,3 @@ def replace_with_stronger_words(sentence):
     
     return improved_sentence
 
-# # Ví dụ sử dụng
-# input_sentence = " Despite the numerous challenges and obstacles that individuals face in their personal and professional lives, it is essential to remain resilient and adaptable, as these qualities not only enable one to navigate the complexities of modern society but also foster personal growth and development, ultimately leading to greater opportunities and success.Optimized: Despite the numerous challenges and obstacles that individuals face in their personal and professional lives , it is essential to remain resilient and adaptable , as these qualities not only enable one to navigate the complexities of modern society but also foster personal growth and development , ultimately leading to greater opportunities and success ."
-# output_sentence = replace_with_stronger_words(input_sentence)
-# print(output_sentence)

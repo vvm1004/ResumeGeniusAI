@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, Delete, Query } from '@nestjs/common';
 import { TemplateService } from './template.service';
 import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { ApiTags } from '@nestjs/swagger';
@@ -17,12 +17,16 @@ export class TemplateController {
     return this.templateService.create(createTemplateDto, user);
   }
 
+  @Get()
   @Public()
   @SkipCheckPermission()
-  @ResponseMessage("Fetch All Template")
-  @Get()
-  findAll() {
-    return this.templateService.findAll();
+  @ResponseMessage('Fetch List Template with paginate')
+  findAll(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string
+  ) {
+    return this.templateService.findAll(+currentPage, +limit, qs);
   }
 
   @Public()

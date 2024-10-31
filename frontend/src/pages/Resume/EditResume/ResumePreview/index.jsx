@@ -17,9 +17,9 @@ import Template6 from "../../Template/Template6";
 
 const ResumePreview = () => {
   const { data, setData, access_token } = useContext(DataContext);
-
+  const [template, setTemplate] = useState([]);
   const [showTemplateSelection, setShowTemplateSelection] = useState(false);
-  // const [selectedTemplateId, setSelectedTemplateId] = useState(3);
+  // // const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [imageCV, setImageCV] = useState(null);
   const [loader, setLoader] = useState(false);
 
@@ -28,13 +28,13 @@ const ResumePreview = () => {
   };
 
   const handleSelectTemplate = async (templateId) => {
-    // setSelectedTemplateId(templateId);
+    setTemplate(templateId);
     setShowTemplateSelection(false);
     await updateTemplateId(templateId);
   };
 
   const renderSelectedTemplate = () => {
-    switch (data?.templateId) {
+    switch (template) {
       case "1":
         return <Template1 data={data} />;
       case "2":
@@ -57,23 +57,25 @@ const ResumePreview = () => {
     setLoader(true);
     html2canvas(element, {
       scale: 3,
-      useCORS: true
-    }).then(canvas => {
-      const imgData = canvas.toDataURL("image/png");
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const doc = new jsPDF({
-        orientation: imgWidth > imgHeight ? 'landscape' : 'portrait',
-        unit: 'px',
-        format: [imgWidth, imgHeight]
+      useCORS: true,
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const doc = new jsPDF({
+          orientation: imgWidth > imgHeight ? "landscape" : "portrait",
+          unit: "px",
+          format: [imgWidth, imgHeight],
+        });
+        doc.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+        setLoader(false);
+        doc.save("download.pdf");
+      })
+      .catch((error) => {
+        console.error("Error in generating PDF", error);
+        setLoader(false);
       });
-      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      setLoader(false);
-      doc.save('download.pdf');
-    }).catch(error => {
-      console.error("Error in generating PDF", error);
-      setLoader(false);
-    });
   };
 
   useEffect(() => {
@@ -96,6 +98,7 @@ const ResumePreview = () => {
 
   useEffect(() => {
     const updateResume = async () => {
+      // console.log(imageCV);
       if (imageCV) {
         try {
           const updatedResume = { imageResume: imageCV };
@@ -120,27 +123,52 @@ const ResumePreview = () => {
   }, [imageCV]);
 
   //Update Template Id
-
   const updateTemplateId = async (templateId) => {
     try {
-      const updatedData = { templateId };
-
-      await axios.patch(
-        `http://localhost:8000/api/v1/resume-builders/${data._id}`,
-        updatedData,
-        {
-          headers: { Authorization: `Bearer ${access_token}` },
-        }
+      const response = await axios.get("http://localhost:8000/api/v1/template");
+      const templates = response.data.data.result;
+      const selectedTemplate = templates.find(
+        (template) => template.id === templateId
       );
 
-      setData((prevData) => ({
-        ...prevData,
-        templateId,
-      }));
+      if (selectedTemplate) {
+        const updatedData = { template: selectedTemplate._id };
+        await axios.patch(
+          `http://localhost:8000/api/v1/resume-builders/${data._id}`,
+          updatedData,
+          {
+            headers: { Authorization: `Bearer ${access_token}` },
+          }
+        );
+
+        setData((prevData) => ({
+          ...prevData,
+          template: selectedTemplate._id,
+        }));
+      } else {
+        console.error("Template not found.");
+      }
     } catch (error) {
       console.error("Error updating template ID:", error);
     }
   };
+  //lấy template id từ database
+  useEffect(() => {
+    const fetchTemplate = async () => {
+      if (data?.template?._id) {
+        try {
+          const response = await axios.get(
+            `http://localhost:8000/api/v1/template/${data?.template?._id}`
+          );
+          setTemplate(response.data.data.id);
+        } catch (error) {
+          console.error("Failed to fetch template:", error);
+        }
+      }
+    };
+
+    fetchTemplate();
+  }, [data?.template?._id]);
   return (
     <div>
       <div className="w-full h-full flex justify-center items-center cursor-pointer text-white p-2">
@@ -157,30 +185,26 @@ const ResumePreview = () => {
           onClick={exportToPDF}
           disabled={!(loader === false)}
         >
-          {loader ? (
-            <span>Downloading...</span>
-          ) : (
-            <span>Download PDF</span>
-          )
-          }
+          {loader ? <span>Downloading...</span> : <span>Download PDF</span>}
         </button>
         <button className="bg-blue-500 rounded-sm p-2 font-semibold">
           <IoIosMore className="text-2xl" />
         </button>
       </div>
-
-      {showTemplateSelection ? (
-        <TemplateSelection onSelectTemplate={handleSelectTemplate} />
-      ) : (
-        <div className="relative w-full h-full flex justify-center items-center mt-2">
-          <div
-            className="resume-cv w-[210mm] h-[297mm] absolute top-0 rounded-xl overflow-hidden
-               left-center bg-white shadow-lg transform scale-50 -translate-y-1/4"
-          >
-            {renderSelectedTemplate()}
+      <div className="scroll-snap-y h-screen">
+        {showTemplateSelection ? (
+          <TemplateSelection onSelectTemplate={handleSelectTemplate} />
+        ) : (
+          <div className="relative w-full h-full flex justify-center items-center mt-2">
+            <div
+              className="resume-cv w-[210mm] h-[297mm] absolute top-0 rounded-xl overflow-hidden
+          left-center bg-white shadow-lg transform scale-50 -translate-y-1/4"
+            >
+              {renderSelectedTemplate()}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

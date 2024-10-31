@@ -10,7 +10,6 @@ function EditResume() {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const access_token = localStorage.getItem("access_token");
-
   useEffect(() => {
     const fetchResume = async () => {
       try {
@@ -36,12 +35,12 @@ function EditResume() {
   return (
     <>
       <DataContext.Provider value={{ data, setData, id, access_token }}>
-        <div className="resume min-h-screen flex">
+        <div className="resume min-h-screen flex overflow-auto">
           <div className="w-1/2 p-4">
             <FormSection />
           </div>
 
-          <div className="w-1/2 h-screen mt-12 p-4 bg-gray-500 fixed top-0 right-0">
+          <div className="w-1/2 h-screen mt-12 p-4 bg-gray-500 fixed top-0 right-0 overflow-auto">
             <ResumePreview />
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 // Import necessary elements
-import { Template, TemplateSchema } from './schemas/template.schema';
+import { Template, TemplateSchema } from '../template/schemas/template.schema';
 import { TemplateController } from './template.controller';
 import { TemplateService } from './template.service';
 
@@ -10,4 +10,4 @@ import { TemplateService } from './template.service';
   controllers: [TemplateController], // Register controller
   providers: [TemplateService], // Register provider
 })
-export class TemplateModule {}
+export class TemplateModule { }
