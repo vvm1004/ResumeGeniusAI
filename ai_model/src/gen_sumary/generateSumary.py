@@ -2,6 +2,7 @@ import google.generativeai as genai
 import json
 genai.configure(api_key="AIzaSyAcW8yLla0zTb31HGqs9fljpNM70ubj5r0")
 def genSumary(promot):
+    print("Promot:", promot)
     # Define generation configuration
     generation_config = {
       "temperature": 1,
@@ -41,9 +42,9 @@ def generate_resume_summary(name, job_title, achievements=None, skills=None, act
     summary_lines.append(f"Based on the following information, create a concise and impactful resume summary:\n")
 
 
-    summary_lines.append(f"Name: {name}")
     summary_lines.append(f"Job Title: {job_title}")
-    
+    if name:
+        summary_lines.append(f"Name: {name}")
     if achievements:
         summary_lines.append("Achievements: " + ", ".join(achievements))
     if skills:
@@ -61,19 +62,4 @@ def generate_resume_summary(name, job_title, achievements=None, skills=None, act
     
     summary_lines.append(f"The summary should clearly highlight the candidate's data in their field. Ensure that it captures the attention of potential employers. ")
     return genSumary("\n".join(summary_lines))
-    return "\n".join(summary_lines)
-resume_summary = generate_resume_summary(
-    name="John Doe",
-    job_title="Software Engineer",
-    achievements=["First place in national coding competition", "Developed a popular project management app"],
-    skills=["Python", "Java", "Project Management"],
-    activities=["Volunteer at local tech workshops"],
-    hobbies=["Hiking", "Photography"],
-    education=["B.Sc. in Computer Science"],
-    languages=["English", "Spanish"],
-    employment_history=["Company A (2020-Present)", "Company B (2018-2020)"]
-)
-print(resume_summary,"\n\n")
-sum=genSumary(resume_summary)
-
-
+   

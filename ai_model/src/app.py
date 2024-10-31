@@ -597,38 +597,51 @@ def check_spell():
 @app.route('/generate_summary', methods=['POST'])
 def generate_summary():
     data = request.json
-    name = data.get('name', '')
-    job_title = data.get('job_title', '')
-    achievements = data.get('achievements', [])
-    skills = data.get('skills', [])
-    activities = data.get('activities', [])
-    hobbies = data.get('hobbies', [])
-    education = data.get('education', [])
-    languages = data.get('languages', [])
-    employment_history = data.get('employment_history', [])
+    print("Received data:", data)
 
-    # Chuyển đổi các mảng thành chuỗi, bỏ qua các phần tử None
-    achievements_str = ', '.join(filter(None, achievements))
-    skills_str = ', '.join(filter(None, skills))
-    activities_str = ', '.join(filter(None, activities))
-    hobbies_str = ', '.join(filter(None, hobbies))
-    education_str = ', '.join(filter(None, education))
-    languages_str = ', '.join(filter(None, languages))
-    employment_history_str = ', '.join(filter(None, employment_history))
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    input_data = data['data']['data']
+    
+    # Extracting variables
+    name = input_data.get('name')
+    job_title = input_data.get('job_title')
+    achievements = input_data.get('achievements', [])
+    skills = input_data.get('skills', [])
+    activities = input_data.get('activities', [])
+    hobbies = input_data.get('hobbies', [])
+    education = input_data.get('education', [])
+    languages=input_data.get('languages',[])
+    employment_history = input_data.get('employment_history', [])
+    employment_history = [str(item) if item is not None else '' for item in employment_history]
 
-    #print("\n\nsummmmm: \t\n", data)
+    # Printing the extracted variables
+    print("Name:", name)
+    print("Job Title:", job_title)
+    print("Achievements:", achievements)
+    print("Skills:", skills)
+    print("Activities:", activities)
+    print("Hobbies:", hobbies)
+    print("Education:", education)
+    print("employment_history:", employment_history)
+    print("languages:", languages)
 
+    
+    # Gọi hàm tạo summary
     summary = generate_resume_summary(
         name,
         job_title,
-        achievements_str,
-        skills_str,
-        activities_str,
-        hobbies_str,
-        education_str,
-        languages_str,
-        employment_history_str
+        achievements,
+        skills,
+        activities,
+        hobbies,
+        education,
+        languages,
+        employment_history
     )
+    
+    print("Generated summary:", summary)
     
     return jsonify({"summary": summary})
 

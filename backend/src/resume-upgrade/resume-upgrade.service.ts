@@ -119,8 +119,8 @@ export class ResumeUpgradeService {
                     },
                 }),
             );
-           // console.log("data: ", response.data.summary)
-            return response.data.summary;
+            console.log("data: ", response.data.summary)
+            return { data: response.data.summary };
         } catch (error) {
             console.error('Error calling Flask API:', error);
             throw error;
