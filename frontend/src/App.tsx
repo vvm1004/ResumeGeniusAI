@@ -33,6 +33,7 @@ import ClientCompanyPage from './pages/company';
 import ClientCompanyDetailPage from './pages/company/detail';
 import DashboardResumes from './pages/Resume';
 import EditResume from './pages/Resume/EditResume';
+import JobSearch from './pages/job/jobSearch';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -78,9 +79,9 @@ export default function App() {
       //errorElement: <NotFound />,
       children: [
         { index: true, element: <HomePage /> },
-        { path: "jobSearch", element: <JobHomePage /> },
-        { path: "job", element: <ClientJobPage /> },
-        { path: "job/:id", element: <ClientJobDetailPage /> },
+        { path: "jobsAll", element: <ClientJobPage /> },
+        { path: "jobs", element: <JobSearch /> },
+        { path: "jobs/:id", element: <ClientJobDetailPage /> },
         { path: "company", element: <ClientCompanyPage /> },
         { path: "company/:id", element: <ClientCompanyDetailPage /> },
         { path: "resumes", element: <DashboardResumes /> },
