@@ -1,9 +1,14 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { DataContext } from "@/context/DataContext";
-import { spellCheckText, improveSentence } from "../handleContent"
-import "./loading.css"
-import { cleanContent, applyImproveSentence, escapeHtml, applyCorrections } from "./handleText"
+import { spellCheckText, improveSentence } from "../handleContent";
+import "./loading.css";
+import {
+  cleanContent,
+  applyImproveSentence,
+  escapeHtml,
+  applyCorrections,
+} from "./handleText";
 
 // Hàm chuyển đổi từ "June 2023" thành "2023-06"
 const formatDateToMonthInput = (dateStr) => {
@@ -31,7 +36,7 @@ function EmploymentHistory() {
     const updatedExperience = (data?.experience || [])?.map((item, i) =>
       i === index ? { ...item, ...updatedField } : item
     );
-    console.log("updatedExperience:\n", updatedExperience)
+    console.log("updatedExperience:\n", updatedExperience);
     setData({ ...data, experience: updatedExperience });
   };
 
@@ -89,7 +94,6 @@ function EmploymentHistory() {
     return `${startDate} - ${endDate}`;
   };
 
-
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckSpell, setIsCheckSpell] = useState(0);
 
@@ -100,7 +104,7 @@ function EmploymentHistory() {
   useEffect(() => {
     if (editorValues.length > 0) return;
     if (data.experience && Array.isArray(data.experience)) {
-      setEditorValues(data.experience.map(item => item.description));
+      setEditorValues(data.experience.map((item) => item.description));
 
       const newFalseValues = Array(data.experience.length).fill(false);
       //setIsLoading(newFalseValues);
@@ -108,42 +112,40 @@ function EmploymentHistory() {
     }
   }, [data]);
 
-  const [contentText, setText] = useState('');
-  const [originalText, setOriginalText] = useState('');
+  const [contentText, setText] = useState("");
+  const [originalText, setOriginalText] = useState("");
 
-  const [correctedText, setCorrectedText] = useState('');
-  const [index, setIndex] = useState(0)
+  const [correctedText, setCorrectedText] = useState("");
+  const [index, setIndex] = useState(0);
   const [isHandling, setIsHandling] = useState(false);
-  const [notification, setNotification] = useState('');
+  const [notification, setNotification] = useState("");
   const isHandlingRef = useRef(false);
   useEffect(() => {
     isHandlingRef.current = isHandling;
   }, [isHandling]);
 
-
   const updateShowApplyCancelValueAtIndex = (index, newValue) => {
-    setShowApplyCancel(prevValues =>
+    setShowApplyCancel((prevValues) =>
       prevValues.map((value, i) => (i === index ? newValue : value))
     );
   };
   const handleSpellCheck = async () => {
-    setIsLoading(true)
-    setIsHandling(true)
-    setText(contentText.replace(/<\/?p>/g, ''))
-    setOriginalText(contentText.replace(/<\/?p>/g, ''))
+    setIsLoading(true);
+    setIsHandling(true);
+    setText(contentText.replace(/<\/?p>/g, ""));
+    setOriginalText(contentText.replace(/<\/?p>/g, ""));
     //console.log("aaaaaa", contentText.replace(/<\/?p>/g, ''))
 
-
     try {
-
-      const result = await spellCheckText(contentText.replace(/<\/?p>/g, ''));
+      const result = await spellCheckText(contentText.replace(/<\/?p>/g, ""));
       //console.log("result", result)
 
       setCorrectedText(result.data.corrected_sentence);
-      const corrections = Object.values(result.data.corrections).map(corr => [corr[0], corr[1]]);
+      const corrections = Object.values(result.data.corrections).map((corr) => [
+        corr[0],
+        corr[1],
+      ]);
       const highlightedText = applyCorrections(contentText, corrections);
-
-
 
       //console.log("correctedText", result.data.corrected_sentence)
       //console.log(index, "highlightedText:\n", highlightedText)
@@ -155,22 +157,27 @@ function EmploymentHistory() {
         //console.log("New Values:", newValues); // Log newValues
         return newValues;
       });
-
-
     } catch (error) {
-      console.error('Error while checking spelling:', error);
+      console.error("Error while checking spelling:", error);
     } finally {
-      setIsLoading(false)
-      setIsCheckSpell(1)
+      setIsLoading(false);
+      setIsCheckSpell(1);
 
-      updateShowApplyCancelValueAtIndex(index, true)
-      console.log("\nindex:", index, "\nshow: ", showApplyCancel[index], "\nischeck: ", isCheckSpell)
+      updateShowApplyCancelValueAtIndex(index, true);
+      console.log(
+        "\nindex:",
+        index,
+        "\nshow: ",
+        showApplyCancel[index],
+        "\nischeck: ",
+        isCheckSpell
+      );
     }
   };
 
   const handleApply = async () => {
-    updateShowApplyCancelValueAtIndex(index, false)
-    setIsHandling(false)
+    updateShowApplyCancelValueAtIndex(index, false);
+    setIsHandling(false);
 
     if (contentText.length < 2) return;
     setEditorValues((prev) => {
@@ -179,12 +186,12 @@ function EmploymentHistory() {
       return newValues;
     });
     handleUpdateExperience(index, { description: correctedText });
-    setIsCheckSpell(0)
+    setIsCheckSpell(0);
   };
 
   const handleCancel = async () => {
-    updateShowApplyCancelValueAtIndex(index, false)
-    setIsHandling(false)
+    updateShowApplyCancelValueAtIndex(index, false);
+    setIsHandling(false);
 
     if (contentText.length < 2) return;
     setEditorValues((prev) => {
@@ -192,25 +199,21 @@ function EmploymentHistory() {
       newValues[index] = originalText;
       return newValues;
     });
-    setIsCheckSpell(0)
-
+    setIsCheckSpell(0);
   };
   const handleImproveSentence = async () => {
-
     if (contentText.length < 2) return;
-    setIsLoading(true)
-    setIsHandling(true)
+    setIsLoading(true);
+    setIsHandling(true);
 
-    var hanText = cleanContent(contentText)
+    var hanText = cleanContent(contentText);
 
-    setText(hanText)
-    setOriginalText(hanText)
-
+    setText(hanText);
+    setOriginalText(hanText);
 
     try {
-
       const result = await improveSentence(hanText);
-      console.log("result", result)
+      console.log("result", result);
 
       setCorrectedText(result.data);
 
@@ -219,7 +222,9 @@ function EmploymentHistory() {
       // console.log("editorValues:\n", editorValues)
       // highlightedText = highlightedText.replace(/<\/?p>/g, '')
       //console.log(index, "highlightedText:\n", highlightedText)
-      highlightedText = highlightedText.replace(/&lt;p&gt;/g, '').replace(/&lt;\/p&gt;/g, '');
+      highlightedText = highlightedText
+        .replace(/&lt;p&gt;/g, "")
+        .replace(/&lt;\/p&gt;/g, "");
       //console.log(index, "highlightedText:\n", highlightedText)
 
       setEditorValues((prev) => {
@@ -229,29 +234,25 @@ function EmploymentHistory() {
         return newValues;
       });
       //console.log("editorValues[index]", editorValues[index])
-
-
     } catch (error) {
-      console.error('Error while checking spelling:', error);
+      console.error("Error while checking spelling:", error);
     } finally {
-      console.log("check2", editorValues)
+      console.log("check2", editorValues);
 
-      setIsLoading(false)
-      setIsCheckSpell(2)
+      setIsLoading(false);
+      setIsCheckSpell(2);
 
-      updateShowApplyCancelValueAtIndex(index, true)
-
+      updateShowApplyCancelValueAtIndex(index, true);
     }
-
   };
 
   const handleEditorClick = () => {
-    console.log("handleEditorClick: ", isHandlingRef.current)
+    console.log("handleEditorClick: ", isHandlingRef.current);
 
     if (isHandlingRef.current) {
-      setNotification('Is handling...');
+      setNotification("Is handling...");
       setTimeout(() => {
-        setNotification('');
+        setNotification("");
       }, 5000);
     }
   };
@@ -413,7 +414,9 @@ function EmploymentHistory() {
                 {item.isOpen && (
                   <div className="mt-6">
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-medium text-gray-700">Description</label>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Description
+                      </label>
                       <div>
                         {showApplyCancel[index] && isCheckSpell == 1 ? (
                           <>
@@ -461,15 +464,15 @@ function EmploymentHistory() {
                             Upgrade
                           </button>
                         ) : null}
-
                       </div>
                     </div>
 
-                    {notification && <div className="notification">{notification}</div>}
-
+                    {notification && (
+                      <div className="notification">{notification}</div>
+                    )}
 
                     <Editor
-                      apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
+                      apiKey={`${import.meta.env.VITE_EDITOR}`}
                       // placeholder="e.g. Created and implemented lesson plans based on child-led interests and curiosities."
                       init={{
                         menubar: false,
@@ -483,20 +486,19 @@ function EmploymentHistory() {
                         setup: (editor) => {
                           editor.ui.registry.addButton("customButton", {
                             text: "AI pre-written phrases +",
-                            onAction: () => { },
+                            onAction: () => {},
                             classes: "rounded-lg font-bold text-blue-500",
                           });
-                          editor.on('keydown', (event) => {
+                          editor.on("keydown", (event) => {
                             if (isHandlingRef.current == true) {
                               event.preventDefault();
                             }
                           });
 
-                          editor.on('click', handleEditorClick);
+                          editor.on("click", handleEditorClick);
                         },
                       }}
                       value={editorValues[index] || ""}
-
                       onEditorChange={(content) => {
                         setIndex(index);
                         setText(content);
@@ -513,8 +515,7 @@ function EmploymentHistory() {
                       chances
                     </div>
                   </div>
-                )
-                }
+                )}
               </div>
             );
           })
@@ -532,13 +533,13 @@ function EmploymentHistory() {
             + Add one more employment
           </button>
         </div>
-      </div >
+      </div>
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="loader"></div> {/* Bạn có thể thêm CSS để tạo hiệu ứng quay tròn */}
+          <div className="loader"></div>{" "}
+          {/* Bạn có thể thêm CSS để tạo hiệu ứng quay tròn */}
         </div>
       )}
-
     </>
   );
 }

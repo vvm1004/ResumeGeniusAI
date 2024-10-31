@@ -133,7 +133,7 @@ function Awards() {
                   </label>
 
                   <Editor
-                    apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
+                    apiKey={`${import.meta.env.EDITOR}`}
                     init={{
                       menubar: false,
                       plugins: [

@@ -44,5 +44,44 @@ export const improveSentence = async (text) => {
         throw error;
     }
 };
+export const generateSummary = async (curdata) => {
+    var data = transformUserData(curdata);
+    console.log("\n\ndataa: ", data);
+    try {
+        const response = await fetch(API_URL + "generate-summary", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ data }),
+        });
+        console.log("response:", response);
 
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
 
+        const responseData = await response.json();
+        console.log("responseData", responseData)
+        return responseData.data.data;
+
+    } catch (error) {
+        console.error('Error while improve sentence:', error);
+        throw error;
+    }
+};
+
+export const transformUserData = (userData) => {
+    console.log("userData", userData)
+    return {
+        name: userData?.personalInformation?.name || '',
+        job_title: userData?.title || '',
+        achievements: userData?.awards?.map(award => award.title) || [],
+        skills: userData?.skills?.map(skill => skill.value) || [],
+        activities: userData?.activities || [],
+        hobbies: userData?.interests?.map(interest => interest.title) || [],
+        education: userData?.education?.map(edu => edu.degree || '') || [],
+        languages: userData?.languages || [],
+        employment_history: userData?.experience?.map(exp => exp.jobTitle) || []
+    };
+};

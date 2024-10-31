@@ -425,7 +425,7 @@ function Education() {
                     {notification && <div className="notification">{notification}</div>}
 
                     <Editor
-                      apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
+                      apiKey={`${import.meta.env.VITE_EDITOR}`}
                       // placeholder="e.g. Graduated with HIgh Honors."
                       init={{
                         menubar: false,

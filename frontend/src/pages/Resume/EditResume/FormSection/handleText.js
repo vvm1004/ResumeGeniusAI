@@ -36,7 +36,7 @@ export function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 };
 export function applyCorrections(sentence, corrections) {
-    let highlightedSentence = sentence; // Bắt đầu với câu gốc
+    let highlightedSentence = sentence; 
     console.log("corrections:\n", corrections)
 
     corrections.forEach(([wrongWord, correctWord]) => {

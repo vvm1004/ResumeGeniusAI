@@ -1,9 +1,12 @@
 import { DataContext } from "@/context/DataContext";
 import { Editor } from "@tinymce/tinymce-react";
+import { useLocation } from 'react-router-dom';
+
 import { useContext, useEffect, useState, useRef } from "react";
 
-import { spellCheckText, improveSentence } from "../handleContent"
+import { spellCheckText, improveSentence, generateSummary } from "../handleContent"
 import "./loading.css"
+
 import { cleanContent, applyImproveSentence, escapeHtml, applyCorrections } from "./handleText"
 function ProfessionalSummary() {
   const { data, setData } = useContext(DataContext);
@@ -13,6 +16,8 @@ function ProfessionalSummary() {
     if (content.length <= 600 && content !== data.summary) {
       setCharCount(content.length);
       setData({ ...data, summary: content });
+      setCurData(data)
+
     }
   };
 
@@ -30,21 +35,23 @@ function ProfessionalSummary() {
   const [isHandling, setIsHandling] = useState(false);
   const [notification, setNotification] = useState('');
   const isHandlingRef = useRef(false);
+  var [curData, setCurData] = useState();
 
   useEffect(() => {
-    if (editorValues == data.summary) return;
-    setEditorValues(data.summary);
+    setCurData(data)
 
+    if (editorValues == data.summary) return;
+
+    setEditorValues(data);
   }, [data]);
 
-  // useEffect(() => {
-  //   console.log("isHandling updated: ", isHandling);
 
-  // }, [isHandling]);
 
 
   useEffect(() => {
     isHandlingRef.current = isHandling;
+    console.log("isHandling: ", isHandling, isHandlingRef.current);
+
   }, [isHandling]);
 
   const [contentText, setText] = useState('');
@@ -65,7 +72,16 @@ function ProfessionalSummary() {
       }, 5000);
     }
   };
+  const checkRequire = () => {
 
+    if (isHandlingRef.current) {
+      setNotification('Job title field must be type...');
+      setTimeout(() => {
+        setNotification('');
+      }, 5000);
+      setIsHandling(false)
+    }
+  };
 
   const handleSpellCheck = async () => {
     setIsHandling(true)
@@ -159,7 +175,25 @@ function ProfessionalSummary() {
 
   };
 
+  const genSummary = async () => {
+    if (curData.title == "") {
+      console.log("curData:::::::::", curData)
+      setIsHandling(true)
+      checkRequire()
+      return;
+    }
 
+    console.log("curData:55:", curData)
+
+    setIsLoading(true)
+    const timer = setTimeout(() => {
+    }, 2000);
+    var newSummary = await generateSummary(curData)
+    setEditorValues(newSummary);
+
+    setIsLoading(false)
+
+  }
 
 
 
@@ -189,6 +223,12 @@ function ProfessionalSummary() {
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm font-medium text-gray-700"></label>
             <div>
+              <button
+                className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={genSummary}
+              >
+                Generate with AI
+              </button>
               {showApplyCancel && isCheckSpell == 1 ? (
                 <>
                   <button
@@ -242,7 +282,7 @@ function ProfessionalSummary() {
           {notification && <div className="notification">{notification}</div>}
 
           <Editor
-            apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
+            apiKey={`${import.meta.env.VITE_EDITOR}`}
             placeholder="Curious science teacher with 8+ years of experience and a track record of..."
             init={{
               menubar: false,
@@ -255,9 +295,9 @@ function ProfessionalSummary() {
                 "formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | customButton",
               setup: (editor) => {
                 editor.ui.registry.addButton("customButton", {
-                  text: "AI pre-written phrases +",
+                  text: "AI generate summary",
                   onAction: () => {
-                    alert("Feature coming soon!");
+                    genSummary()
                   },
                   classes: "rounded-lg font-bold text-blue-500",
                 });

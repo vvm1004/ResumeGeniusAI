@@ -16,3 +16,9 @@
         transform: rotate(360deg);
     }
 }
+
+.notification {
+    margin: 0;
+    padding: 1px;
+    background-color: yellow;
+}

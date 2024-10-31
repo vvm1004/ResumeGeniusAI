@@ -6,6 +6,7 @@ from model_training.edit_field.editModelHandler import predict_field_name
 from model_training.check_spell.upgradeSentence import upgrade_sentence
 from model_training.check_spell.spellcheck import check_and_correct_spelling_with_positions
 from extract_data.resume_upgrade_module import handleData
+from gen_sumary.generateSumary import generate_resume_summary
 def normalize_phrase(phrase):
     # Thay thế dấu gạch dưới và dấu gạch nối bằng khoảng trắng
     phrase = phrase.replace('_', ' ').replace('-', ' ')
@@ -593,12 +594,56 @@ def check_spell():
         'corrections': corrections
         
     })
-
 @app.route('/generate_summary', methods=['POST'])
 def generate_summary():
     data = request.json
-    key_words = data.get('sentence')
+    print("Received data:", data)
 
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    input_data = data['data']['data']
+    
+    # Extracting variables
+    name = input_data.get('name')
+    job_title = input_data.get('job_title')
+    achievements = input_data.get('achievements', [])
+    skills = input_data.get('skills', [])
+    activities = input_data.get('activities', [])
+    hobbies = input_data.get('hobbies', [])
+    education = input_data.get('education', [])
+    languages=input_data.get('languages',[])
+    employment_history = input_data.get('employment_history', [])
+    employment_history = [str(item) if item is not None else '' for item in employment_history]
+
+    # Printing the extracted variables
+    print("Name:", name)
+    print("Job Title:", job_title)
+    print("Achievements:", achievements)
+    print("Skills:", skills)
+    print("Activities:", activities)
+    print("Hobbies:", hobbies)
+    print("Education:", education)
+    print("employment_history:", employment_history)
+    print("languages:", languages)
+
+    
+    # Gọi hàm tạo summary
+    summary = generate_resume_summary(
+        name,
+        job_title,
+        achievements,
+        skills,
+        activities,
+        hobbies,
+        education,
+        languages,
+        employment_history
+    )
+    
+    print("Generated summary:", summary)
+    
+    return jsonify({"summary": summary})
 
 
 if __name__ == '__main__':

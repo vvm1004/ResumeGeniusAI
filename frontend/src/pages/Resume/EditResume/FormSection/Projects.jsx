@@ -85,11 +85,8 @@ function Projects() {
   const handleSpellCheck = async () => {
     setIsLoading(true)
     setIsHandling(true)
-
     setText(contentText.replace(/<\/?p>/g, ''))
     setOriginalText(contentText.replace(/<\/?p>/g, ''))
-
-
     try {
 
       const result = await spellCheckText(contentText.replace(/<\/?p>/g, ''));
@@ -339,7 +336,7 @@ function Projects() {
                       {notification && <div className="notification">{notification}</div>}
 
                       <Editor
-                        apiKey="olzjmmt7ltp5nziuyldtd4pqrcecf9hsvutq9aj2noaesmqz"
+                        apiKey={`${import.meta.env.VITE_EDITOR}`}
                         init={{
                           menubar: false,
                           plugins: [

@@ -19,7 +19,7 @@ const ResumePreview = () => {
   const { data, setData, access_token } = useContext(DataContext);
   const [template, setTemplate] = useState([]);
   const [showTemplateSelection, setShowTemplateSelection] = useState(false);
-  // const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+  // // const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [imageCV, setImageCV] = useState(null);
   const [loader, setLoader] = useState(false);
 
