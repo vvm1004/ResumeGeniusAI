@@ -6,6 +6,7 @@ from model_training.edit_field.editModelHandler import predict_field_name
 from model_training.check_spell.upgradeSentence import upgrade_sentence
 from model_training.check_spell.spellcheck import check_and_correct_spelling_with_positions
 from extract_data.resume_upgrade_module import handleData
+from gen_sumary.generateSumary import generate_resume_summary
 def normalize_phrase(phrase):
     # Thay thế dấu gạch dưới và dấu gạch nối bằng khoảng trắng
     phrase = phrase.replace('_', ' ').replace('-', ' ')
@@ -593,12 +594,43 @@ def check_spell():
         'corrections': corrections
         
     })
-
 @app.route('/generate_summary', methods=['POST'])
 def generate_summary():
     data = request.json
-    key_words = data.get('sentence')
+    name = data.get('name', '')
+    job_title = data.get('job_title', '')
+    achievements = data.get('achievements', [])
+    skills = data.get('skills', [])
+    activities = data.get('activities', [])
+    hobbies = data.get('hobbies', [])
+    education = data.get('education', [])
+    languages = data.get('languages', [])
+    employment_history = data.get('employment_history', [])
 
+    # Chuyển đổi các mảng thành chuỗi, bỏ qua các phần tử None
+    achievements_str = ', '.join(filter(None, achievements))
+    skills_str = ', '.join(filter(None, skills))
+    activities_str = ', '.join(filter(None, activities))
+    hobbies_str = ', '.join(filter(None, hobbies))
+    education_str = ', '.join(filter(None, education))
+    languages_str = ', '.join(filter(None, languages))
+    employment_history_str = ', '.join(filter(None, employment_history))
+
+    #print("\n\nsummmmm: \t\n", data)
+
+    summary = generate_resume_summary(
+        name,
+        job_title,
+        achievements_str,
+        skills_str,
+        activities_str,
+        hobbies_str,
+        education_str,
+        languages_str,
+        employment_history_str
+    )
+    
+    return jsonify({"summary": summary})
 
 
 if __name__ == '__main__':

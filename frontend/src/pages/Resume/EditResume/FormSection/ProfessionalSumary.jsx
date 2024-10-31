@@ -2,7 +2,7 @@ import { DataContext } from "@/context/DataContext";
 import { Editor } from "@tinymce/tinymce-react";
 import { useContext, useEffect, useState, useRef } from "react";
 
-import { spellCheckText, improveSentence } from "../handleContent"
+import { spellCheckText, improveSentence, generateSummary } from "../handleContent"
 import "./loading.css"
 import { cleanContent, applyImproveSentence, escapeHtml, applyCorrections } from "./handleText"
 function ProfessionalSummary() {
@@ -30,11 +30,12 @@ function ProfessionalSummary() {
   const [isHandling, setIsHandling] = useState(false);
   const [notification, setNotification] = useState('');
   const isHandlingRef = useRef(false);
+  var [curData, setCurData] = useState();
 
   useEffect(() => {
     if (editorValues == data.summary) return;
-    setEditorValues(data.summary);
-
+    setCurData(data)
+    setEditorValues(data);
   }, [data]);
 
   // useEffect(() => {
@@ -68,6 +69,7 @@ function ProfessionalSummary() {
 
 
   const handleSpellCheck = async () => {
+    genSummary();
     setIsHandling(true)
     setIsLoading(true)
     setText(contentText.replace(/<\/?p>/g, ''))
@@ -159,7 +161,14 @@ function ProfessionalSummary() {
 
   };
 
+  const genSummary = async () => {
+    setIsHandling(true)
+    var newSummary = await generateSummary(curData)
+    setEditorValues(newSummary);
 
+    setIsHandling(false)
+
+  }
 
 
 
@@ -255,9 +264,9 @@ function ProfessionalSummary() {
                 "formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | customButton",
               setup: (editor) => {
                 editor.ui.registry.addButton("customButton", {
-                  text: "AI pre-written phrases +",
+                  text: "AI generate summary",
                   onAction: () => {
-                    alert("Feature coming soon!");
+                    genSummary();
                   },
                   classes: "rounded-lg font-bold text-blue-500",
                 });

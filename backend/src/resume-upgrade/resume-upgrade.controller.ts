@@ -40,4 +40,22 @@ export class ResumeUpgradeController {
 
         return await this.resumeUpgradeService.uploadResume(file, userId);
     }
+
+    @Public()
+    @SkipCheckPermission()
+    @Post('generate-summary')
+    async generateSummary(@Body() body: {
+        name: string;
+        job_title: string;
+        achievements?: any;
+        skills?: any;
+        activities?: any;
+        hobbies?: any;
+        education?: any;
+        languages?: any;
+        employment_history?: any;
+    }) {
+        return await this.resumeUpgradeService.generateSummary(body);
+    }
+
 }

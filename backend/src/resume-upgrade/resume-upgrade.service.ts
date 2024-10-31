@@ -110,6 +110,23 @@ export class ResumeUpgradeService {
             throw error;
         }
     }
+    async generateSummary(data: any): Promise<any> {
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(`${this.url}/generate_summary`, { data: data }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }),
+            );
+           // console.log("data: ", response.data.summary)
+            return response.data.summary;
+        } catch (error) {
+            console.error('Error calling Flask API:', error);
+            throw error;
+        }
+    }
+
 
 
 }

@@ -85,11 +85,8 @@ function Projects() {
   const handleSpellCheck = async () => {
     setIsLoading(true)
     setIsHandling(true)
-
     setText(contentText.replace(/<\/?p>/g, ''))
     setOriginalText(contentText.replace(/<\/?p>/g, ''))
-
-
     try {
 
       const result = await spellCheckText(contentText.replace(/<\/?p>/g, ''));
