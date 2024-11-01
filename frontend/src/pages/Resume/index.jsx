@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 import React from "react";
 import "./index.scss";
 import Modal from "./Upload/Modal";
-import "./EditResume/FormSection/loading.css";
 
 const DashboardResumes = () => {
   const [data, setData] = useState([]);
@@ -212,20 +211,23 @@ const DashboardResumes = () => {
       }
     }
   };
+  const [isOpenLoading, setIsOpenLoading] = useState(false);
 
+  const OpenLoading = () => setIsOpenLoading(true);
+  const CloseLoading = () => setIsOpenLoading(false);
+  useEffect(() => {
+
+
+  }, fileInputRef.current)
   const handleButtonClick = () => {
-
     fileInputRef.current.click();
-
-
   };
-  const isHandlingRef = useRef(false);
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    isHandlingRef.current = true
-    console.log("iisss", isHandlingRef)
+    //    console.log("iisss", isHandlingRef)
+    OpenLoading();
 
     const formData = new FormData();
     formData.append("file", file);
@@ -255,8 +257,7 @@ const DashboardResumes = () => {
             }
           );
           setData((prevData) => [...prevData, response2.data.data]);
-          isHandlingRef.current = false
-          console.log("iisss", isHandlingRef)
+          //          console.log("iisss", isHandlingRef)
 
           navigate(`edit/${response2?.data?.data._id}`);
         } else {
@@ -362,6 +363,8 @@ const DashboardResumes = () => {
                 handleFileChange={handleFileChange}
                 handleButtonClick={handleButtonClick}
                 fileInputRef={fileInputRef}
+                isLoading={isOpenLoading}
+                openLoading={OpenLoading}
               />
 
               <button
@@ -487,11 +490,7 @@ const DashboardResumes = () => {
         </div>
 
       </div>
-      {isHandlingRef.current && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="loader"></div>
-        </div>
-      )}
+
     </>
   );
 };

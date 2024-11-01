@@ -112,7 +112,7 @@ function processResumeData(data: any, userId: string): ResumeBuilderData {
     return {
         title: data.title || "Untitled",
         user: userId,
-        template: null,
+        template: "67125252513c2654c1ddd086",
         personalInformation: {
             name: data["Personal Information"]?.Name?.value || "",
             email: data["Personal Information"]?.Email?.value || "",
