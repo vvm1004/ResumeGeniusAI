@@ -22,29 +22,30 @@ def genSumary(promot):
     response = chat_session.send_message(
       promot
     )
-
-    if response.text.strip():
-        # Parse the JSON response string into a dictionary
-        try:
-            response_data = json.loads(response.text)
-            # Return the summary value
-            return response_data.get("summary", "Summary not found.")
-        except json.JSONDecodeError:
-            print("Error decoding JSON response.")
-            return None
-    else:
-        print("Phản hồi từ API trống hoặc không hợp lệ.")
+    print("ress:0/n",response)
+    try:
+        candidates = response.candidates  # Lấy danh sách candidates
+        if candidates:
+            content = candidates[0].content.parts[0].text  # Lấy phần text
+            
+            # In chuỗi JSON để kiểm tra
+            print("JSON Content:", content)
+            
+            json_data = json.loads(content)  # Chuyển đổi chuỗi JSON thành đối tượng Python
+            return json_data  # Trả về đối tượng JSON
+    except (AttributeError, json.JSONDecodeError) as e:
+        print(f"Error processing response: {e}")
         return None
 
 def generate_resume_summary(name, job_title, achievements=None, skills=None, activities=None, 
                              hobbies=None, education=None, languages=None, employment_history=None):
     summary_lines = []
-    summary_lines.append(f"Based on the following information, create a concise and impactful resume summary:\n")
+    summary_lines.append(f"Based on the following information, create 5  impactful resume for levels:  Intern, Mid Level and Freasher level ,senior and leader level :\n")
 
 
     summary_lines.append(f"Job Title: {job_title}")
-    if name:
-        summary_lines.append(f"Name: {name}")
+    # if name:
+    #     summary_lines.append(f"Name: {name}")
     if achievements:
         summary_lines.append("Achievements: " + ", ".join(achievements))
     if skills:
@@ -60,6 +61,6 @@ def generate_resume_summary(name, job_title, achievements=None, skills=None, act
     if employment_history:
         summary_lines.append("Employment History: " + ", ".join(employment_history))
     
-    summary_lines.append(f"The summary should clearly highlight the candidate's data in their field. Ensure that it captures the attention of potential employers. ")
+    summary_lines.append(f"The summary should clearly highlight the candidate's data in their field. Ensure that it captures the attention of potential employers.  just return with level name in key and the corresponding summary")
     return genSumary("\n".join(summary_lines))
    

@@ -39,7 +39,10 @@ const Home: React.FC = () => {
 
     const navigate = useNavigate();
 
+    const [isOpenLoading, setIsOpenLoading] = useState(false);
 
+    const OpenLoading = () => setIsOpenLoading(true);
+    const CloseLoading = () => setIsOpenLoading(false);
     const handleButtonClick = () => {
         fileInputRef.current?.click(); // Mở hộp thoại chọn file
     };
@@ -47,7 +50,7 @@ const Home: React.FC = () => {
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
-
+        OpenLoading()
         const formData = new FormData();
         formData.append('file', file);
         formData.append('userId', String(userId));
@@ -475,7 +478,10 @@ const Home: React.FC = () => {
                 onClose={closeModal}
                 handleFileChange={handleFileChange}
                 handleButtonClick={handleButtonClick}
-                fileInputRef={fileInputRef} />
+                fileInputRef={fileInputRef}
+                isLoading={isOpenLoading}
+                openLoading={OpenLoading}
+            />
         </div>
     );
 };

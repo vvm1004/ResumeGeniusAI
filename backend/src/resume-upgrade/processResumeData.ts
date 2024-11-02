@@ -92,6 +92,7 @@ interface CustomField {
 interface ResumeBuilderData {
     title: string;
     user: string;
+    template: string;
     personalInformation: PersonalInformation;
     summary: string;
     experience: Experience[];
@@ -111,6 +112,7 @@ function processResumeData(data: any, userId: string): ResumeBuilderData {
     return {
         title: data.title || "Untitled",
         user: userId,
+        template: "67125252513c2654c1ddd086",
         personalInformation: {
             name: data["Personal Information"]?.Name?.value || "",
             email: data["Personal Information"]?.Email?.value || "",

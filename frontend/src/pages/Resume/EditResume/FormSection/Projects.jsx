@@ -2,8 +2,9 @@ import { DataContext } from "@/context/DataContext";
 import { Editor } from "@tinymce/tinymce-react";
 import { useContext, useEffect, useState, useRef } from "react";
 
-import { spellCheckText, improveSentence } from "../handleContent"
+import { spellCheckText, improveSentence, generateSummary } from "../handleContent"
 import { cleanContent, applyImproveSentence, escapeHtml, applyCorrections } from "./handleText"
+import GenerateSummaryModal from "./GenerateSummaryModal"
 
 import "./loading.css"
 function Projects() {

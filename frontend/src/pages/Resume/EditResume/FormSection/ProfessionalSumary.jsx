@@ -6,7 +6,7 @@ import { useContext, useEffect, useState, useRef } from "react";
 
 import { spellCheckText, improveSentence, generateSummary } from "../handleContent"
 import "./loading.css"
-
+import GenerateSummaryModal from "./GenerateSummaryModal"
 import { cleanContent, applyImproveSentence, escapeHtml, applyCorrections } from "./handleText"
 function ProfessionalSummary() {
   const { data, setData } = useContext(DataContext);
@@ -84,6 +84,8 @@ function ProfessionalSummary() {
   };
 
   const handleSpellCheck = async () => {
+    setSunnaryModalOpen(false);
+
     setIsHandling(true)
     setIsLoading(true)
     setText(contentText.replace(/<\/?p>/g, ''))
@@ -118,6 +120,7 @@ function ProfessionalSummary() {
 
   const handleApply = async () => {
     setIsHandling(false)
+    setSunnaryModalOpen(false);
 
     setShowApplyCancel(false)
     if (contentText.length < 2) return;
@@ -129,6 +132,7 @@ function ProfessionalSummary() {
 
   const handleCancel = async () => {
     setIsHandling(false)
+    setSunnaryModalOpen(false);
 
     setShowApplyCancel(false)
 
@@ -139,6 +143,7 @@ function ProfessionalSummary() {
 
   };
   const handleImproveSentence = async () => {
+    setSunnaryModalOpen(false);
 
     if (contentText.length < 2) return;
     setIsHandling(true)
@@ -174,10 +179,13 @@ function ProfessionalSummary() {
     }
 
   };
+  const [summaryModalOpen, setSunnaryModalOpen] = useState(false);
+  const [buttonPosition, setButtonPosition] = useState({});
+  const [genSummaryData, setGenSummaryData] = useState({});
 
-  const genSummary = async () => {
+  const genSummary = async (e) => {
     if (curData.title == "") {
-      console.log("curData:::::::::", curData)
+      // console.log("curData:::::::::", curData)
       setIsHandling(true)
       checkRequire()
       return;
@@ -189,14 +197,24 @@ function ProfessionalSummary() {
     const timer = setTimeout(() => {
     }, 2000);
     var newSummary = await generateSummary(curData)
-    setEditorValues(newSummary);
-
+    setGenSummaryData(newSummary)
     setIsLoading(false)
+
+
+    const rect = e.target.getBoundingClientRect();
+    setButtonPosition({
+      top: rect.bottom + window.scrollY,
+      left: rect.left + window.scrollX
+    });
+    setSunnaryModalOpen(true);
 
   }
 
 
-
+  const handleSummarySelect = (text) => {
+    setEditorValues(text);
+    setSunnaryModalOpen(false);
+  };
 
 
 
@@ -229,6 +247,13 @@ function ProfessionalSummary() {
               >
                 Generate with AI
               </button>
+              <GenerateSummaryModal
+                isOpen={summaryModalOpen}
+                onClose={() => setSunnaryModalOpen(false)}
+                data={genSummaryData}
+                onSelect={handleSummarySelect}
+                position={buttonPosition}
+              />
               {showApplyCancel && isCheckSpell == 1 ? (
                 <>
                   <button

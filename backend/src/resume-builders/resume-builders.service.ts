@@ -56,18 +56,18 @@ export class ResumeBuildersService {
   }
   async findByUserId(userId: string, currentPage: number, limit: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
-    
+
     // Remove pagination parameters from filter
     delete filter.current;
     delete filter.pageSize;
-  
+
     // Add userId to the filter
     filter.user = userId; // Assuming your schema has a field 'user' to represent the user ID
-  
+
     let offset = (currentPage - 1) * (limit || 10); // Default to 10 if limit is not provided
     const totalItems = await this.resumeBuidlerModel.countDocuments(filter); // Use countDocuments for accuracy
     const totalPages = Math.ceil(totalItems / limit);
-  
+
     const result = await this.resumeBuidlerModel.find(filter)
       .skip(offset)
       .limit(limit)
@@ -75,7 +75,7 @@ export class ResumeBuildersService {
       .populate(population)
       .select(projection as any)
       .exec();
-  
+
     return {
       meta: {
         current: currentPage,
@@ -86,8 +86,8 @@ export class ResumeBuildersService {
       result,
     };
   }
-  
-  
+
+
 
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
