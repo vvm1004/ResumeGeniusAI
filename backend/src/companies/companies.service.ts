@@ -14,6 +14,9 @@ export class CompaniesService {
   constructor(@InjectModel(Company.name) private companyModel: SoftDeleteModel<CompanyDocument>) { }
 
   create(createCompanyDto: CreateCompanyDto, user: IUser) {
+    if(createCompanyDto.minScale >= createCompanyDto.maxScale){
+      throw new Error('minScale must be less than maxScale');
+    }
     return this.companyModel.create({
       ...createCompanyDto,
       createdBy: {
@@ -62,6 +65,9 @@ export class CompaniesService {
 
 
   async update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
+    if(updateCompanyDto.minScale >= updateCompanyDto.maxScale){
+      throw new Error('minScale must be less than maxScale');
+    }
     return await this.companyModel.updateOne(
       { _id: id },
       {
