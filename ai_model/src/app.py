@@ -6,7 +6,7 @@ from model_training.edit_field.editModelHandler import predict_field_name
 from model_training.check_spell.upgradeSentence import upgrade_sentence
 from model_training.check_spell.spellcheck import check_and_correct_spelling_with_positions
 from extract_data.resume_upgrade_module import handleData
-from gen_sumary.generateSumary import generate_resume_summary
+from gen_sumary.generateSumary import generate_resume_summary, generate_employment_history_description
 def normalize_phrase(phrase):
     # Thay thế dấu gạch dưới và dấu gạch nối bằng khoảng trắng
     phrase = phrase.replace('_', ' ').replace('-', ' ')
@@ -644,6 +644,30 @@ def generate_summary():
     print("Generated summary:", summary)
     
     return jsonify({"summary": summary})
+
+
+@app.route('/generate_employment_history', methods=['POST'])
+def generate_employment_history():
+    data = request.json
+    print("Received data:", data)
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    input_data = data['data']
+    # Extracting variables
+    position = input_data.get('position')
+    job_title = input_data.get('job_title')
+    # Printing the extracted variables
+    print("Position:", position)
+    print("Job Title:", job_title)
+    des = generate_employment_history_description(
+        
+        job_title,position
+    )
+    
+    #print("Generated dess:", des)
+    
+    return jsonify({"Description": des})
 
 
 if __name__ == '__main__':

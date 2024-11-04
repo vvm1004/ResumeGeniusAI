@@ -126,6 +126,22 @@ export class ResumeUpgradeService {
             throw error;
         }
     }
+    async generateEmploymentDescription(jobTitle: string, position: string): Promise<any> {
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(`${this.url}/generate_employment_history`, { data: { "job_title": jobTitle, "position": position } }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }),
+            );
+            console.log("data: ", response.data.Description)
+            return { data: response.data.Description };
+        } catch (error) {
+            console.error('Error calling Flask API:', error);
+            throw error;
+        }
+    }
 
 
 

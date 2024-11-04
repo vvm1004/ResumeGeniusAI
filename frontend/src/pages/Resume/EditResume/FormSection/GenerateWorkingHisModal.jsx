@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import "./GenerateSummaryModal.scss";
+import "./GenerateWorkingHisModal.scss";
 
-const GenerateSummaryModal = ({ isOpen, onClose, data, onSelect, position }) => {
+const GenerateWorkingHisModal = ({ isOpen, onClose, data, onSelect, position, index }) => {
     if (!isOpen) return null;
     console.log("isOpen:", isOpen)
 
@@ -12,18 +12,18 @@ const GenerateSummaryModal = ({ isOpen, onClose, data, onSelect, position }) => 
     };
 
     return (
-        <div className="sum-modal-overlay" style={{ top: position.top, left: position.left }} onClick={handleOverlayClick}>
-            <div className="sum-modal-content">
-                <div className="sum-modal-header">
-                    <h2>Select Summary</h2>
+        <div className="des-modal-overlay" style={{ top: position.top, left: position.left }} onClick={handleOverlayClick}>
+            <div className="des-modal-content">
+                <div className="des-modal-header">
+                    <h2>Select Description</h2>
 
                     <button onClick={onClose} className="btn-danger">X</button>
 
                 </div>
                 <ul className="summary-list">
                     {Object.entries(data).map(([title, text]) => (
-                        <li key={title} onClick={() => onSelect(text)} className="summary-item">
-                            <strong>Level: {title}</strong>
+                        <li key={title} onClick={() => onSelect(text, index)} className="summary-item">
+                            <strong> {title}</strong>
                             <p>{text}</p>
                         </li>
                     ))}
@@ -33,4 +33,4 @@ const GenerateSummaryModal = ({ isOpen, onClose, data, onSelect, position }) => 
     );
 };
 
-export default GenerateSummaryModal;
+export default GenerateWorkingHisModal;

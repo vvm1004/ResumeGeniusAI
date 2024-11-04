@@ -179,13 +179,13 @@ function ProfessionalSummary() {
     }
 
   };
+
   const [summaryModalOpen, setSunnaryModalOpen] = useState(false);
   const [buttonPosition, setButtonPosition] = useState({});
   const [genSummaryData, setGenSummaryData] = useState({});
 
   const genSummary = async (e) => {
     if (curData.title == "") {
-      // console.log("curData:::::::::", curData)
       setIsHandling(true)
       checkRequire()
       return;
@@ -198,6 +198,8 @@ function ProfessionalSummary() {
     }, 2000);
     var newSummary = await generateSummary(curData)
     setGenSummaryData(newSummary)
+    console.log("newSummary:55:", newSummary)
+
     setIsLoading(false)
 
 

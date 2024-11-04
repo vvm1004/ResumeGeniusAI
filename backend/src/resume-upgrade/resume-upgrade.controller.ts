@@ -57,5 +57,14 @@ export class ResumeUpgradeController {
     }) {
         return await this.resumeUpgradeService.generateSummary(body);
     }
+    @Public()
+    @SkipCheckPermission()
+    @Post('generate_employment_history')
+    async generate_employment_history(@Body() body: {
+        job_title: string;
+        position?: string;
 
+    }) {
+        return await this.resumeUpgradeService.generateEmploymentDescription(body.job_title, body.position);
+    }
 }

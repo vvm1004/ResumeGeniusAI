@@ -40,7 +40,7 @@ def genSumary(promot):
 def generate_resume_summary(name, job_title, achievements=None, skills=None, activities=None, 
                              hobbies=None, education=None, languages=None, employment_history=None):
     summary_lines = []
-    summary_lines.append(f"Based on the following information, create 5  impactful resume for levels:  Intern, Mid Level and Freasher level ,senior and leader level :\n")
+    summary_lines.append(f"Based on the following information, create 9 impactful resume for levels:  Intern, Freasher, Junior, Mid-level, Senior, Lead, Architect, Manager, CTO level :\n")
 
 
     summary_lines.append(f"Job Title: {job_title}")
@@ -62,5 +62,20 @@ def generate_resume_summary(name, job_title, achievements=None, skills=None, act
         summary_lines.append("Employment History: " + ", ".join(employment_history))
     
     summary_lines.append(f"The summary should clearly highlight the candidate's data in their field. Ensure that it captures the attention of potential employers.  just return with level name in key and the corresponding summary")
+    return genSumary("\n".join(summary_lines))
+
+
+
+
+def generate_employment_history_description( job_title, position):
+    summary_lines = []
+    summary_lines.append(f"Generate 5  working  description for the following position and job title:\n")
+
+
+    summary_lines.append(f"Job Title: {job_title}")
+    summary_lines.append(f"Position: {position}")
+    
+    
+    summary_lines.append(f"The description should  relevant to the position and jobtitle. Ensure that it captures the attention of potential employers.  just return with lnumber in key and the corresponding description")
     return genSumary("\n".join(summary_lines))
    
