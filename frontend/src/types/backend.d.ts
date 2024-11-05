@@ -42,6 +42,10 @@ export interface ICompany {
     name?: string;
     address?: string;
     logo: string;
+    image: string; 
+    linkUrl: string; 
+    minScale: number; 
+    maxScale: number;
     description?: string;
     createdBy?: string;
     isDeleted?: boolean;
