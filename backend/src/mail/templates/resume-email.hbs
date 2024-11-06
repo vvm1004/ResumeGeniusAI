@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <style>
+      body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
+      .header { background-color: #f7f7f7; padding: 10px; text-align: center;
+      border-bottom: 1px solid #ddd; } .content { padding: 20px; } .footer {
+      text-align: center; margin-top: 20px; font-size: 12px; color: #777; } .btn
+      { background-color: #4CAF50; color: white; padding: 10px 20px;
+      text-decoration: none; border-radius: 5px; display: inline-block;
+      margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <div class='header'>
+      <h2>Your Requested Resume</h2>
+    </div>
+    <div class='content'>
+      <p>Hi {{receiver}},</p>
+      <p>Thank you for using our service. Please find your requested resume
+        attached to this email.</p>
+      <p>We hope this helps you on your job search journey!</p>
+      <p>Best regards,</p>
+      <p>The Support Team</p>
+      <a href='{{resumeLink}}' class='btn'>View Resume Online</a>
+    </div>
+    <div class='footer'>
+      <p>&copy; {{year}} RGA TEAM. All rights reserved.</p>
+    </div>
+  </body>
+</html>

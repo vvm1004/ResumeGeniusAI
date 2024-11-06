@@ -59,7 +59,8 @@ const DashboardResumes = () => {
       try {
         if (userId) {
           const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL
+            `${
+              import.meta.env.VITE_BACKEND_URL
             }/api/v1/resume-builders/user/${userId}`,
             {
               headers: {
@@ -98,6 +99,7 @@ const DashboardResumes = () => {
   const handleTitleChange = (e) => setNewTitle(e.target.value);
 
   const handleTitleBlur = async (resumeId) => {
+    // console.log("resumeId: " + resumeId);
     try {
       if (newTitle.trim() !== "") {
         const updatedResume = { title: newTitle };
@@ -143,7 +145,7 @@ const DashboardResumes = () => {
             linkedin: "",
           },
           summary: "",
-          template: template,
+          template: "67125252513c2654c1ddd087",
           experience: [],
           education: [],
           projects: [],
@@ -215,10 +217,7 @@ const DashboardResumes = () => {
 
   const OpenLoading = () => setIsOpenLoading(true);
   const CloseLoading = () => setIsOpenLoading(false);
-  useEffect(() => {
-
-
-  }, fileInputRef.current)
+  useEffect(() => {}, fileInputRef.current);
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -263,7 +262,6 @@ const DashboardResumes = () => {
         } else {
         }
       } catch (error) {
-
         console.log("lỗi: ", error);
         console.log(
           "Lỗi khi tạo CV:",
@@ -272,7 +270,6 @@ const DashboardResumes = () => {
         alert("Có lỗi xảy ra khi tạo CV.");
       }
     } catch (error) {
-
       console.error("Error uploading file:", error);
     }
   };
@@ -305,40 +302,45 @@ const DashboardResumes = () => {
           <div className="mt-8">
             <ul className="text-gray-600 font-medium">
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "dashboard"
-                  ? "rounded-md bg-blue-100 text-blue-600"
-                  : ""
-                  }`}
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
+                  activeMenuItem === "dashboard"
+                    ? "rounded-md bg-blue-100 text-blue-600"
+                    : ""
+                }`}
                 onClick={() => handleMenuClick("dashboard", "/dashboard")}
               >
                 <MdDashboard className="mr-4 text-xl" /> Dashboard
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "resumes"
-                  ? "rounded-md bg-blue-100 text-blue-600"
-                  : ""
-                  }`}
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
+                  activeMenuItem === "resumes"
+                    ? "rounded-md bg-blue-100 text-blue-600"
+                    : ""
+                }`}
                 onClick={() => handleMenuClick("resumes", "/resumes")}
               >
                 <IoDocumentTextOutline className="mr-4 text-xl" />
                 My Resumes
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob"
-                  ? "rounded-md bg-blue-100 text-blue-600"
-                  : ""
-                  }`}
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
+                  activeMenuItem === "recommendedJob"
+                    ? "rounded-md bg-blue-100 text-blue-600"
+                    : ""
+                }`}
                 onClick={() =>
                   handleMenuClick("recommendedJob", "/recommendedJob")
                 }
               >
-                <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended Jobs
+                <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended
+                Jobs
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard"
-                  ? "rounded-md bg-blue-100 text-blue-600"
-                  : ""
-                  }`}
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
+                  activeMenuItem === "dashboard"
+                    ? "rounded-md bg-blue-100 text-blue-600"
+                    : ""
+                }`}
                 onClick={() => handleMenuClick("dashboard", "/dashboard")}
               >
                 <IoIosMore className="mr-4 text-xl" /> Other
@@ -488,9 +490,7 @@ const DashboardResumes = () => {
             </div>
           </div>
         </div>
-
       </div>
-
     </>
   );
 };
