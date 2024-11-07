@@ -6,7 +6,7 @@ import {
   MdDriveFileRenameOutline,
   MdOutlineFindInPage,
 } from "react-icons/md";
-import { IoDocumentTextOutline, IoShareSocialOutline } from "react-icons/io5";
+import { IoDocumentTextOutline } from "react-icons/io5";
 import { IoIosMore } from "react-icons/io";
 import { FaLeaf, FaRegFilePdf } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import React from "react";
 import "./index.scss";
 import Modal from "./Upload/Modal";
+import { notification } from "antd";
+import { Modal as AntModal } from "antd";
 // import { image } from "html2canvas/dist/types/css/types/image";
 
 const DashboardResumes = () => {
@@ -141,36 +143,36 @@ const DashboardResumes = () => {
   const templateId = "67125252513c2654c1ddd087";
 
   const handleNewResumeClick = async () => {
-    const confirmCreate = window.confirm("Do you want to create a new CV?");
-
-    if (confirmCreate) {
-      try {
-        const newResume = {
-          title: "Untitled",
-          user: userId,
-          personalInformation: {
-            name: "",
-            email: "",
-            address: "",
-            phone: "",
-            github: "",
-            linkedin: "",
-            image: "",
-          },
-          summary: "",
-          template: "67125252513c2654c1ddd087",
-          experience: [],
-          education: [],
-          projects: [],
-          activities: [],
-          awards: [],
-          skills: [],
-          languages: [],
-          interests: [],
-          references: [],
-          certifications: [],
-          customFields: [],
-        };
+    AntModal.confirm({
+      title: "Do you want to create a new CV?",
+      onOk: async () => {
+        try {
+          const newResume = {
+            title: "Untitled",
+            user: userId,
+            personalInformation: {
+              name: "",
+              email: "",
+              address: "",
+              phone: "",
+              github: "",
+              linkedin: "",
+              image: "",
+            },
+            summary: "",
+            template: template,
+            experience: [],
+            education: [],
+            projects: [],
+            activities: [],
+            awards: [],
+            skills: [],
+            languages: [],
+            interests: [],
+            references: [],
+            certifications: [],
+            customFields: [],
+          };
 
           if (userId) {
             const response = await axios.post(
