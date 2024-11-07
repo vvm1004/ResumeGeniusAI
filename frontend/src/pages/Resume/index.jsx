@@ -78,6 +78,7 @@ const DashboardResumes = () => {
     };
     fetchApi();
   }, [userId, access_token]);
+
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
@@ -95,6 +96,14 @@ const DashboardResumes = () => {
   const handleTitleEditClick = (resumeId, title) => {
     setEditTitleId(resumeId);
     setNewTitle(title);
+  };
+
+  const openNotification = (type, message) => {
+    notification[type]({
+      message: message,
+      duration: 3,
+      placement: "topRight",
+    });
   };
 
   const handleTitleChange = (e) => setNewTitle(e.target.value);
@@ -128,7 +137,9 @@ const DashboardResumes = () => {
       handleTitleBlur(resumeId);
     }
   };
+
   const templateId = "67125252513c2654c1ddd087";
+
   const handleNewResumeClick = async () => {
     const confirmCreate = window.confirm("Do you want to create a new CV?");
 
@@ -161,26 +172,30 @@ const DashboardResumes = () => {
           customFields: [],
         };
 
-        if (userId) {
-          const response = await axios.post(
-            "http://localhost:8000/api/v1/resume-builders",
-            newResume,
-            {
-              headers: {
-                Authorization: `Bearer ${access_token}`,
-              },
-            }
-          );
-          setData((prevData) => [...prevData, response.data.data]);
-          navigate(`edit/${response?.data?.data._id}`);
-        } else {
-          navigate(`edit/${newResume._id}`);
+          if (userId) {
+            const response = await axios.post(
+              "http://localhost:8000/api/v1/resume-builders",
+              newResume,
+              {
+                headers: {
+                  Authorization: `Bearer ${access_token}`,
+                },
+              }
+            );
+            setData((prevData) => [...prevData, response.data.data]);
+            openNotification("success", "Create new CV successfully!");
+            navigate(`edit/${response?.data?.data._id}`);
+          } else {
+            openNotification("success", "Create new CV successfully!");
+            navigate(`edit/${newResume._id}`);
+          }
+        } catch (error) {
+          console.error("Error creating CV!");
+          openNotification("error", "Error creating CV!");
         }
-      } catch (error) {
-        console.error("Error creating CV!");
-        alert("Error creating CV!");
-      }
-    }
+      },
+      onCancel() {},
+    });
   };
 
   const handleMenuClick = (menuItem, path) => {
@@ -189,31 +204,37 @@ const DashboardResumes = () => {
   };
 
   const handleResumeClick = async (id) => {
-    const confirmEdit = window.confirm("Would you like to edit this CV?");
-    if (confirmEdit) {
-      navigate(`edit/${id}`);
-    }
+    AntModal.confirm({
+      title: "Would you like to edit this CV?",
+      onOk: async () => {
+        navigate(`edit/${id}`);
+      },
+      onCancel() {},
+    });
   };
 
   const handleDeleteClick = async (id) => {
-    const confirmDelete = window.confirm("Do you want to delete this CV?");
-    if (confirmDelete) {
-      try {
-        await axios.delete(
-          `http://localhost:8000/api/v1/resume-builders/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          }
-        );
-        setData((prevData) => prevData.filter((resume) => resume._id !== id));
-        alert("CV was deleted successfully.");
-      } catch (error) {
-        console.error("Error when deleting CV:", error);
-        alert("Error when deleting CV!");
-      }
-    }
+    AntModal.confirm({
+      title: "Do you want to delete this CV?",
+      onOk: async () => {
+        try {
+          await axios.delete(
+            `http://localhost:8000/api/v1/resume-builders/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          );
+          setData((prevData) => prevData.filter((resume) => resume._id !== id));
+          openNotification("success", "CV was deleted successfully!");
+        } catch (error) {
+          console.error("Error when deleting CV:", error);
+          openNotification("error", "Error when deleting CV!");
+        }
+      },
+      onCancel() {},
+    });
   };
   const [isOpenLoading, setIsOpenLoading] = useState(false);
 
@@ -269,7 +290,7 @@ const DashboardResumes = () => {
           "Lỗi khi tạo CV:",
           error.response ? error.response.data : error.message
         );
-        alert("Có lỗi xảy ra khi tạo CV.");
+        openNotification("error", "Error creating CV!");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
