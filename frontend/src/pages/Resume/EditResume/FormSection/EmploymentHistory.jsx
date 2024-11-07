@@ -1,14 +1,17 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { DataContext } from "@/context/DataContext";
-import { spellCheckText, improveSentence } from "../handleContent";
+import { spellCheckText, improveSentence, generateEmploymentHistory } from "../handleContent";
 import "./loading.css";
+import GenerateSummaryModal from "./GenerateSummaryModal"
+
 import {
   cleanContent,
   applyImproveSentence,
   escapeHtml,
   applyCorrections,
 } from "./handleText";
+import GenerateWorkingHisModal from "./GenerateWorkingHisModal";
 
 // Hàm chuyển đổi từ "June 2023" thành "2023-06"
 const formatDateToMonthInput = (dateStr) => {
@@ -31,6 +34,7 @@ const formatMonthInputToDate = (monthInput) => {
 
 function EmploymentHistory() {
   const { data, setData } = useContext(DataContext);
+  var [curData, setCurData] = useState();
 
   const handleUpdateExperience = (index, updatedField) => {
     const updatedExperience = (data?.experience || [])?.map((item, i) =>
@@ -38,6 +42,8 @@ function EmploymentHistory() {
     );
     console.log("updatedExperience:\n", updatedExperience);
     setData({ ...data, experience: updatedExperience });
+    setCurData(data.experience)
+
   };
 
   const toggleEmploymentHistory = (index) => {
@@ -110,6 +116,7 @@ function EmploymentHistory() {
       //setIsLoading(newFalseValues);
       setShowApplyCancel(newFalseValues);
     }
+    setCurData(data.experience)
   }, [data]);
 
   const [contentText, setText] = useState("");
@@ -147,9 +154,6 @@ function EmploymentHistory() {
       ]);
       const highlightedText = applyCorrections(contentText, corrections);
 
-      //console.log("correctedText", result.data.corrected_sentence)
-      //console.log(index, "highlightedText:\n", highlightedText)
-      //console.log("editorValues:\n", editorValues)
 
       setEditorValues((prev) => {
         const newValues = [...prev];
@@ -257,6 +261,63 @@ function EmploymentHistory() {
     }
   };
 
+
+
+
+
+  const [summaryModalOpen, setSunnaryModalOpen] = useState(false);
+  var [buttonPosition, setButtonPosition] = useState({});
+  const [genSummaryData, setGenSummaryData] = useState({});
+  const [openModalIndex, setOpenModalIndex] = useState(null);
+
+  const genSummary = async (desIndex, e) => {
+    if (curData[index].title == "") {
+      setIsHandling(true)
+      checkRequire()
+      return;
+    }
+
+
+    setIsLoading(true)
+    const timer = setTimeout(() => {
+    }, 2000);
+    var newSummary = await generateEmploymentHistory(curData[index].title, curData[index].position)
+    setGenSummaryData(newSummary)
+    setIsLoading(false)
+    console.log("newSummary:", newSummary)
+
+
+    const rect = e.target.getBoundingClientRect();
+    setButtonPosition({
+      top: rect.bottom + window.screenY,
+      left: rect.left + window.scrollX
+    });
+    console.log("Button Rect:", rect);
+    console.log("buttonPosition:", window.scrollY, "\n",
+      window.screenX);
+    setIndex(desIndex)
+    setSunnaryModalOpen(true);
+    setOpenModalIndex(desIndex);
+
+
+  }
+
+
+  const handleSummarySelect = (text, i) => {
+
+    setEditorValues((prev) => {
+      const newValues = [...prev];
+      newValues[index] = text;
+      return newValues;
+    });
+    console.log("handleSummarySelect", text, "\n", index, "\n", editorValues[index])
+    handleUpdateExperience(index, { description: text });
+    setSunnaryModalOpen(false);
+
+  };
+
+
+
   return (
     <>
       <div className="max-w-3xl mx-auto p-8 mt-6 bg-white rounded-lg shadow-md">
@@ -299,6 +360,7 @@ function EmploymentHistory() {
 
                 {item.isOpen && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                     {/* Job Title */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
@@ -418,6 +480,23 @@ function EmploymentHistory() {
                         Description
                       </label>
                       <div>
+                        <button
+                          className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                          onClick={(e) => genSummary(index, e)}
+                        >
+                          Generate with AI
+                        </button>
+
+                        <GenerateWorkingHisModal
+                          isOpen={summaryModalOpen && openModalIndex === index}
+                          onClose={() => { setSunnaryModalOpen(false); setOpenModalIndex(null); }}
+                          data={genSummaryData}
+                          onSelect={handleSummarySelect}
+                          position={buttonPosition}
+                          index={index}
+                        />
+
+
                         {showApplyCancel[index] && isCheckSpell == 1 ? (
                           <>
                             <button
@@ -486,7 +565,7 @@ function EmploymentHistory() {
                         setup: (editor) => {
                           editor.ui.registry.addButton("customButton", {
                             text: "AI pre-written phrases +",
-                            onAction: () => {},
+                            onAction: () => { },
                             classes: "rounded-lg font-bold text-blue-500",
                           });
                           editor.on("keydown", (event) => {

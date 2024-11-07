@@ -110,6 +110,7 @@ const DashboardResumes = () => {
   const handleTitleChange = (e) => setNewTitle(e.target.value);
 
   const handleTitleBlur = async (resumeId) => {
+    // console.log("resumeId: " + resumeId);
     try {
       if (newTitle.trim() !== "") {
         const updatedResume = { title: newTitle };

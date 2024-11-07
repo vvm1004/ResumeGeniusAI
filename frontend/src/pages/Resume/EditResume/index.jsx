@@ -22,7 +22,9 @@ function EditResume() {
               },
             }
           );
+
           setData(response.data.data);
+          // console.log(data);
         }
       } catch (error) {
         console.error("Error fetching resume data!", error);
@@ -40,7 +42,7 @@ function EditResume() {
             <FormSection />
           </div>
 
-          <div className="w-1/2 h-screen mt-12 p-4 bg-gray-500 fixed top-0 right-0 overflow-auto">
+          <div className="w-1/2 h-screen mt-12 p-4 bg-gray-500 fixed top-0 right-0 ">
             <ResumePreview />
           </div>
         </div>

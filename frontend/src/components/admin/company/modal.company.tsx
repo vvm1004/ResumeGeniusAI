@@ -1,6 +1,6 @@
 import { CheckSquareOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { FooterToolbar, ModalForm, ProCard, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Col, ConfigProvider, Form, Modal, Row, Upload, message, notification } from "antd";
+import { Col, ConfigProvider, Form, InputNumber, Modal, Row, Upload, message, notification } from "antd";
 import 'styles/reset.scss';
 import { isMobile } from 'react-device-detect';
 import ReactQuill from 'react-quill';
@@ -22,6 +22,10 @@ interface IProps {
 interface ICompanyForm {
     name: string;
     address: string;
+    linkUrl: string;
+    minScale: number;
+    maxScale: number;
+
 }
 
 interface ICompanyLogo {
@@ -36,7 +40,10 @@ const ModalCompany = (props: IProps) => {
     const [animation, setAnimation] = useState<string>('open');
 
     const [loadingUpload, setLoadingUpload] = useState<boolean>(false);
+    const [loadingUploadImage, setLoadingUploadImage] = useState<boolean>(false);
     const [dataLogo, setDataLogo] = useState<ICompanyLogo[]>([]);
+    const [dataImage, setDataImage] = useState<ICompanyLogo[]>([]);
+
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
@@ -51,16 +58,20 @@ const ModalCompany = (props: IProps) => {
     }, [dataInit])
 
     const submitCompany = async (valuesForm: ICompanyForm) => {
-        const { name, address } = valuesForm;
+        const { name, address, linkUrl, minScale, maxScale } = valuesForm;
 
         if (dataLogo.length === 0) {
             message.error('Vui lòng upload ảnh Logo')
             return;
         }
+        if (dataImage.length === 0) {
+            message.error('Vui lòng upload ảnh Công Ty')
+            return;
+        }
 
         if (dataInit?._id) {
             //update
-            const res = await callUpdateCompany(dataInit._id, name, address, value, dataLogo[0].name);
+            const res = await callUpdateCompany(dataInit._id, name, address, value, dataLogo[0].name, dataImage[0].name, linkUrl, minScale, maxScale);
             if (res.data) {
                 message.success("Cập nhật company thành công");
                 handleReset();
@@ -73,7 +84,7 @@ const ModalCompany = (props: IProps) => {
             }
         } else {
             //create
-            const res = await callCreateCompany(name, address, value, dataLogo[0].name);
+            const res = await callCreateCompany(name, address, value, dataLogo[0].name, dataImage[0].name, linkUrl, minScale, maxScale);
             if (res.data) {
                 message.success("Thêm mới company thành công");
                 handleReset();
@@ -102,6 +113,10 @@ const ModalCompany = (props: IProps) => {
     const handleRemoveFile = (file: any) => {
         setDataLogo([])
     }
+    const handleRemoveFileImage = (file: any) => {
+        setDataImage([])
+    }
+
 
     const handlePreview = async (file: any) => {
         if (!file.originFileObj) {
@@ -148,6 +163,19 @@ const ModalCompany = (props: IProps) => {
         }
     };
 
+    const handleChangeImage = (info: any) => {
+        if (info.file.status === 'uploading') {
+            setLoadingUploadImage(true);
+        }
+        if (info.file.status === 'done') {
+            setLoadingUploadImage(false);
+        }
+        if (info.file.status === 'error') {
+            setLoadingUploadImage(false);
+            message.error(info?.file?.error?.event?.message ?? "Đã có lỗi xảy ra khi upload file.")
+        }
+    };
+
     const handleUploadFileLogo = async ({ file, onSuccess, onError }: any) => {
         const res = await callUploadSingleFile(file, "company");
         if (res && res.data) {
@@ -165,6 +193,22 @@ const ModalCompany = (props: IProps) => {
         }
     };
 
+    const handleUploadFileImage = async ({ file, onSuccess, onError }: any) => {
+        const res = await callUploadSingleFile(file, "company_image");
+        if (res && res.data) {
+            setDataImage([{
+                name: res.data.fileName,
+                uid: uuidv4()
+            }])
+            if (onSuccess) onSuccess('ok')
+        } else {
+            if (onError) {
+                setDataImage([])
+                const error = new Error(res.message);
+                onError({ event: error });
+            }
+        }
+    };
 
     return (
         <>
@@ -209,6 +253,46 @@ const ModalCompany = (props: IProps) => {
                                     placeholder="Nhập tên công ty"
                                 />
                             </Col>
+                            <Col span={24}>
+                                <ProFormText
+                                    label="Link URL"
+                                    name="linkUrl"
+                                    rules={[{ required: true, type: 'url', message: 'Vui lòng nhập một URL hợp lệ' }]}
+                                    placeholder="Nhập đường dẫn liên kết tới trang công ty"
+                                />
+                            </Col>
+                            <Col span={24}>
+                                <Form.Item
+                                    label="Quy mô công ty"
+                                    required
+                                >
+                                    <Form.Item
+                                        name="minScale"
+                                        rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                        style={{ display: "inline-block", width: "35%" }}
+                                    >
+                                        <InputNumber
+                                            min={0}
+                                            placeholder="Nhập quy mô tối thiểu"
+                                            style={{ width: "100%" }}
+                                        />
+                                    </Form.Item>
+                                    <span style={{ display: "inline-block", width: "5%", textAlign: "center" }}> đến </span>
+                                    <Form.Item
+                                        name="maxScale"
+                                        rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                        style={{ display: "inline-block", width: "35%" }}
+                                    >
+                                        <InputNumber
+                                            min={0}
+                                            placeholder="Nhập quy mô tối đa"
+                                            style={{ width: "100%" }}
+                                        />
+                                    </Form.Item>
+                                    <span> nhân viên</span>
+                                </Form.Item>
+                            </Col>
+
                             <Col span={8}>
                                 <Form.Item
                                     labelCol={{ span: 24 }}
@@ -258,6 +342,55 @@ const ModalCompany = (props: IProps) => {
 
                             </Col>
 
+                            <Col span={8}>
+                                <Form.Item
+                                    labelCol={{ span: 24 }}
+                                    label="Ảnh công ty"
+                                    name="image"
+                                    rules={[{
+                                        required: true,
+                                        message: 'Vui lòng không bỏ trống',
+                                        validator: () => {
+                                            if (dataImage.length > 0) return Promise.resolve();
+                                            else return Promise.reject(false);
+                                        }
+                                    }]}
+                                >
+                                    <ConfigProvider locale={enUS}>
+                                        <Upload
+                                            name="image"
+                                            listType="picture-card"
+                                            className="avatar-uploader"
+                                            maxCount={1}
+                                            multiple={false}
+                                            customRequest={handleUploadFileImage}
+                                            beforeUpload={beforeUpload}
+                                            onChange={handleChangeImage}
+                                            onRemove={(file) => handleRemoveFileImage(file)}
+                                            onPreview={handlePreview}
+                                            defaultFileList={
+                                                dataInit?._id ?
+                                                    [
+                                                        {
+                                                            uid: uuidv4(),
+                                                            name: dataInit?.image ?? "",
+                                                            status: 'done',
+                                                            url: `${import.meta.env.VITE_BACKEND_URL}/images/company_image/${dataInit?.image}`,
+                                                        }
+                                                    ] : []
+                                            }
+
+                                        >
+                                            <div>
+                                                {loadingUploadImage ? <LoadingOutlined /> : <PlusOutlined />}
+                                                <div style={{ marginTop: 8 }}>Upload</div>
+                                            </div>
+                                        </Upload>
+                                    </ConfigProvider>
+                                </Form.Item>
+
+                            </Col>
+
                             <Col span={16}>
                                 <ProFormTextArea
                                     label="Địa chỉ"
@@ -287,6 +420,9 @@ const ModalCompany = (props: IProps) => {
                                     />
                                 </Col>
                             </ProCard>
+
+
+
                         </Row>
                     </ModalForm>
                     <Modal

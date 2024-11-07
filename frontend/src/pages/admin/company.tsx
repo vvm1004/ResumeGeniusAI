@@ -53,14 +53,15 @@ const CompanyPage = () => {
                 return (
                     <>
                         {(index + 1) + (meta.current - 1) * (meta.pageSize)}
-                    </>)
+                    </> 
+                )
             },
             hideInSearch: true,
         },
         {
             title: 'Id',
             dataIndex: '_id',
-            width: 250,
+            width: 200,
             render: (text, record, index, action) => {
                 return (
                     <span>
@@ -77,16 +78,37 @@ const CompanyPage = () => {
         },
         {
             title: 'Address',
+            width: 200,
             dataIndex: 'address',
             sorter: true,
         },
-
+        {
+            title: 'Link URL',
+            dataIndex: 'linkUrl',
+            render: (text) => (
+                <span>{text}</span> 
+            ),
+            hideInSearch: true,
+        },
+        {
+            title: 'Quy mô công ty',
+            width: 200,
+            sorter: (a, b) => {
+                const minScaleA = a.minScale || 0;
+                const minScaleB = b.minScale || 0;
+                return minScaleA - minScaleB; 
+            },            
+            render: (_, record) => (
+                <>{record.minScale} - {record.maxScale} nhân viên</>
+            ),
+            hideInSearch: true,
+        },
         {
             title: 'CreatedAt',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
-            render: (text, record, index, action) => {
+            render: (text, record) => {
                 return (
                     <>{dayjs(record.createdAt).format('DD-MM-YYYY HH:mm:ss')}</>
                 )
@@ -98,7 +120,7 @@ const CompanyPage = () => {
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
-            render: (text, record, index, action) => {
+            render: (text, record) => {
                 return (
                     <>{dayjs(record.updatedAt).format('DD-MM-YYYY HH:mm:ss')}</>
                 )
@@ -106,34 +128,24 @@ const CompanyPage = () => {
             hideInSearch: true,
         },
         {
-
             title: 'Actions',
             hideInSearch: true,
             width: 50,
-            render: (_value, entity, _index, _action) => (
+            render: (_value, entity) => (
                 <Space>
-                    <Access
-                        permission={ALL_PERMISSIONS.COMPANIES.UPDATE}
-                        hideChildren
-                    >
-
-
+                    <Access permission={ALL_PERMISSIONS.COMPANIES.UPDATE} hideChildren>
                         <EditOutlined
                             style={{
                                 fontSize: 20,
                                 color: '#ffa500',
                             }}
-                            type=""
                             onClick={() => {
                                 setOpenModal(true);
                                 setDataInit(entity);
                             }}
                         />
                     </Access>
-                    <Access
-                        permission={ALL_PERMISSIONS.COMPANIES.DELETE}
-                        hideChildren
-                    >
+                    <Access permission={ALL_PERMISSIONS.COMPANIES.DELETE} hideChildren>
                         <Popconfirm
                             placement="leftTop"
                             title={"Xác nhận xóa company"}
@@ -154,10 +166,9 @@ const CompanyPage = () => {
                     </Access>
                 </Space>
             ),
-
         },
     ];
-
+    
     const buildQuery = (params: any, sort: any, filter: any) => {
         const clone = { ...params };
         if (clone.name) clone.name = `/${clone.name}/i`;
@@ -177,6 +188,12 @@ const CompanyPage = () => {
         }
         if (sort && sort.updatedAt) {
             sortBy = sort.updatedAt === 'ascend' ? "sort=updatedAt" : "sort=-updatedAt";
+        }
+        if (sort && sort.minScale) { // Thêm logic cho minScale
+            sortBy = sort.minScale === 'ascend' ? "sort=minScale" : "sort=-minScale";
+        }
+        if (sort && sort.maxScale) { // Thêm logic cho maxScale
+            sortBy = sort.maxScale === 'ascend' ? "sort=maxScale" : "sort=-maxScale";
         }
 
         //mặc định sort theo updatedAt
