@@ -147,28 +147,31 @@ const ResumePreview = () => {
 
   useEffect(() => {
     const updateResume = async () => {
-      console.log("data_id:" + data._id);
+      console.log("data_id:", data._id);
       if (imageCV && data._id) {
-        // Kiểm tra cả imageCV và data._id
         try {
           const updatedResume = { imageResume: imageCV };
-          const response = await axios.patch(
+          await axios.patch(
             `http://localhost:8000/api/v1/resume-builders/${data._id}`,
             updatedResume,
             {
               headers: { Authorization: `Bearer ${access_token}` },
             }
           );
+          console.log("Resume updated successfully");
         } catch (error) {
-          console.error("Lỗi cập nhật resume:", error);
+          console.error("Error updating resume:", error);
         }
       } else {
-        console.warn("imageCV hoặc data._id không hợp lệ");
+        console.warn("imageCV or data._id is invalid");
       }
     };
 
-    updateResume();
-  }, [imageCV]);
+    // Only call updateResume if both imageCV and data._id are defined
+    if (imageCV && data._id) {
+      updateResume();
+    }
+  }, [imageCV, data._id]);
 
   //Update Template Id
   const updateTemplateId = async (templateId) => {

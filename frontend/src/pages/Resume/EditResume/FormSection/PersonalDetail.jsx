@@ -24,63 +24,157 @@ const InputField = ({ label, name, type = "text", value, onChange }) => (
 function PersonalDetail() {
   const { data, setData, access_token } = useContext(DataContext);
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(
-    data?.personalInformation?.image || null
-  );
+  // const [selectedImage, setSelectedImage] = useState(
+  //   data?.personalInformation?.image || null
+  // );
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    if (data?.personalInformation?.image && !selectedImage) {
-      setSelectedImage(data.personalInformation.image);
-    }
-  }, [data?.personalInformation?.image, selectedImage]);
+  // useEffect(() => {
+  //   if (data?.personalInformation?.image && !selectedImage) {
+  //     setSelectedImage(data.personalInformation.image);
+  //   }
+  // }, [data?.personalInformation?.image, selectedImage]);
 
   const handleAddMoreDetails = () => {
     setShowMoreDetails(!showMoreDetails);
   };
+  // const handleImageChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setUploading(true);
+  //     const formData = new FormData();
+  //     formData.append("fileUpload", file);
 
+  //     const headers = {
+  //       "Content-Type": "multipart/form-data",
+  //       folder_type: "image_personal_details",
+  //       Authorization: `Bearer ${access_token}`,
+  //     };
+
+  //     try {
+  //       const response = await axios.post(
+  //         "http://localhost:8000/api/v1/files/upload",
+  //         formData,
+  //         {
+  //           headers,
+  //         }
+  //       );
+
+  //       const imageUrl = response.data.data.fileName;
+
+  //       setSelectedImage(imageUrl);
+  //       setData((prev) => ({
+  //         ...prev,
+  //         personalInformation: { ...prev.personalInformation, image: imageUrl },
+  //       }));
+  //     } catch (error) {
+  //       console.error("Error uploading image:", error);
+  //     } finally {
+  //       setUploading(false);
+  //     }
+  //   }
+  // }
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
+
+    if (file && file.type.startsWith("image/")) {
       setUploading(true);
-      const formData = new FormData();
-      formData.append("fileUpload", file);
-
-      const headers = {
-        "Content-Type": "multipart/form-data",
-        folder_type: "image_personal_details",
-        Authorization: `Bearer ${access_token}`,
-      };
-
+      //Đoạn này giảm dung lượng ảnh đừng care
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/files/upload",
-          formData,
-          {
-            headers,
-          }
-        );
+        // Convert the image to Base64
+        const base64Image = await convertToBase64(file);
+        // Compress and resize to target below 50KB
+        const compressedImage = await resizeAndCompressImage(base64Image, 50);
 
-        const imageUrl = response.data.data.fileName;
-
-        setSelectedImage(imageUrl);
+        // Set the compressed image and update data
+        // setSelectedImage(compressedImage);
         setData((prev) => ({
           ...prev,
-          personalInformation: { ...prev.personalInformation, image: imageUrl },
+          personalInformation: {
+            ...prev.personalInformation,
+            image: compressedImage,
+          },
         }));
       } catch (error) {
-        console.error("Error uploading image:", error);
+        console.error("Error processing image:", error);
       } finally {
         setUploading(false);
       }
+    } else {
+      console.error("File is not an image or no file selected.");
     }
   };
 
+  // Convert image file to Base64 string
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Resize and compress the image
+  const resizeAndCompressImage = (
+    base64Image,
+    maxSizeKB = 50, // Set to 50 KB target size
+    maxWidth = 400, // Slightly reduce dimensions for better compression
+    maxHeight = 400
+  ) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = base64Image;
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let width = img.width;
+        let height = img.height;
+
+        // Scale down if larger than max dimensions
+        if (width > maxWidth || height > maxHeight) {
+          const scaleFactor = Math.min(maxWidth / width, maxHeight / height);
+          width = width * scaleFactor;
+          height = height * scaleFactor;
+        }
+
+        // Set canvas size and draw image
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compression function
+        const tryCompress = (quality) => {
+          const compressedImage = canvas.toDataURL("image/jpeg", quality);
+          const imageSizeInKB = (compressedImage.length * 3) / 4 / 1024;
+
+          if (imageSizeInKB <= maxSizeKB) {
+            resolve(compressedImage); // Image is within target size
+          } else if (quality > 0.1) {
+            tryCompress(quality - 0.1); // Reduce quality if needed
+          } else {
+            resolve(compressedImage); // Return lowest quality if necessary
+          }
+        };
+
+        // Start compression with an initial quality of 0.7 for faster results
+        tryCompress(0.7);
+      };
+
+      img.onerror = reject;
+    });
+  };
+
   const handleDeleteImage = () => {
-    setSelectedImage(null);
+    // setSelectedImage(null);
     setData((prev) => ({
       ...prev,
-      personalInformation: { ...prev.personalInformation, image: null },
+      personalInformation: {
+        ...prev.personalInformation,
+        image: "",
+      },
     }));
   };
 
@@ -138,9 +232,9 @@ function PersonalDetail() {
               className="h-14 w-14 bg-gray-200 flex items-center justify-center overflow-hidden cursor-pointer"
               onClick={triggerFileInput}
             >
-              {selectedImage ? (
+              {data?.personalInformation?.image ? (
                 <img
-                  src={`http://localhost:8000/images/image_personal_details/${selectedImage}`}
+                  src={data?.personalInformation?.image}
                   alt="Uploaded"
                   className="h-full w-full object-cover"
                 />
@@ -160,7 +254,7 @@ function PersonalDetail() {
               )}
             </div>
 
-            {selectedImage ? (
+            {data?.personalInformation?.image ? (
               <div className="ml-4 flex flex-col space-y-2">
                 <button
                   className="flex items-center text-md text-blue-600 hover:text-gray-600"

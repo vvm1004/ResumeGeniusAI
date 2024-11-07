@@ -1,22 +1,34 @@
 import React from "react";
 import defaultData from "./defaultData.json";
 const Resume = ({ data }) => {
-  const skillsToDisplay = data?.skills?.length > 0 ? data.skills : defaultData.skills;
-  const languagesToDisplay = data?.languages?.length > 0 ? data.languages : defaultData.languages;
-  const educationToDisplay = data?.education?.length > 0 ? data.education : defaultData.education;
-  const experienceToDisplay = data?.experience?.length > 0 ? data.experience : defaultData.experience;
+  const skillsToDisplay =
+    data?.skills?.length > 0 ? data.skills : defaultData.skills;
+  const languagesToDisplay =
+    data?.languages?.length > 0 ? data.languages : defaultData.languages;
+  const educationToDisplay =
+    data?.education?.length > 0 ? data.education : defaultData.education;
+  const experienceToDisplay =
+    data?.experience?.length > 0 ? data.experience : defaultData.experience;
   const title = data?.title || defaultData.title;
   // Defaulting personal information if missing
-  const name = data?.personalInformation?.name || defaultData.personalInformation.name;
-  const phone = data?.personalInformation?.phone || defaultData.personalInformation.phone;
-  const email = data?.personalInformation?.email || defaultData.personalInformation.email;
-  const address = data?.personalInformation?.address || defaultData.personalInformation.address;
+  const name =
+    data?.personalInformation?.name || defaultData.personalInformation.name;
+  const phone =
+    data?.personalInformation?.phone || defaultData.personalInformation.phone;
+  const email =
+    data?.personalInformation?.email || defaultData.personalInformation.email;
+  const address =
+    data?.personalInformation?.address ||
+    defaultData.personalInformation.address;
+  const image =
+    data?.personalInformation?.image || defaultData.personalInformation.image;
+
   return (
     <div className="template w-[210mm] h-[297mm] bg-white p-8 rounded-lg shadow-lg flex">
       {/* Left Section */}
       <div className="w-1/3 bg-blue-900 text-white p-6 rounded-l-lg">
         <img
-          src={data?.personalInformation?.image || "default-image-url"} // Thay thế bằng URL hình ảnh mặc định nếu không có dữ liệu
+          src={image} // Thay thế bằng URL hình ảnh mặc định nếu không có dữ liệu
           alt="Profile"
           className="rounded-full w-28 h-28 mx-auto mb-4"
         />
@@ -39,7 +51,8 @@ const Resume = ({ data }) => {
             <p className="text-sm" key={index}>
               {edu.institution} <br />
               {edu.date} <br />
-              {edu.degree}{edu.gpa ? `, GPA: ${edu.gpa}` : ''} <br />
+              {edu.degree}
+              {edu.gpa ? `, GPA: ${edu.gpa}` : ""} <br />
               {edu.description}
             </p>
           ))}
@@ -76,7 +89,8 @@ const Resume = ({ data }) => {
         <div className="mb-6">
           <h3 className="text-xl font-semibold text-gray-700 mb-2">PROFILE</h3>
           <p className="text-sm text-gray-600">
-            {data?.summary || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation."}
+            {data?.summary ||
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation."}
           </p>
         </div>
 
@@ -94,9 +108,7 @@ const Resume = ({ data }) => {
               <p className="text-sm text-gray-600 italic mb-1">
                 {exp.position} | {exp.date}
               </p>
-              <p className="text-sm text-gray-600 mb-1">
-                {exp.description}
-              </p>
+              <p className="text-sm text-gray-600 mb-1">{exp.description}</p>
             </div>
           ))}
         </div>

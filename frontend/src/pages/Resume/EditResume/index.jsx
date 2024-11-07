@@ -22,9 +22,7 @@ function EditResume() {
               },
             }
           );
-
           setData(response.data.data);
-          // console.log(data);
         }
       } catch (error) {
         console.error("Error fetching resume data!", error);
