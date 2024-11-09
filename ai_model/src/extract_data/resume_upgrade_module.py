@@ -48,6 +48,7 @@ def analysField(field_name, job_name):
     except Exception as e:
         print(f"An error occurred while refining {field_name}: {e}")
         return []
+
 def normalize_keys(data):
   
     if isinstance(data, dict):
@@ -88,84 +89,6 @@ def process_data(data):
                 new_data[key] = value
     
     return new_data
-# def test_model(model, tokenizer, field_name, field_data):
-#     if model is None:
-#         raise ValueError("Model not loaded properly")
-#     if tokenizer is None:
-#         raise ValueError("Tokenizer not loaded properly")
-
-#     # Chuyển field_name và field_data thành sequence
-#     sequences = tokenizer.texts_to_sequences([field_name, field_data])
-    
-#     # Lấy kích thước padding cho các input
-#     key_input_shape = model.input[0].shape[1]
-#     value_input_shape = model.input[1].shape[1]
-    
-#     # Padding sequences cho key và value riêng biệt
-#     padded_key_sequence = pad_sequences(
-#         [sequences[0]], 
-#         maxlen=key_input_shape, 
-#         padding='post'
-#     )
-#     padded_value_sequence = pad_sequences(
-#         [sequences[1]], 
-#         maxlen=value_input_shape, 
-#         padding='post'
-#     )
-    
-#     key_sequence = np.array(padded_key_sequence)
-#     value_sequence = np.array(padded_value_sequence)
-    
-#     # Dự đoán
-#     try:
-#         prediction = model.predict([key_sequence, value_sequence])[0][0]
-#     except Exception as e:
-#         print(f"Error during prediction: {e}")
-#         return None
-
-#     is_valid = prediction > 0.5
-    
-#     # Xác định corrected_field_name dựa trên dự đoán
-#     corrected_field_name = []
-#     if is_valid:
-#         corrected_field_name = [field_name]
-    
-#     # Kết quả trả về
-#     result = {
-#         "corrected_field_name": corrected_field_name,
-#         "is_valid": is_valid,
-#         "field_name": field_name,
-#         "prediction": float(prediction),
-#         "value": field_data
-#     }
-    
-#     return result
-# def process_and_test_model(model, tokenizer, key, value):
-#     if value is None:
-#         print(f"Value for key='{key}' is None. Skipping...")
-#         return
-    
-#     if isinstance(value, dict):
-#         for sub_key, sub_value in value.items():
-#             process_and_test_model(model, tokenizer, sub_key, sub_value)
-#     elif isinstance(value, list):
-#         check_value=False
-#         for item in value:
-#             if isinstance(item, dict):
-#                 item_str = str(item)  
-#                 result = test_model(model, tokenizer, key, item_str)
-#                 print(f"\nResult (list dict) for key=\t'{key}' \nand value=\t'{item_str}':\n\n\n\t", result)
-#             else:
-#                 check_value= True
-                
-#         if(check_value):
-#             item_str = str(value) 
-#             result = test_model(model, tokenizer, key, item_str)
-#             print(f"\nResult (list) for key=\t'{key}' \nand value=\t'{item_str}':\n\n\n\t", result)
-#     else:
-#         result = test_model(model, tokenizer, key, value)
-#         print(f"\nResult for key=\t'{key}' \nand value=\t'{value}':\n\n\n\t", result)
-
 
 def handleData(path):
     resume_data = parse_resume(path)

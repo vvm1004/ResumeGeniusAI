@@ -7,23 +7,30 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import aqp from 'api-query-params';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class JobsService {
-  constructor(@InjectModel(Job.name) private jobModel: SoftDeleteModel<JobDocument>) {}
+  constructor(@InjectModel(Job.name) private jobModel: SoftDeleteModel<JobDocument>, private readonly httpService: HttpService) { }
 
   async create(createJobDto: CreateJobDto, user: IUser) {
     let newJob = await this.jobModel.create({
-      ...createJobDto, 
+      ...createJobDto,
       createdBy: {
         _id: user._id,
         email: user.email
       }
-      })
-      return{
-        _id: newJob?._id,
-        createdAt: newJob?.createdAt
-      }
+    })
+    const response = await firstValueFrom(
+      this.httpService.post(
+        `http://localhost:8000/api/v1/jobs/send-job/${newJob.id}`,
+      ),
+    );
+    return {
+      _id: newJob?._id,
+      createdAt: newJob?.createdAt
+    }
   }
 
   async findAll(currentPage: number, limit: number, qs: string) {
@@ -57,14 +64,14 @@ export class JobsService {
   }
 
   async findOne(id: string) {
-    if(!mongoose.Types.ObjectId.isValid(id))
+    if (!mongoose.Types.ObjectId.isValid(id))
       throw new BadRequestException("Not found job with id: " + id)
     return this.jobModel.findById(id)
   }
 
-  async update( _id: string, updateJobDto: UpdateJobDto, user: IUser) {
+  async update(_id: string, updateJobDto: UpdateJobDto, user: IUser) {
     const updated = await this.jobModel.updateOne(
-      {_id }, 
+      { _id },
       {
         ...updateJobDto,
         updatedBy: {
@@ -76,7 +83,7 @@ export class JobsService {
   }
 
   async remove(id: string, user: IUser) {
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return `Not found job`
     }
     await this.jobModel.updateOne(
