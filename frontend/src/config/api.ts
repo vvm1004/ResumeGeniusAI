@@ -49,12 +49,12 @@ export const callUploadSingleFile = (file: any, folderType: string) => {
  * 
 Module Company
  */
-export const callCreateCompany = (name: string, address: string, description: string, logo: string) => {
-    return axios.post<IBackendRes<ICompany>>('/api/v1/companies', { name, address, description, logo })
+export const callCreateCompany = (name: string, address: string, description: string, logo: string, image: string, linkUrl: string, minScale: number, maxScale: number) => {
+    return axios.post<IBackendRes<ICompany>>('/api/v1/companies', { name, address, description, logo, image, linkUrl, minScale, maxScale })
 }
 
-export const callUpdateCompany = (id: string, name: string, address: string, description: string, logo: string) => {
-    return axios.patch<IBackendRes<ICompany>>(`/api/v1/companies/${id}`, { name, address, description, logo })
+export const callUpdateCompany = (id: string, name: string, address: string, description: string, logo: string, image: string, linkUrl: string, minScale: number, maxScale: number) => {
+    return axios.patch<IBackendRes<ICompany>>(`/api/v1/companies/${id}`, { name, address, description, logo, image, linkUrl, minScale, maxScale })
 }
 
 export const callDeleteCompany = (id: string) => {

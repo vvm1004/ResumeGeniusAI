@@ -13,33 +13,52 @@ import Certifications from "./Certifications";
 import { DataContext } from "@/context/DataContext";
 import CustomFields from "./CustomFields";
 import axios from "axios";
+import { Modal, notification } from "antd";
+import { useNavigate } from "react-router-dom";
 
 function FormSection() {
   const [sections, setSections] = useState([]);
   const { data, setData, id, access_token } = useContext(DataContext);
+  const navigate = useNavigate();
+
+  const openNotification = (type, message) => {
+    notification[type]({
+      message: message,
+      placement: "topRight",
+      duration: 2,
+    });
+  };
 
   const handleSave = async () => {
-    const confirmSave = window.confirm("Do you want to save the changes?");
-
-    if (confirmSave) {
-      if (data && id !== "undefined") {
-        try {
-          await axios.patch(
-            `http://localhost:8000/api/v1/resume-builders/${id}`,
-            data,
-            {
-              headers: {
-                Authorization: `Bearer ${access_token}`,
-              },
-            }
-          );
-          alert("Resume updated successfully!");
-        } catch (error) {
-          console.error("Error updating resume!", error);
-          alert("There was an error updating your resume. Please try again.");
+    Modal.confirm({
+      title: "Do you want to save the changes?",
+      onOk: async () => {
+        if (data && id !== "undefined") {
+          try {
+            await axios.patch(
+              `http://localhost:8000/api/v1/resume-builders/${id}`,
+              data,
+              {
+                headers: {
+                  Authorization: `Bearer ${access_token}`,
+                },
+              }
+            );
+            openNotification("success", "Profile updated successfully!");
+            navigate("/resumes");
+          } catch (error) {
+            openNotification(
+              "error",
+              "An error occurred while updating your profile. Please try again."
+            );
+          }
+        } else {
+          openNotification("success", "Profile updated successfully!");
+          navigate("/resumes");
         }
-      }
-    }
+      },
+      onCancel() {},
+    });
   };
 
   useEffect(() => {
@@ -60,7 +79,10 @@ function FormSection() {
       savedSections[data._id] = updatedSections;
       localStorage.setItem("sections", JSON.stringify(savedSections));
     } else {
-      alert(`${section.type} section already exists!`);
+      openNotification(
+        "error",
+        `${section.type} section already exists!`
+      );
     }
   };
 

@@ -4,9 +4,10 @@ import { DataContext } from "../../../../context/DataContext";
 import TemplateSelection from "../../TemplateSelection/TemplateSelection";
 import { AiFillAppstore } from "react-icons/ai";
 import jsPDF from "jspdf";
-import { IoIosMore } from "react-icons/io";
+import { IoIosMore, IoIosMail } from "react-icons/io";
 import html2canvas from "html2canvas";
 import axios from "axios";
+import imageCompression from "browser-image-compression";
 
 import Template1 from "../../Template/Template1";
 import Template2 from "../../Template/Template2";
@@ -14,6 +15,7 @@ import Template3 from "../../Template/Template3";
 import Template4 from "../../Template/Template4";
 import Template5 from "../../Template/Template5";
 import Template6 from "../../Template/Template6";
+import { Descriptions, message, notification } from "antd";
 
 const ResumePreview = () => {
   const { data, setData, access_token } = useContext(DataContext);
@@ -22,6 +24,11 @@ const ResumePreview = () => {
   // // const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [imageCV, setImageCV] = useState(null);
   const [loader, setLoader] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleDropdownClick = () => {
+    setShowDropdown(!showDropdown);
+  };
 
   const handleIconClick = () => {
     setShowTemplateSelection(!showTemplateSelection);
@@ -31,6 +38,21 @@ const ResumePreview = () => {
     setTemplate(templateId);
     setShowTemplateSelection(false);
     await updateTemplateId(templateId);
+  };
+  const handleSendMail = () => {
+    try {
+      const response = axios.get(
+        `http://localhost:8000/api/v1/mail/${data._id}/sendresume`
+      );
+      if (response) {
+        message.success("Gửi Resume qua gmail thành công");
+      }
+    } catch (error) {
+      notification.error({
+        message: "Có lỗi xảy ra",
+        description: error,
+      });
+    }
   };
 
   const renderSelectedTemplate = () => {
@@ -85,7 +107,34 @@ const ResumePreview = () => {
       const imgData = canvas.toDataURL("image/png");
 
       if (imgData) {
-        setImageCV(imgData);
+        // Chuyển đổi imgData thành Blob để nén
+        const blob = await fetch(imgData).then((res) => res.blob());
+
+        // Tùy chọn nén
+        const options = {
+          maxSizeMB: 0.1, // Kích thước tối đa 100KB
+          maxWidthOrHeight: 800, // Chiều rộng hoặc chiều cao tối đa
+          useWebWorker: true, // Sử dụng Web Worker để nén nhanh hơn
+          initialQuality: 0.8,
+        };
+
+        try {
+          let compressedFile = await imageCompression(blob, options);
+
+          // Kiểm tra kích thước và điều chỉnh nếu cần
+          while (compressedFile.size > 100 * 1024) {
+            // 100KB
+            options.initialQuality -= 0.05; // Giảm chất lượng 5%
+            compressedFile = await imageCompression(blob, options);
+          }
+
+          const compressedImgData = await imageCompression.getDataUrlFromFile(
+            compressedFile
+          );
+          setImageCV(compressedImgData); // Cập nhật hình ảnh đã nén
+        } catch (error) {
+          console.error("Lỗi nén hình ảnh:", error);
+        }
       }
     };
 
@@ -98,29 +147,31 @@ const ResumePreview = () => {
 
   useEffect(() => {
     const updateResume = async () => {
-      // console.log(imageCV);
-      if (imageCV) {
+      console.log("data_id:", data._id);
+      if (imageCV && data._id) {
         try {
           const updatedResume = { imageResume: imageCV };
-          const response = await axios.patch(
+          await axios.patch(
             `http://localhost:8000/api/v1/resume-builders/${data._id}`,
             updatedResume,
             {
               headers: { Authorization: `Bearer ${access_token}` },
             }
           );
-          setData((prevData) => ({
-            ...prevData,
-            imageResume: imageCV,
-          }));
+          console.log("Resume updated successfully");
         } catch (error) {
-          console.error("Lỗi cập nhật resume:", error);
+          console.error("Error updating resume:", error);
         }
+      } else {
+        console.warn("imageCV or data._id is invalid");
       }
     };
 
-    updateResume();
-  }, [imageCV]);
+    // Only call updateResume if both imageCV and data._id are defined
+    if (imageCV && data._id) {
+      updateResume();
+    }
+  }, [imageCV, data._id]);
 
   //Update Template Id
   const updateTemplateId = async (templateId) => {
@@ -169,6 +220,7 @@ const ResumePreview = () => {
 
     fetchTemplate();
   }, [data?.template?._id]);
+
   return (
     <div>
       <div className="w-full h-full flex justify-center items-center cursor-pointer text-white p-2">
@@ -187,8 +239,22 @@ const ResumePreview = () => {
         >
           {loader ? <span>Downloading...</span> : <span>Download PDF</span>}
         </button>
-        <button className="bg-blue-500 rounded-sm p-2 font-semibold">
+        <button
+          className="bg-blue-500 rounded-sm p-2 font-semibold"
+          onClick={handleDropdownClick}
+        >
           <IoIosMore className="text-2xl" />
+          {showDropdown && (
+            <div className="absolute mt-2 w-52 bg-white shadow-lg rounded-md z-10">
+              <button
+                className="flex block py-2 ml-2 text-gray-800 hover:bg-gray-200"
+                onClick={handleSendMail}
+              >
+                <IoIosMail size={20} />
+                Send To Mail
+              </button>
+            </div>
+          )}
         </button>
       </div>
       <div className="scroll-snap-y h-screen">

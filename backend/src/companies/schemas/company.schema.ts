@@ -17,6 +17,18 @@ export class Company {
     @Prop()
     logo: string;
 
+    @Prop()
+    image: string;
+
+    @Prop()
+    linkUrl: string;
+
+    @Prop()
+    minScale: number;
+
+    @Prop()
+    maxScale: number;
+
     @Prop({ type: Object })
     updatedBy: {
         _id: mongoose.Schema.Types.ObjectId,

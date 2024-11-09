@@ -90,7 +90,7 @@ const TemplateSelection = ({ onSelectTemplate }) => {
   // };
 
   return (
-    <div className="p-8 ">
+    <div className="p-8 overflow-auto">
       <h2 className="text-center text-3xl font-bold text-gray-800 mb-5">
         Select a Template
       </h2>
