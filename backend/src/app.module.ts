@@ -21,6 +21,7 @@ import { HealthModule } from './health/health.module';
 import { ResumeBuildersModule } from './resume-builders/resume-builders.module';
 import { ResumeUpgradeModule } from './resume-upgrade/resume-upgrade.module';
 import { TemplateModule } from './template/template.module';
+import { ResumeRegistrationModule } from './resume-registration/resume-registration.module';
 
 
 @Module({
@@ -77,6 +78,14 @@ import { TemplateModule } from './template/template.module';
 
 
     TemplateModule,
+
+
+    ResumeRegistrationModule,
+
+
+
+
+
   ],
   controllers: [AppController],
   providers: [AppService,

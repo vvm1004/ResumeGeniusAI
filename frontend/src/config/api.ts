@@ -218,3 +218,7 @@ export const callFetchSubscriberById = (id: string) => {
     return axios.get<IBackendRes<ISubscribers>>(`/api/v1/subscribers/${id}`);
 }
 
+
+export const callSendNewJob = (jobId: string) => {
+    return axios.post<IBackendRes<any>>(`/api/v1/mail/send-job/${jobId}`);
+}

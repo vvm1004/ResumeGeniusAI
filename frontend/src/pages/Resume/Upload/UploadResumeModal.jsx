@@ -37,7 +37,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './Modal.css';
 
-const Modal = ({ isOpen, onClose, handleButtonClick, handleFileChange, fileInputRef, isLoading = false, openLoading }) => {
+const UploadResumeModal = ({ isOpen, onClose, handleButtonClick, handleFileChange, fileInputRef, isLoading = false, openLoading }) => {
     const [isDragging, setIsDragging] = useState(false);
 
     const handleDrop = useCallback((event) => {
@@ -111,4 +111,4 @@ const Modal = ({ isOpen, onClose, handleButtonClick, handleFileChange, fileInput
     );
 };
 
-export default Modal;
+export default UploadResumeModal;

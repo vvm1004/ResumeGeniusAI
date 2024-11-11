@@ -12,7 +12,7 @@ import resume3 from '../../assets/template2.png';
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import Modal from '../Resume/Upload/Modal';
+import UploadResumeModal from '../Resume/Upload/UploadResumeModal';
 
 const resumeImages = [
     resume1,
@@ -474,7 +474,7 @@ const Home: React.FC = () => {
                 </form>
             </section>
 
-            <Modal isOpen={isModalOpen}
+            <UploadResumeModal isOpen={isModalOpen}
                 onClose={closeModal}
                 handleFileChange={handleFileChange}
                 handleButtonClick={handleButtonClick}

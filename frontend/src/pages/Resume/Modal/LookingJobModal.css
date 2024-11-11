@@ -1,0 +1,94 @@
+/* JobAlertModal.css */
+
+.job-alert-modal .modal-content {
+  border-radius: 10px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+}
+
+.modal-content {
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.job-alert-modal .modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(5px);
+  /* Hiệu ứng làm mờ */
+}
+
+.modal-header {
+  margin-top: 0;
+  padding: 10px;
+  background-color: #0056b3;
+  color: white;
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.cv-list .form-check {
+  margin-bottom: 10px;
+}
+
+.cv-list .form-check-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-footer .btn-secondary {
+  margin: 2px;
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modal-footer .btn-success {
+  margin: 2px;
+  background-color: #0056b3;
+}
+
+.modal-footer .btn-success:hover {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+
+}
+
+.cv-list {
+  padding-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* Tạo 3 cột với chiều rộng bằng nhau */
+  gap: 10px;
+  /* Khoảng cách giữa các mục */
+}

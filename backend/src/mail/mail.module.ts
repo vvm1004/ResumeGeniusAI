@@ -16,6 +16,8 @@ import {
   ResumeBuilder,
   ResumeBuilderSchema,
 } from 'src/resume-builders/schemas/resume-builder.schema';
+import { ResumeRegistration, ResumeRegistrationSchema } from 'src/resume-registration/schema/schema';
+
 @Module({
   imports: [
     MailerModule.forRootAsync({
@@ -46,9 +48,11 @@ import {
       { name: Job.name, schema: JobSchema },
       { name: User.name, schema: UserSchema }, // Thêm User vào MongooseModule
       { name: ResumeBuilder.name, schema: ResumeBuilderSchema },
+      { name: ResumeRegistration.name, schema: ResumeRegistrationSchema },
+
     ]),
   ],
   controllers: [MailController],
   providers: [MailService],
 })
-export class MailModule {}
+export class MailModule { }

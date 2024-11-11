@@ -13,9 +13,11 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import React from "react";
 import "./index.scss";
-import Modal from "./Upload/Modal";
+import UploadResumeModal from "./Upload/UploadResumeModal";
+import LookingJobModal from "./Modal/LookingJobModal"
 import { notification } from "antd";
 import { Modal as AntModal } from "antd";
+import { User } from "lucide-react";
 // import { image } from "html2canvas/dist/types/css/types/image";
 
 const DashboardResumes = () => {
@@ -62,8 +64,7 @@ const DashboardResumes = () => {
       try {
         if (userId) {
           const response = await axios.get(
-            `${
-              import.meta.env.VITE_BACKEND_URL
+            `${import.meta.env.VITE_BACKEND_URL
             }/api/v1/resume-builders/user/${userId}`,
             {
               headers: {
@@ -196,7 +197,7 @@ const DashboardResumes = () => {
           openNotification("error", "Error creating CV!");
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -211,7 +212,7 @@ const DashboardResumes = () => {
       onOk: async () => {
         navigate(`edit/${id}`);
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -235,14 +236,14 @@ const DashboardResumes = () => {
           openNotification("error", "Error when deleting CV!");
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
   const [isOpenLoading, setIsOpenLoading] = useState(false);
 
   const OpenLoading = () => setIsOpenLoading(true);
   const CloseLoading = () => setIsOpenLoading(false);
-  useEffect(() => {}, fileInputRef.current);
+  useEffect(() => { }, fileInputRef.current);
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -304,6 +305,12 @@ const DashboardResumes = () => {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
+
+  const [showLookingJobModal, setShowLookingJobModal] = useState(false);
+
+  const handleShowLookingJobModal = () => setShowLookingJobModal(true);
+  const handleCloseLookingJobModal = () => setShowLookingJobModal(false);
+
   return (
     <>
       <div className="flex min-h-screen">
@@ -327,32 +334,29 @@ const DashboardResumes = () => {
           <div className="mt-8">
             <ul className="text-gray-600 font-medium">
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
-                  activeMenuItem === "dashboard"
-                    ? "rounded-md bg-blue-100 text-blue-600"
-                    : ""
-                }`}
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "dashboard"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+                  }`}
                 onClick={() => handleMenuClick("dashboard", "/dashboard")}
               >
                 <MdDashboard className="mr-4 text-xl" /> Dashboard
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
-                  activeMenuItem === "resumes"
-                    ? "rounded-md bg-blue-100 text-blue-600"
-                    : ""
-                }`}
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "resumes"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+                  }`}
                 onClick={() => handleMenuClick("resumes", "/resumes")}
               >
                 <IoDocumentTextOutline className="mr-4 text-xl" />
                 My Resumes
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
-                  activeMenuItem === "recommendedJob"
-                    ? "rounded-md bg-blue-100 text-blue-600"
-                    : ""
-                }`}
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+                  }`}
                 onClick={() =>
                   handleMenuClick("recommendedJob", "/recommendedJob")
                 }
@@ -361,11 +365,10 @@ const DashboardResumes = () => {
                 Jobs
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
-                  activeMenuItem === "dashboard"
-                    ? "rounded-md bg-blue-100 text-blue-600"
-                    : ""
-                }`}
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+                  }`}
                 onClick={() => handleMenuClick("dashboard", "/dashboard")}
               >
                 <IoIosMore className="mr-4 text-xl" /> Other
@@ -378,13 +381,24 @@ const DashboardResumes = () => {
           <div className="ml-6 flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold">My Resumes</h1>
             <div className="d-flex">
+
+              <button
+                className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button"
+                onClick={handleShowLookingJobModal}              >
+                Turn on job search
+              </button>
+              <LookingJobModal show={showLookingJobModal} data={data}
+                handleClose={handleCloseLookingJobModal}
+                user={user}
+              />
+
               <button
                 onClick={openModal}
                 className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button"
               >
                 Upload Resume
               </button>
-              <Modal
+              <UploadResumeModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 handleFileChange={handleFileChange}
@@ -400,6 +414,8 @@ const DashboardResumes = () => {
               >
                 + Create New
               </button>
+
+
             </div>
           </div>
 
@@ -483,6 +499,7 @@ const DashboardResumes = () => {
                         <RiDeleteBin6Line className="mr-2 text-xl" />
                         Delete
                       </button>
+
                       <button className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600">
                         <IoIosMore className="mr-2 text-xl" />
                         More

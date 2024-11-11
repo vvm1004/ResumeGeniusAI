@@ -22,11 +22,11 @@ export class JobsService {
         email: user.email
       }
     })
-    const response = await firstValueFrom(
-      this.httpService.post(
-        `http://localhost:8000/api/v1/jobs/send-job/${newJob.id}`,
-      ),
-    );
+    // const response = await firstValueFrom(
+    //   this.httpService.post(
+    //     `http://localhost:8000/api/v1/jobs/send-job/${newJob.id}`,
+    //   ),
+    // );
     return {
       _id: newJob?._id,
       createdAt: newJob?.createdAt

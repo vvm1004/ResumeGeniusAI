@@ -3,7 +3,7 @@ import {
   ResumeBuilder,
   ResumeBuilderDocument,
 } from './../resume-builders/schemas/resume-builder.schema';
-import { Controller, Get, Param, Post,NotFoundException } from '@nestjs/common';
+import { Controller, Get, Param, Post, NotFoundException } from '@nestjs/common';
 import { MailService } from './mail.service';
 import {
   Public,
@@ -21,6 +21,7 @@ import { User, UserDocument } from 'src/users/schemas/user.schema'; // import Us
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron } from '@nestjs/schedule';
 import { ApiTags } from '@nestjs/swagger';
+import { ResumeRegistration, ResumeRegistrationDocument } from 'src/resume-registration/schema/schema';
 
 @ApiTags('mail')
 @Controller('mail')
@@ -40,7 +41,12 @@ export class MailController {
 
     @InjectModel(ResumeBuilder.name) // Inject User model
     private readonly ResumeBuilderModel: SoftDeleteModel<ResumeBuilderDocument>,
-  ) {}
+
+
+    @InjectModel(ResumeRegistration.name)
+    private readonly resumeRegistrationModel: SoftDeleteModel<ResumeRegistrationDocument>,
+
+  ) { }
 
   @Get()
   @Public()
@@ -115,7 +121,7 @@ export class MailController {
     return { message: 'Resume email sent successfully with image attachment' };
   }
 
-  @Post('send-job:jobId')
+  @Post('send-job/:jobId')
   @Public()
   async sendJobEmailToSubscribers(@Param('jobId') jobId: string) {
     const job = await this.jobModel.findById(jobId);
@@ -123,30 +129,41 @@ export class MailController {
       throw new Error('Job not found');
     }
 
-    const subscribers = await this.subscriberModel.find({
-      skills: { $in: job.skills },
+    const resumeRegister = await this.resumeRegistrationModel.find({
+      $or: [
+        {
+          resumeSkill: { $in: job.skills }
+        },
+        {
+          resumeSkill: { $regex: job.skills.join('|'), $options: 'i' }
+        },
+        {
+          resumeTitle: { $regex: job.name, $options: 'i' }
+        }
+      ]
     });
 
-    if (subscribers.length === 0) {
-      console.log('No subscribers found with matching skills');
+
+    if (resumeRegister.length === 0) {
+      console.log('No resumeRegister found with matching skills');
       return;
     }
 
-    for (const subscriber of subscribers) {
-      await this.sendEmailToSubscriber(job, subscriber);
+    for (const reGis of resumeRegister) {
+      await this.sendEmailToSubscriber(job, reGis);
     }
 
-    return { message: `${subscribers.length} emails sent successfully` };
+    return { message: `${resumeRegister.length} emails sent successfully` };
   }
 
-  private async sendEmailToSubscriber(job: Job, subscriber: Subcriber) {
+  private async sendEmailToSubscriber(job: Job, resumeRegistration: ResumeRegistration) {
     const emailContent = {
-      to: subscriber.email,
+      to: resumeRegistration.email,
       from: '"Job Finder" <support@example.com>',
       subject: `New Job Opportunity: ${job.name} at ${job.company.name}`,
       template: 'senJobTemplate',
       context: {
-        receiver: subscriber.name,
+        receiver: resumeRegistration.userName,
         jobName: job.name,
         company: job.company.name,
         location: job.location,
@@ -162,9 +179,9 @@ export class MailController {
     // Gửi email
     try {
       await this.mailerService.sendMail(emailContent);
-      console.log(`Email sent to ${subscriber.email}`);
+      console.log(`Email sent to ${resumeRegistration.email}`);
     } catch (error) {
-      console.error(`Failed to send email to ${subscriber.email}`, error);
+      console.error(`Failed to send email to ${resumeRegistration.email}`, error);
     }
   }
 

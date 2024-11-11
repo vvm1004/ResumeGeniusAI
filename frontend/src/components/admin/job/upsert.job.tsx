@@ -6,7 +6,7 @@ import styles from 'styles/admin.module.scss';
 import { LOCATION_LIST, SKILLS_LIST } from "@/config/utils";
 import { ICompanySelect } from "../user/modal.user";
 import { useState, useEffect } from 'react';
-import { callCreateJob, callFetchCompany, callFetchJobById, callUpdateJob } from "@/config/api";
+import { callCreateJob, callFetchCompany, callFetchJobById, callUpdateJob, callSendNewJob } from "@/config/api";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { CheckSquareOutlined } from "@ant-design/icons";
@@ -128,6 +128,14 @@ const ViewUpsertJob = (props: any) => {
             const res = await callCreateJob(job);
             if (res.data) {
                 message.success("Tạo mới job thành công");
+                if (res.data && res.data._id) {
+                    const res2 = await callSendNewJob(res.data._id);
+                    message.success("Send job thành công");
+                    console.log("Send job thành công", res2)
+                } else {
+                    console.error("Job ID is missing or undefined");
+                }
+
                 navigate('/admin/job')
             } else {
                 notification.error({
