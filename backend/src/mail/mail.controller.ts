@@ -81,7 +81,6 @@ export class MailController {
   }
 
   @Get(':_id/sendresume')
-  @Public()
   @SkipCheckPermission()
   async sendResumeToUser(@Param('_id') resumeBuilderId: string) {
     // Find the resume by resumeBuilderId and retrieve imageResume
