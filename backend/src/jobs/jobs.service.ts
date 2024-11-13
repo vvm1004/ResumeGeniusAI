@@ -26,16 +26,21 @@ export class JobsService {
       }
   }
 
-  async findAll(currentPage: number, limit: number, qs: string) {
+  async findAll(currentPage: number, limit: number, qs: string, user: IUser) {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-
+    if(user.company && user.company.name ){
+      filter['company.name'] = user.company.name
+    }
+    console.log(user.company.name)
+    console.log(filter)
     let offset = (currentPage - 1) * (limit);
     let defaultLimit = limit ? limit : 10;
 
     const totalItems = (await this.jobModel.find(filter)).length
     const totalPages = Math.ceil(totalItems / defaultLimit);
+   
 
     const result = await this.jobModel.find(filter)
       .skip(offset)

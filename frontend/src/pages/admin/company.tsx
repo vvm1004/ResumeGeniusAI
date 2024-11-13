@@ -24,6 +24,7 @@ const CompanyPage = () => {
     const companies = useAppSelector(state => state.company.result);
     const dispatch = useAppDispatch();
 
+
     const handleDeleteCompany = async (_id: string | undefined) => {
         if (_id) {
             const res = await callDeleteCompany(_id);

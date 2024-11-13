@@ -273,7 +273,6 @@ const ModalCompany = (props: IProps) => {
                                     >
                                         <InputNumber
                                             min={0}
-                                            placeholder="Nhập quy mô tối thiểu"
                                             style={{ width: "100%" }}
                                         />
                                     </Form.Item>
@@ -285,7 +284,6 @@ const ModalCompany = (props: IProps) => {
                                     >
                                         <InputNumber
                                             min={0}
-                                            placeholder="Nhập quy mô tối đa"
                                             style={{ width: "100%" }}
                                         />
                                     </Form.Item>
