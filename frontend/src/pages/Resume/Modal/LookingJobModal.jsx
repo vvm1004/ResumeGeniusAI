@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
@@ -11,6 +13,7 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
     const [notSelectedResumes, setNotSelectedResumes] = useState([]);
     const API_URL = 'http://localhost:8000/api/v1';
     const [resumeRegistrationsId, setResumeRegistrationsId] = useState([]);
+    const [originalResumeRegistrationsId, setOriginalResumeRegistrationsId] = useState([]);
 
     useEffect(() => {
         if (user._id && show) {
@@ -30,6 +33,7 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
 
                 const resumeIds = response.data.data.map(item => item.resumeId);
                 setResumeRegistrationsId(resumeIds);
+                setOriginalResumeRegistrationsId(resumeIds);
 
                 console.log("response.data:", response.data);
             } else {
@@ -37,6 +41,7 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
                 console.error("response.data.data is not a valid array", response.data);
                 setResumeRegistrations([]);
                 setResumeRegistrationsId([]);
+                setOriginalResumeRegistrationsId([]);
             }
 
             console.log("response: ", response.data)
@@ -52,18 +57,17 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
 
 
 
-    // const handleSelectResume = (resume) => {
-    //     setSelectedResumes((prevSelected) => {
-    //         if (prevSelected.includes(resume)) {
-    //             // Nếu resume đã được chọn, bỏ chọn nó
-    //             return prevSelected.filter((item) => item !== resume);
-    //         } else {
-    //             // Nếu resume chưa được chọn, thêm nó vào
-    //             return [...prevSelected, resume];
-    //         }
-    //     });
-    // };
+
     const handleSelectResume = (resume) => {
+        if (checkResumeRegistrationExist(resume._id)) {
+
+            setResumeRegistrationsId(prevState => prevState.filter(id => id !== resume._id));
+
+        }
+        else {
+            setResumeRegistrationsId(prevState => [...prevState, resume._id]);
+        }
+
         setSelectedResumes((prevSelected) => {
             // Kiểm tra nếu resume đã có trong mảng
             const isSelected = prevSelected.some(item => item._id === resume._id);
@@ -82,7 +86,9 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
     const checkResumeRegistrationExist = (resumeId) => {
         return resumeRegistrationsId.includes(resumeId);
     };
-
+    const checkOriginalResumeRegistrationExist = (resumeId) => {
+        return originalResumeRegistrationsId.includes(resumeId);
+    };
 
     const createResumeRegistration = async (resumeId, title, skills) => {
         try {
@@ -103,11 +109,15 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
     };
 
     const handleEnableClick = async () => {
+
+        console.log("aaaaaaaaaa:", resumeRegistrationsId)
+
         const selectedIds = selectedResumes.map(resume => resume._id);
+        console.log("selectedIds:", selectedIds)
 
         // 1. Check selected resumes and create new ResumeRegistrations if necessary
         for (const resume of selectedResumes) {
-            if (!checkResumeRegistrationExist(resume._id)) {
+            if (!checkOriginalResumeRegistrationExist(resume._id)) {
                 var skills = resume.skills.map(skill => `${skill.title}: ${skill.value}`).join(', ');
                 await createResumeRegistration(resume._id, resume.title, skills);
             }
@@ -119,7 +129,7 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
 
         // 4. Check for resumes that are unselected but still have a ResumeRegistration, and delete them
         for (const resume of unselectedResumes) {
-            if (checkResumeRegistrationExist(resume.resumeId)) {
+            if (checkOriginalResumeRegistrationExist(resume.resumeId)) {
                 await deleteResumeRegistration(resume.resumeId);
             }
         }
@@ -167,7 +177,7 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>I have no need</Button>
-                <Button variant="success" onClick={handleEnableClick}>Bật tìm việc ngay</Button>
+                <Button variant="success" onClick={handleEnableClick}>Turn on job search now</Button>
             </Modal.Footer>
         </Modal>
     );
