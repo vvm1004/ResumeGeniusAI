@@ -5,6 +5,7 @@ import { UpdateJobDto } from './dto/update-job.dto';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { ApiTags } from '@nestjs/swagger';
+import { HttpModule } from '@nestjs/axios';
 
 @ApiTags('jobs')
 @Controller('jobs')

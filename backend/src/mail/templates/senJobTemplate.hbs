@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Job Opportunity</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    p {
+      color: #555;
+    }
+    .job-info {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 6px;
+    }
+    .job-info span {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hi {{receiver}},</h1>
+    <p>We have a new job opportunity that might interest you:</p>
+    <div class="job-info">
+      <p><span>Job Title:</span> {{jobName}}</p>
+      <p><span>Company:</span> {{company}}</p>
+      <p><span>Location:</span> {{location}}</p>
+      <p><span>Salary:</span> {{salary}}</p>
+      <p><span>Level:</span> {{level}}</p>
+      <p><span>Description:</span> {{description}}</p>
+      <p><span>Required Skills:</span> {{skills}}</p>
+      <p><span>Start Date:</span> {{startDate}}</p>
+      <p><span>End Date:</span> {{endDate}}</p>
+    </div>
+    <p>We hope this job fits your profile! If you're interested, please apply soon!</p>
+    <p>Best regards,</p>
+    <p>The Job Finder Team</p>
+  </div>
+</body>
+</html>

@@ -13,7 +13,12 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import React from "react";
 import "./index.scss";
-import Modal from "./Upload/Modal";
+import UploadResumeModal from "./Upload/UploadResumeModal";
+import LookingJobModal from "./Modal/LookingJobModal"
+import { notification } from "antd";
+import { Modal as AntModal } from "antd";
+import { User } from "lucide-react";
+// import { image } from "html2canvas/dist/types/css/types/image";
 
 const DashboardResumes = () => {
   const [data, setData] = useState([]);
@@ -76,6 +81,7 @@ const DashboardResumes = () => {
     };
     fetchApi();
   }, [userId, access_token]);
+
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
@@ -95,9 +101,18 @@ const DashboardResumes = () => {
     setNewTitle(title);
   };
 
+  const openNotification = (type, message) => {
+    notification[type]({
+      message: message,
+      duration: 3,
+      placement: "topRight",
+    });
+  };
+
   const handleTitleChange = (e) => setNewTitle(e.target.value);
 
   const handleTitleBlur = async (resumeId) => {
+    // console.log("resumeId: " + resumeId);
     try {
       if (newTitle.trim() !== "") {
         const updatedResume = { title: newTitle };
@@ -125,58 +140,65 @@ const DashboardResumes = () => {
       handleTitleBlur(resumeId);
     }
   };
+
   const templateId = "67125252513c2654c1ddd087";
+
   const handleNewResumeClick = async () => {
-    const confirmCreate = window.confirm("Do you want to create a new CV?");
+    AntModal.confirm({
+      title: "Do you want to create a new CV?",
+      onOk: async () => {
+        try {
+          const newResume = {
+            title: "Untitled",
+            user: userId,
+            personalInformation: {
+              name: "",
+              email: "",
+              address: "",
+              phone: "",
+              github: "",
+              linkedin: "",
+              image: "",
+            },
+            summary: "",
+            template: template,
+            experience: [],
+            education: [],
+            projects: [],
+            activities: [],
+            awards: [],
+            skills: [],
+            languages: [],
+            interests: [],
+            references: [],
+            certifications: [],
+            customFields: [],
+          };
 
-    if (confirmCreate) {
-      try {
-        const newResume = {
-          title: "Untitled",
-          user: userId,
-          personalInformation: {
-            name: "",
-            email: "",
-            address: "",
-            phone: "",
-            github: "",
-            linkedin: "",
-          },
-          summary: "",
-          template: template,
-          experience: [],
-          education: [],
-          projects: [],
-          activities: [],
-          awards: [],
-          skills: [],
-          languages: [],
-          interests: [],
-          references: [],
-          certifications: [],
-          customFields: [],
-        };
-
-        if (userId) {
-          const response = await axios.post(
-            "http://localhost:8000/api/v1/resume-builders",
-            newResume,
-            {
-              headers: {
-                Authorization: `Bearer ${access_token}`,
-              },
-            }
-          );
-          setData((prevData) => [...prevData, response.data.data]);
-          navigate(`edit/${response?.data?.data._id}`);
-        } else {
-          navigate(`edit/${newResume._id}`);
+          if (userId) {
+            const response = await axios.post(
+              "http://localhost:8000/api/v1/resume-builders",
+              newResume,
+              {
+                headers: {
+                  Authorization: `Bearer ${access_token}`,
+                },
+              }
+            );
+            setData((prevData) => [...prevData, response.data.data]);
+            openNotification("success", "Create new CV successfully!");
+            navigate(`edit/${response?.data?.data._id}`);
+          } else {
+            openNotification("success", "Create new CV successfully!");
+            navigate(`edit/${newResume._id}`);
+          }
+        } catch (error) {
+          console.error("Error creating CV!");
+          openNotification("error", "Error creating CV!");
         }
-      } catch (error) {
-        console.error("Error creating CV!");
-        alert("Error creating CV!");
-      }
-    }
+      },
+      onCancel() { },
+    });
   };
 
   const handleMenuClick = (menuItem, path) => {
@@ -185,40 +207,43 @@ const DashboardResumes = () => {
   };
 
   const handleResumeClick = async (id) => {
-    const confirmEdit = window.confirm("Would you like to edit this CV?");
-    if (confirmEdit) {
-      navigate(`edit/${id}`);
-    }
+    AntModal.confirm({
+      title: "Would you like to edit this CV?",
+      onOk: async () => {
+        navigate(`edit/${id}`);
+      },
+      onCancel() { },
+    });
   };
 
   const handleDeleteClick = async (id) => {
-    const confirmDelete = window.confirm("Do you want to delete this CV?");
-    if (confirmDelete) {
-      try {
-        await axios.delete(
-          `http://localhost:8000/api/v1/resume-builders/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          }
-        );
-        setData((prevData) => prevData.filter((resume) => resume._id !== id));
-        alert("CV was deleted successfully.");
-      } catch (error) {
-        console.error("Error when deleting CV:", error);
-        alert("Error when deleting CV!");
-      }
-    }
+    AntModal.confirm({
+      title: "Do you want to delete this CV?",
+      onOk: async () => {
+        try {
+          await axios.delete(
+            `http://localhost:8000/api/v1/resume-builders/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          );
+          setData((prevData) => prevData.filter((resume) => resume._id !== id));
+          openNotification("success", "CV was deleted successfully!");
+        } catch (error) {
+          console.error("Error when deleting CV:", error);
+          openNotification("error", "Error when deleting CV!");
+        }
+      },
+      onCancel() { },
+    });
   };
   const [isOpenLoading, setIsOpenLoading] = useState(false);
 
   const OpenLoading = () => setIsOpenLoading(true);
   const CloseLoading = () => setIsOpenLoading(false);
-  useEffect(() => {
-
-
-  }, fileInputRef.current)
+  useEffect(() => { }, fileInputRef.current);
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -263,16 +288,14 @@ const DashboardResumes = () => {
         } else {
         }
       } catch (error) {
-
         console.log("lỗi: ", error);
         console.log(
           "Lỗi khi tạo CV:",
           error.response ? error.response.data : error.message
         );
-        alert("Có lỗi xảy ra khi tạo CV.");
+        openNotification("error", "Error creating CV!");
       }
     } catch (error) {
-
       console.error("Error uploading file:", error);
     }
   };
@@ -281,6 +304,12 @@ const DashboardResumes = () => {
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
+
+
+  const [showLookingJobModal, setShowLookingJobModal] = useState(false);
+
+  const handleShowLookingJobModal = () => setShowLookingJobModal(true);
+  const handleCloseLookingJobModal = () => setShowLookingJobModal(false);
 
   return (
     <>
@@ -332,7 +361,8 @@ const DashboardResumes = () => {
                   handleMenuClick("recommendedJob", "/recommendedJob")
                 }
               >
-                <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended Jobs
+                <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended
+                Jobs
               </li>
               <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard"
@@ -351,13 +381,24 @@ const DashboardResumes = () => {
           <div className="ml-6 flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold">My Resumes</h1>
             <div className="d-flex">
+
+              <button
+                className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button"
+                onClick={handleShowLookingJobModal}              >
+                Turn on job search
+              </button>
+              <LookingJobModal show={showLookingJobModal} data={data}
+                handleClose={handleCloseLookingJobModal}
+                user={user}
+              />
+
               <button
                 onClick={openModal}
                 className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button"
               >
                 Upload Resume
               </button>
-              <Modal
+              <UploadResumeModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 handleFileChange={handleFileChange}
@@ -373,6 +414,8 @@ const DashboardResumes = () => {
               >
                 + Create New
               </button>
+
+
             </div>
           </div>
 
@@ -456,6 +499,7 @@ const DashboardResumes = () => {
                         <RiDeleteBin6Line className="mr-2 text-xl" />
                         Delete
                       </button>
+
                       <button className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600">
                         <IoIosMore className="mr-2 text-xl" />
                         More
@@ -488,9 +532,7 @@ const DashboardResumes = () => {
             </div>
           </div>
         </div>
-
       </div>
-
     </>
   );
 };
