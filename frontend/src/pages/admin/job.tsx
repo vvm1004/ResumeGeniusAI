@@ -9,16 +9,16 @@ import dayjs from 'dayjs';
 import { callDeleteJob } from "@/config/api";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
-import { fetchJob } from "@/redux/slice/jobSlide";
+import { fetchAdminJob } from "@/redux/slice/jobSlideAdmin";
 import Access from "@/components/share/access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 
 const JobPage = () => {
     const tableRef = useRef<ActionType>();
 
-    const isFetching = useAppSelector(state => state.job.isFetching);
-    const meta = useAppSelector(state => state.job.meta);
-    const jobs = useAppSelector(state => state.job.result);
+    const isFetching = useAppSelector(state => state.adminJob.isFetching);
+    const meta = useAppSelector(state => state.adminJob.meta);
+    const jobs = useAppSelector(state => state.adminJob.result);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -223,7 +223,7 @@ const JobPage = () => {
                     dataSource={jobs}
                     request={async (params, sort, filter): Promise<any> => {
                         const query = buildQuery(params, sort, filter);
-                        dispatch(fetchJob({ query }))
+                        dispatch(fetchAdminJob({ query }))
                     }}
                     scroll={{ x: true }}
                     pagination={

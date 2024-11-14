@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { ApiTags } from '@nestjs/swagger';
 import { HttpModule } from '@nestjs/axios';
@@ -27,11 +27,20 @@ export class JobsController {
     @Query("current") currentPage: string,
     @Query("pageSize") limit: string,
     @Query() qs: string,
-    @User() user: IUser
   ) {
-    return this.jobsService.findAll(+currentPage, +limit, qs, user);
+    return this.jobsService.findAll(+currentPage, +limit, qs);
   }
 
+  @Get('admin')
+  @ResponseMessage('Fetch List Job with admin page')
+  findAllWithAdminPage(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string,
+    @User() user: IUser
+  ) {
+    return this.jobsService.findAllWithAdminPage(+currentPage, +limit, qs, user);
+  }
 
   @Public()
   @Get(':id')
