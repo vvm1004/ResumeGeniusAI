@@ -16,6 +16,10 @@ import axios from "axios";
 import { Modal, notification } from "antd";
 import { useNavigate } from "react-router-dom";
 
+import imageCompression from "browser-image-compression";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
 function FormSection() {
   const [sections, setSections] = useState([]);
   const { data, setData, id, access_token } = useContext(DataContext);
@@ -28,12 +32,119 @@ function FormSection() {
       duration: 2,
     });
   };
+  const generatePDF = () => {
+    return new Promise((resolve, reject) => {
+      const element = document.querySelector(".resume-cv");
+      html2canvas(element, {
+        scale: 0.5,
+        useCORS: true,
+      })
+        .then((canvas) => {
+          const imgData = canvas.toDataURL("image/png");
+          const imgWidth = canvas.width;
+          const imgHeight = canvas.height;
+          const doc = new jsPDF({
+            orientation: imgWidth > imgHeight ? "landscape" : "portrait",
+            unit: "px",
+            format: [imgWidth, imgHeight],
+          });
+          doc.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
 
+          // Trả về đối tượng jsPDF
+          resolve(doc);
+        })
+        .catch((error) => {
+          console.error("Error in generating PDF", error);
+          reject(error);
+        });
+    });
+  };
+
+  const createAndUploadPDF = async () => {
+    try {
+      const doc = await generatePDF();
+
+      const pdfBlob = doc.output("blob");
+      const formData = new FormData();
+      formData.append("fileUpload", pdfBlob, `${data._id}.pdf`);
+
+      const headers = {
+        "Content-Type": "multipart/form-data",
+        folder_type: "url_Resume",
+        Authorization: `Bearer ${access_token}`,
+      };
+
+      const response = await axios.post(
+        `http://localhost:8000/api/v1/files/upload-resume/${data._id}`,
+        formData,
+        { headers }
+      );
+      const urlResume = { urlResume: response.data.data.fileName };
+      console.log("link url: " + urlResume);
+      await axios.patch(
+        `http://localhost:8000/api/v1/resume-builders/${data._id}`,
+        urlResume,
+        {
+          headers: { Authorization: `Bearer ${access_token}` },
+        }
+      );
+
+      console.log("Response from upload API:", response.data);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+  const saveResumeAsImage = async () => {
+    const resumeContent = document.querySelector(".resume-cv");
+    const canvas = await html2canvas(resumeContent);
+    const imgData = canvas.toDataURL("image/png");
+
+    if (imgData) {
+      // Chuyển đổi imgData thành Blob để nén
+      const blob = await fetch(imgData).then((res) => res.blob());
+
+      // Tùy chọn nén
+      const options = {
+        maxSizeMB: 0.1, // Kích thước tối đa 100KB
+        maxWidthOrHeight: 800, // Chiều rộng hoặc chiều cao tối đa
+        useWebWorker: true, // Sử dụng Web Worker để nén nhanh hơn
+        initialQuality: 0.8,
+      };
+
+      try {
+        let compressedFile = await imageCompression(blob, options);
+
+        // Kiểm tra kích thước và điều chỉnh nếu cần
+        while (compressedFile.size > 100 * 1024) {
+          // 100KB
+          options.initialQuality -= 0.05; // Giảm chất lượng 5%
+          compressedFile = await imageCompression(blob, options);
+        }
+
+        const compressedImgData = await imageCompression.getDataUrlFromFile(
+          compressedFile
+        );
+        const updatedResume = { imageResume: compressedImgData };
+        await axios.patch(
+          `http://localhost:8000/api/v1/resume-builders/${data._id}`,
+          updatedResume,
+          {
+            headers: { Authorization: `Bearer ${access_token}` },
+          }
+        );
+        console.log("Resume updated successfully");
+      } catch (error) {
+        console.error("Lỗi lưu hình ảnh:", error);
+      }
+    }
+  };
   const handleSave = async () => {
     Modal.confirm({
       title: "Do you want to save the changes?",
       onOk: async () => {
         if (data && id !== "undefined") {
+          saveResumeAsImage();
+          createAndUploadPDF();
           try {
             await axios.patch(
               `http://localhost:8000/api/v1/resume-builders/${id}`,
@@ -79,10 +190,7 @@ function FormSection() {
       savedSections[data._id] = updatedSections;
       localStorage.setItem("sections", JSON.stringify(savedSections));
     } else {
-      openNotification(
-        "error",
-        `${section.type} section already exists!`
-      );
+      openNotification("error", `${section.type} section already exists!`);
     }
   };
 

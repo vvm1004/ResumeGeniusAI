@@ -100,78 +100,78 @@ const ResumePreview = () => {
       });
   };
 
-  useEffect(() => {
-    const saveResumeAsImage = async () => {
-      const resumeContent = document.querySelector(".resume-cv");
-      const canvas = await html2canvas(resumeContent);
-      const imgData = canvas.toDataURL("image/png");
+  // useEffect(() => {
+  //   const saveResumeAsImage = async () => {
+  //     const resumeContent = document.querySelector(".resume-cv");
+  //     const canvas = await html2canvas(resumeContent);
+  //     const imgData = canvas.toDataURL("image/png");
 
-      if (imgData) {
-        // Chuyển đổi imgData thành Blob để nén
-        const blob = await fetch(imgData).then((res) => res.blob());
+  //     if (imgData) {
+  //       // Chuyển đổi imgData thành Blob để nén
+  //       const blob = await fetch(imgData).then((res) => res.blob());
 
-        // Tùy chọn nén
-        const options = {
-          maxSizeMB: 0.1, // Kích thước tối đa 100KB
-          maxWidthOrHeight: 800, // Chiều rộng hoặc chiều cao tối đa
-          useWebWorker: true, // Sử dụng Web Worker để nén nhanh hơn
-          initialQuality: 0.8,
-        };
+  //       // Tùy chọn nén
+  //       const options = {
+  //         maxSizeMB: 0.1, // Kích thước tối đa 100KB
+  //         maxWidthOrHeight: 800, // Chiều rộng hoặc chiều cao tối đa
+  //         useWebWorker: true, // Sử dụng Web Worker để nén nhanh hơn
+  //         initialQuality: 0.8,
+  //       };
 
-        try {
-          let compressedFile = await imageCompression(blob, options);
+  //       try {
+  //         let compressedFile = await imageCompression(blob, options);
 
-          // Kiểm tra kích thước và điều chỉnh nếu cần
-          while (compressedFile.size > 100 * 1024) {
-            // 100KB
-            options.initialQuality -= 0.05; // Giảm chất lượng 5%
-            compressedFile = await imageCompression(blob, options);
-          }
+  //         // Kiểm tra kích thước và điều chỉnh nếu cần
+  //         while (compressedFile.size > 100 * 1024) {
+  //           // 100KB
+  //           options.initialQuality -= 0.05; // Giảm chất lượng 5%
+  //           compressedFile = await imageCompression(blob, options);
+  //         }
 
-          const compressedImgData = await imageCompression.getDataUrlFromFile(
-            compressedFile
-          );
-          setImageCV(compressedImgData); // Cập nhật hình ảnh đã nén
-        } catch (error) {
-          console.error("Lỗi nén hình ảnh:", error);
-        }
-      }
-    };
+  //         const compressedImgData = await imageCompression.getDataUrlFromFile(
+  //           compressedFile
+  //         );
+  //         setImageCV(compressedImgData); // Cập nhật hình ảnh đã nén
+  //       } catch (error) {
+  //         console.error("Lỗi nén hình ảnh:", error);
+  //       }
+  //     }
+  //   };
 
-    const saveImageAndUpdateResume = async () => {
-      await saveResumeAsImage();
-    };
+  //   const saveImageAndUpdateResume = async () => {
+  //     await saveResumeAsImage();
+  //   };
 
-    saveImageAndUpdateResume();
-  }, [data]);
+  //   saveImageAndUpdateResume();
+  // }, [data]);
 
-  useEffect(() => {
-    const updateResume = async () => {
-      console.log("data_id:", data._id);
-      if (imageCV && data._id) {
-        try {
-          const updatedResume = { imageResume: imageCV };
-          await axios.patch(
-            `http://localhost:8000/api/v1/resume-builders/${data._id}`,
-            updatedResume,
-            {
-              headers: { Authorization: `Bearer ${access_token}` },
-            }
-          );
-          console.log("Resume updated successfully");
-        } catch (error) {
-          console.error("Error updating resume:", error);
-        }
-      } else {
-        console.warn("imageCV or data._id is invalid");
-      }
-    };
+  // useEffect(() => {
+  //   const updateResume = async () => {
+  //     console.log("data_id:", data._id);
+  //     if (imageCV && data._id) {
+  //       try {
+  //         const updatedResume = { imageResume: imageCV };
+  //         await axios.patch(
+  //           `http://localhost:8000/api/v1/resume-builders/${data._id}`,
+  //           updatedResume,
+  //           {
+  //             headers: { Authorization: `Bearer ${access_token}` },
+  //           }
+  //         );
+  //         console.log("Resume updated successfully");
+  //       } catch (error) {
+  //         console.error("Error updating resume:", error);
+  //       }
+  //     } else {
+  //       console.warn("imageCV or data._id is invalid");
+  //     }
+  //   };
 
-    // Only call updateResume if both imageCV and data._id are defined
-    if (imageCV && data._id) {
-      updateResume();
-    }
-  }, [imageCV, data._id]);
+  //   // Only call updateResume if both imageCV and data._id are defined
+  //   if (imageCV && data._id) {
+  //     updateResume();
+  //   }
+  // }, [imageCV, data._id]);
 
   //Update Template Id
   const updateTemplateId = async (templateId) => {
