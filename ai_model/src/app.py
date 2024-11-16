@@ -7,6 +7,7 @@ from model_training.check_spell.upgradeSentence import upgrade_sentence
 from model_training.check_spell.spellcheck import check_and_correct_spelling_with_positions
 from extract_data.resume_upgrade_module import handleData
 from gen_sumary.generateSumary import generate_resume_summary, generate_employment_history_description
+from extract_data.extractImage import extract_images_from_pdf
 def normalize_phrase(phrase):
     # Thay thế dấu gạch dưới và dấu gạch nối bằng khoảng trắng
     phrase = phrase.replace('_', ' ').replace('-', ' ')
@@ -68,7 +69,8 @@ def process_resume():
         else:
             results[field] = improved_value
 
-   
+    avatarImg=extract_images_from_pdf(pdf_path)
+    print("\n\navatarImg\n",avatarImg)
     results2 = {
         "title": job_title,
         "Personal Information": {
@@ -81,7 +83,8 @@ def process_resume():
             "Phone": {"$type": "string", "value": results.get("Phone", "")},
             "Github": {"$type": "string", "value": results.get("Github", "")},
             "Linkedin": {"$type": "string", "value": results.get("Linkedin", "")},
-            "Social link": {"$type": "string", "value": results.get("Social link","")}
+            "Social link": {"$type": "string", "value": results.get("Social link","")},
+            "Image":avatarImg
         },
         "Job Title": job_title,
         "Summary": {"$type": "string", "value": next((results.get(key) for key in ["Summary", "Objective","Career_goals","Professional Summary","Professional_overview"] if results.get(key)), "")} ,
@@ -119,6 +122,8 @@ def process_resume():
                 results2["Personal Information"]["Social link"]["value"] = next(
                     (results[key].get(k) for k in ["Social link", "Portfolio"] if results[key].get(k)), ""
                 )
+            if not results2["Personal Information"]["Image"]["value"]:
+                results2["Personal Information"]["Image"]["value"] = avatarImg
             break
 
 
@@ -284,9 +289,15 @@ def process_resume():
                 for lang, details in results[keyword].items():
                     language_item = {
                         "Title": {"$type": "string", "value": lang},
-                        "Level": {"$type": "string", "value": details.get("Level", "")}
+                        "Level": {"$type": "string", "value": ""}
                     }
+                    if isinstance(details, dict):
+                        language_item["Level"]["value"] = details.get("Level", "")
+                    elif isinstance(details, str):
+                        language_item["Level"]["value"] = "" 
+
                     results2["Languages"].append(language_item)
+
             break
 
 
@@ -566,6 +577,8 @@ def process_resume():
 
             results2["CustomFields"].append(custom_field_item)
 
+
+    print("\n\n\nresults2: \n\n",results2)
     return jsonify({
         'data': results2,
         

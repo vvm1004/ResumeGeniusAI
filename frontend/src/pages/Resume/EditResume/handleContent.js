@@ -1,5 +1,5 @@
 
-const API_URL = 'http://localhost:8000/api/v1/resume-upgrade/';
+const API_URL = import.meta.env.VITE_BACKEND_URL+'/api/v1/resume-upgrade/';
 
 export const spellCheckText = async (text) => {
     try {

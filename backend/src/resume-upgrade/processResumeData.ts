@@ -8,6 +8,7 @@ interface PersonalInformation {
     github?: string;
     linkedin?: string;
     socialLink?: string;
+    image?: string;
 }
 
 interface Experience {
@@ -108,7 +109,7 @@ interface ResumeBuilderData {
     customFields: CustomField[];
 }
 function processResumeData(data: any, userId: string): ResumeBuilderData {
-    console.log("\n\n\n\n\tUserId processResumeData: ", userId, "\n\n\n")
+    // console.log("\n\n\n\n\tUserId processResumeData: ", data, "\n\n\n")
     return {
         title: data.title || "Untitled",
         user: userId,
@@ -121,6 +122,7 @@ function processResumeData(data: any, userId: string): ResumeBuilderData {
             github: data["Personal Information"]?.Github?.value || "",
             linkedin: data["Personal Information"]?.Linkedin?.value || "",
             socialLink: data["Personal Information"]?.["Social link"]?.value || "",
+            image: data["Personal Information"]?.["Image"] || "",
         },
         summary: data.Summary?.value || "",
         experience: data.Experience?.map((exp: any) => ({
