@@ -452,6 +452,7 @@ const DashboardResumes = () => {
                 fileInputRef={fileInputRef}
                 isLoading={isOpenLoading}
                 openLoading={OpenLoading}
+                closeLoading={CloseLoading}
               />
 
               <button

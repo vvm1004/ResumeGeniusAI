@@ -310,6 +310,7 @@ function EmploymentHistory() {
       newValues[index] = text;
       return newValues;
     });
+
     console.log("handleSummarySelect", text, "\n", index, "\n", editorValues[index])
     handleUpdateExperience(index, { description: text });
     setSunnaryModalOpen(false);

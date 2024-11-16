@@ -289,9 +289,15 @@ def process_resume():
                 for lang, details in results[keyword].items():
                     language_item = {
                         "Title": {"$type": "string", "value": lang},
-                        "Level": {"$type": "string", "value": details.get("Level", "")}
+                        "Level": {"$type": "string", "value": ""}
                     }
+                    if isinstance(details, dict):
+                        language_item["Level"]["value"] = details.get("Level", "")
+                    elif isinstance(details, str):
+                        language_item["Level"]["value"] = "" 
+
                     results2["Languages"].append(language_item)
+
             break
 
 
