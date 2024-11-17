@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { IJob } from "@/types/backend";
 import { callFetchJobById } from "@/config/api";
-import { Breadcrumb, Col, Divider, Row, Skeleton, Tag } from "antd";
+import { Breadcrumb, Col, Row, Skeleton } from "antd";
 import { getLocationName } from "@/config/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -13,31 +13,27 @@ import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { IoLocationSharp } from "react-icons/io5";
 import { FaAddressBook, FaRegBell, FaRegClock, FaUser } from "react-icons/fa";
 import { IoIosSend, IoMdHeartEmpty } from "react-icons/io";
-import { BsBoxArrowInUpRight, BsBoxArrowUpRight } from "react-icons/bs";
+import { BsBoxArrowInUpRight } from "react-icons/bs";
 dayjs.extend(relativeTime);
 
 const ClientJobDetailPage = (props: any) => {
   const [jobDetail, setJobDetail] = useState<IJob | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   let location = useLocation();
   let params = new URLSearchParams(location.search);
-  const id = params?.get("id"); // job id
+  const id = params?.get("id");
 
   useEffect(() => {
-    const init = async () => {
+    const fetchJobDetail = async () => {
       if (id) {
-        setIsLoading(true);
         const res = await callFetchJobById(id);
-        if (res?.data) {
-          setJobDetail(res.data);
-        }
-        setIsLoading(false);
+        setJobDetail(res.data || null);
       }
+      setIsLoading(false);
     };
-    init();
+    fetchJobDetail();
   }, [id]);
 
   return (
@@ -45,43 +41,38 @@ const ClientJobDetailPage = (props: any) => {
       <div className="">
         <SearchClient showCarousel={false} showTitle={false} />
       </div>
+
       <div className="bg-gray-200 pt-4 pb-4">
         <Row className="flex justify-center items-center p-4">
           <Col md={19}>
-            <Breadcrumb className="text-lg ">
-              <Breadcrumb.Item>
-                <Link
-                  style={{ color: "green", fontWeight: "600" }}
-                  className="hover:underline"
-                  to="/jobSearch"
-                >
-                  Trang chủ
-                </Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Link
-                  style={{ color: "green", fontWeight: "600" }}
-                  className="hover:underline"
-                  to="/jobSearch"
-                >
-                  Việc làm
-                </Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Link
-                  style={{ color: "green", fontWeight: "600" }}
-                  className="hover:underline"
-                  to="/jobSearch"
-                >
-                  Tìm việc làm Front End Developer
-                </Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className="font-semibold">
-                Tuyển Front End Developer (Reactjs)
-              </Breadcrumb.Item>
+            <Breadcrumb className="text-lg">
+              {[
+                { name: "Trang chủ", path: "/jobsAll" },
+                { name: "Việc làm", path: "/jobs" },
+                // {
+                //   name: "Tìm việc làm Front End Developer",
+                //   path: "/jobSearch",
+                // },
+                { name: `Tuyển ${jobDetail?.name}`, path: null },
+              ].map((breadcrumb, index) => (
+                <Breadcrumb.Item key={index}>
+                  {breadcrumb.path ? (
+                    <Link
+                      style={{ color: "green", fontWeight: "600" }}
+                      className="hover:underline"
+                      to={breadcrumb.path}
+                    >
+                      {breadcrumb.name}
+                    </Link>
+                  ) : (
+                    <span className="font-semibold">{breadcrumb.name}</span>
+                  )}
+                </Breadcrumb.Item>
+              ))}
             </Breadcrumb>
           </Col>
         </Row>
+
         {isLoading ? (
           <Skeleton />
         ) : (
@@ -155,7 +146,8 @@ const ClientJobDetailPage = (props: any) => {
                         className="mt-4 p-2 flex items-center bg-gray-200 text-md text-gray-600 rounded-sm"
                       >
                         <FaRegClock size={20} className="mr-2" />
-                        Hạn nộp hồ sơ: 01/01/2025
+                        Hạn nộp hồ sơ:{" "}
+                        {dayjs(jobDetail?.endDate).format("DD/MM/YYYY")}
                       </Col>
                       <Col
                         span={18}
@@ -193,60 +185,63 @@ const ClientJobDetailPage = (props: any) => {
                       </Col>
                       <Col
                         span={24}
-                        dangerouslySetInnerHTML={{__html: jobDetail?.description}}
-                      >
-                      </Col>
+                        dangerouslySetInnerHTML={{
+                          __html: jobDetail?.description,
+                        }}
+                      ></Col>
                     </Row>
                   </>
                 )}
               </div>
-              <div className="w-1/3 ml-10 mr-36 bg-white rounded-md self-start">
-                <Row
-                  className="w-full flex justify-center p-4"
-                  gutter={[20, 5]}
-                >
-                  <Col span={8} className="flex items-center">
-                    <img
-                      src={`${
-                        import.meta.env.VITE_BACKEND_URL
-                      }/images/company/${jobDetail?.company?.logo}`}
-                      alt={jobDetail?.company?.name}
-                      className="w-full h-auto border p-2 rounded-md object-contain"
-                    />
-                  </Col>
-                  <Col className="ml-2 pt-2 text-lg font-bold" span={15}>
-                    {jobDetail?.company?.name}
-                  </Col>
-                  <Col
-                    className="p-2 flex items-center text-md text-gray-600 font-semibold"
-                    span={22}
+              {jobDetail && jobDetail._id && (
+                <div className="w-1/3 ml-10 mr-36 bg-white rounded-md self-start">
+                  <Row
+                    className="w-full flex justify-center p-4"
+                    gutter={[20, 5]}
                   >
-                    <FaUser className="mr-2" size={15} />
-                    Quy mô:
-                    <span className="ml-4 text-black">100-499 nhân viên</span>
-                  </Col>
-                  <Col
-                    className="p-2 flex items-center text-md text-gray-600 font-semibold"
-                    span={22}
-                  >
-                    <FaUser className="mr-2" size={15} />
-                    Lĩnh vực:
-                    <span className="ml-4 text-black">IT - Phần mềm</span>
-                  </Col>
-                  <Col
-                    className="p-2 flex items-center text-md text-gray-600 font-semibold"
-                    span={22}
-                  >
-                    <FaUser className="mr-2" size={15} />
-                    Địa điểm:
-                    <span className="ml-4 text-black">Đà Nẵng</span>
-                  </Col>
-                  <Col className="flex justify-center items-center text-green-600 text-md font-bold hover:underline">
-                    Xem trang công ty{" "}
-                    <BsBoxArrowInUpRight className="ml-2" size={18} />
-                  </Col>
-                </Row>
-              </div>
+                    <Col span={8} className="flex items-center">
+                      <img
+                        src={`${
+                          import.meta.env.VITE_BACKEND_URL
+                        }/images/company/${jobDetail?.company?.logo}`}
+                        alt={jobDetail?.company?.name}
+                        className="w-full h-auto border p-2 rounded-md object-contain"
+                      />
+                    </Col>
+                    <Col className="ml-2 pt-2 text-lg font-bold" span={15}>
+                      {jobDetail?.company?.name}
+                    </Col>
+                    <Col
+                      className="p-2 flex items-center text-md text-gray-600 font-semibold"
+                      span={22}
+                    >
+                      <FaUser className="mr-2" size={15} />
+                      Quy mô:
+                      <span className="ml-4 text-black">100-499 nhân viên</span>
+                    </Col>
+                    <Col
+                      className="p-2 flex items-center text-md text-gray-600 font-semibold"
+                      span={22}
+                    >
+                      <FaUser className="mr-2" size={15} />
+                      Lĩnh vực:
+                      <span className="ml-4 text-black">IT - Phần mềm</span>
+                    </Col>
+                    <Col
+                      className="p-2 flex items-center text-md text-gray-600 font-semibold"
+                      span={22}
+                    >
+                      <FaUser className="mr-2" size={15} />
+                      Địa điểm:
+                      <span className="ml-4 text-black">Đà Nẵng</span>
+                    </Col>
+                    <Col className="flex justify-center items-center text-green-600 text-md font-bold hover:underline">
+                      Xem trang công ty{" "}
+                      <BsBoxArrowInUpRight className="ml-2" size={18} />
+                    </Col>
+                  </Row>
+                </div>
+              )}
             </div>
           </>
         )}

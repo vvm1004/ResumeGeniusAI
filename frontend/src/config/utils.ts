@@ -2,11 +2,11 @@ import { grey, green, blue, red, orange } from '@ant-design/colors';
 
 export const SKILLS_LIST =
     [
-        { label: "React.JS", value: "REACT.JS" },
+        { label: "ReactJS", value: "REACTJS" },
         { label: "React Native", value: "REACT NATIVE" },
-        { label: "Vue.JS", value: "VUE.JS" },
+        { label: "VueJS", value: "VUEJS" },
         { label: "Angular", value: "ANGULAR" },
-        { label: "Nest.JS", value: "NEST.JS" },
+        { label: "NestJS", value: "NESTJS" },
         { label: "TypeScript", value: "TYPESCRIPT" },
         { label: "Java", value: "JAVA" },
         { label: "Frontend", value: "FRONTEND" },

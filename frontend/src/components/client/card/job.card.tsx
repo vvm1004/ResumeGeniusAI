@@ -1,222 +1,146 @@
 import { callFetchJob } from "@/config/api";
-import { LOCATION_LIST, convertSlug, getLocationName } from "@/config/utils";
+import { convertSlug, getLocationName } from "@/config/utils";
 import { IJob } from "@/types/backend";
-import { EnvironmentOutlined, ThunderboltOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Col,
-  Empty,
-  message,
-  Pagination,
-  Row,
-  Select,
-  Spin,
-} from "antd";
-import { useState, useEffect, useRef } from "react";
+import { Card, Col, Empty, message, Pagination, Row, Select, Spin } from "antd";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { isMobile } from "react-device-detect";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "styles/client.module.scss";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
-import { IoFilter } from "react-icons/io5";
+import { IoFilter, IoLocationOutline } from "react-icons/io5";
+import { HiOutlineCurrencyDollar } from "react-icons/hi";
+import { CiHeart } from "react-icons/ci";
 dayjs.extend(relativeTime);
 
 const { Option } = Select;
 
-interface IProps {
-  showPagination?: boolean;
-}
+const JobCard = () => {
+  const [jobs, setJobs] = useState<IJob[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-const JobCard = (props: IProps) => {
-  const { showPagination = false } = props;
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 9,
+    total: 0,
+  });
 
-  const [displayJob, setDisplayJob] = useState<IJob[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  type FilterMain = "location" | "salary" | "experience" | "industry";
 
-  const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
-  const [total, setTotal] = useState(0);
-  const [filter, setFilter] = useState("");
-  const [sortQuery, setSortQuery] = useState("sort=-updatedAt");
+  const [filters, setFilters] = useState<{
+    main: FilterMain;
+    sub: string;
+    sort: string;
+  }>({
+    main: "location",
+    sub: "tatca",
+    sort: "sort=-updateAt",
+  });
+
   const navigate = useNavigate();
+  const filterContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // State cho bộ lọc
-  const [mainFilter, setMainFilter] = useState("location");
-  const [subFilter, setSubFilter] = useState("");
-  const filterButtonContainerRef = useRef<HTMLDivElement | null>(null);
+  const filterOptions = useMemo(
+    () => ({
+      location: [
+        { value: "tatca", label: "Tất cả" },
+        { value: "hanoi", label: "Hà Nội" },
+        { value: "danang", label: "Đà Nẵng" },
+        { value: "hochiminh", label: "Thành phố Hồ Chí Minh" },
+      ],
+      salary: [
+        { value: "tatca", label: "Tất cả" },
+        { value: "10000000", label: "Dưới 10 triệu" },
+        { value: "10000000-15000000", label: "Từ 10 đến 15 triệu" },
+        { value: "15000000-20000000", label: "Từ 15 đến 20 triệu" },
+        { value: "20000000-30000000", label: "Từ 20 đến 30 triệu" },
+        { value: "30000000", label: "Trên 30 triệu" },
+        { value: "thoathuan", label: "Thỏa thuận" },
+      ],
+      experience: [
+        { value: "tatca", label: "Tất cả" },
+        { value: "0", label: "Chưa có kinh nghiệm" },
+        { value: "1", label: "1 năm" },
+        { value: "2", label: "2 năm" },
+        { value: "3", label: "3 năm" },
+      ],
+      industry: [
+        { value: "tatca", label: "Tất cả" },
+        { value: "it", label: "Công nghệ thông tin" },
+        { value: "marketing", label: "Marketing" },
+        { value: "finance", label: "Tài chính" },
+        { value: "education", label: "Giáo dục" },
+      ],
+    }),
+    []
+  );
 
-  const fetchJob = async () => {
-    setIsLoading(true);
-    let query = `current=${current}&pageSize=${pageSize}`;
-    if (filter) {
-      query += `&${filter}`;
-    }
-    if (sortQuery) {
-      query += `&${sortQuery}`;
-    }
+  const fetchJobs = useCallback(async () => {
+    setLoading(true);
+    // const query = `current=${pagination.current}&pageSize=${pagination.pageSize}&${filters.main}=${filters.sub}&${filters.sort}`;
+    const query = `current=${pagination.current}&pageSize=${pagination.pageSize}&${filters.sort}`;
 
     try {
       const res = await callFetchJob(query);
-      if (res && res.data) {
-        setDisplayJob(res.data.result);
-        setTotal(res.data.meta.total);
+      if (res?.data) {
+        setJobs(res.data.result);
+        setPagination((prev) => ({
+          ...prev,
+          total: res?.data?.meta?.total || 0,
+        }));
       }
     } catch (error) {
       message.error("Error loading job data!");
+    } finally {
+      setLoading(false);
     }
-
-    setIsLoading(false);
-  };
+  }, [pagination.current, pagination.pageSize, filters]);
 
   useEffect(() => {
-    fetchJob();
-  }, [current, pageSize, filter, sortQuery]);
+    fetchJobs();
+  }, [fetchJobs]);
 
-  const handleOnchangePage = (pagination: {
-    current: number;
-    pageSize: number;
-  }) => {
-    if (pagination && pagination.current !== current) {
-      setCurrent(pagination.current);
+  const handlePageChange = (page: number, pageSize: number) => {
+    setPagination({ current: page, pageSize, total: pagination.total });
+  };
+
+  const handleFilterChange = (type: string, value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
+    if (type === "main") {
+      setFilters((prev) => ({ ...prev, sub: "tatca" }));
     }
-    if (pagination && pagination.pageSize !== pageSize) {
-      setPageSize(pagination.pageSize);
-      setCurrent(1);
-    }
+    setPagination((prev) => ({ ...prev, current: 1 }));
   };
 
-  const handleViewDetailJob = (item: IJob) => {
-    const slug = convertSlug(item.name);
-    navigate(`/jobs/${slug}?id=${item._id}`);
-  };
+  const renderFilterButtons = () =>
+    filterOptions[filters.main]?.map((opt) => (
+      <button
+        key={opt.value}
+        className={`cus-btn p-2 pl-4 pr-4 mr-2 bg-gray-200 rounded-xl text-md border border-gray-200 ${
+          filters.sub === opt.value ? "choose-btn" : ""
+        }`}
+        onClick={() => handleFilterChange("sub", opt.value)}
+      >
+        {opt.label}
+      </button>
+    ));
 
-  const handleMainFilterChange = (value: string) => {
-    setMainFilter(value);
-    setSubFilter("tatca");
-    setCurrent(1);
-  };
-
-  const handleSubFilterChange = (value: string) => {
-    setSubFilter(value);
-    setCurrent(1);
-  };
-
-  const filterOptions = {
-    location: [
-      { value: "tatca", label: "Tất cả" },
-      { value: "hanoi", label: "Hà Nội" },
-      { value: "danang", label: "Đà Nẵng" },
-      { value: "hochiminh", label: "Thành phố Hồ Chí Minh" },
-    ],
-    salary: [
-      { value: "tatca", label: "Tất cả" },
-      { value: "10000000", label: "Dưới 10 triệu" },
-      { value: "10000000-15000000", label: "Từ 10 đến 15 triệu" },
-      { value: "15000000-20000000", label: "Từ 15 đến 20 triệu" },
-      { value: "20000000-30000000", label: "Từ 20 đến 30 triệu" },
-      { value: "30000000", label: "Trên 30 triệu" },
-      { value: "thoathuan", label: "Thỏa thuận" },
-    ],
-    experience: [
-      { value: "tatca", label: "Tất cả" },
-      { value: "0", label: "Chưa có kinh nghiệm" },
-      { value: "1", label: "1 năm" },
-      { value: "2", label: "2 năm" },
-      { value: "3", label: "3 năm" },
-    ],
-    industry: [
-      { value: "tatca", label: "Tất cả" },
-      { value: "it", label: "Công nghệ thông tin" },
-      { value: "marketing", label: "Marketing" },
-      { value: "finance", label: "Tài chính" },
-      { value: "education", label: "Giáo dục" },
-    ],
-  };
-
-  const getSubFilterButtons = () => {
-    switch (mainFilter) {
-      case "location":
-        return filterOptions.location.map((loc) => (
-          <button
-            className={`cus-btn p-2 pl-4 pr-4 mr-2 bg-gray-200 rounded-xl text-md text-black cursor-pointer ${
-              subFilter === loc.value ? " choose-btn" : ""
-            }`}
-            key={loc.value}
-            onClick={() => handleSubFilterClick(loc.value)}
-          >
-            {loc.label}
-          </button>
-        ));
-      case "salary":
-        return filterOptions.salary.map((salary) => (
-          <>
-            <button
-              className={`cus-btn p-2 pl-4 pr-4 mr-2 bg-gray-200 rounded-xl text-md text-black cursor-pointer ${
-                subFilter === salary.value ? " choose-btn" : ""
-              }`}
-              key={salary.value}
-              onClick={() => handleSubFilterClick(salary.value)}
-            >
-              {salary.label}
-            </button>
-          </>
-        ));
-      case "experience":
-        return filterOptions.experience.map((experience) => (
-          <>
-            <button
-              className={`cus-btn p-2 pl-4 pr-4 mr-2 bg-gray-200 rounded-xl text-md text-black cursor-pointer ${
-                subFilter === experience.value ? " choose-btn" : ""
-              }`}
-              key={experience.value}
-              onClick={() => handleSubFilterClick(experience.value)}
-            >
-              {experience.label}
-            </button>
-          </>
-        ));
-      case "industry":
-        return filterOptions.industry.map((industry) => (
-          <>
-            <button
-              className={`cus-btn p-2 pl-4 pr-4 mr-2 bg-gray-200 rounded-xl text-md text-black cursor-pointer ${
-                subFilter === industry.value ? " choose-btn" : ""
-              }`}
-              key={industry.value}
-              onClick={() => handleSubFilterClick(industry.value)}
-            >
-              {industry.label}
-            </button>
-          </>
-        ));
-      default:
-        return null;
-    }
-  };
-
-  const handleSubFilterClick = (value: string) => {
-    setSubFilter(value);
-    setCurrent(1);
-  };
-
-  const scrollLeft = () => {
-    if (filterButtonContainerRef.current) {
-      filterButtonContainerRef.current.scrollBy({
-        left: -150,
+  const scrollFilterContainer = (direction: number) => {
+    if (filterContainerRef.current) {
+      filterContainerRef.current.scrollBy({
+        left: direction * 150,
         behavior: "smooth",
       });
     }
   };
 
-  const scrollRight = () => {
-    if (filterButtonContainerRef.current) {
-      filterButtonContainerRef.current.scrollBy({
-        left: 150, 
-        behavior: 'smooth', 
-      });
-    }
+  const viewJobDetails = (item: IJob) => {
+    const slug = convertSlug(item.name);
+    navigate(`/jobs/${slug}?id=${item._id}`);
   };
 
   return (
@@ -224,7 +148,7 @@ const JobCard = (props: IProps) => {
       className={`${styles["container"]} ${styles["card-job-section"]} pb-8 pl-14 pr-14`}
     >
       <div className={`${styles["job-content"]}`}>
-        <Spin spinning={isLoading} tip="Loading...">
+        <Spin spinning={loading} tip="Loading...">
           <Row gutter={[20, 20]}>
             <Col span={24}>
               <div
@@ -235,25 +159,27 @@ const JobCard = (props: IProps) => {
                 <div className="text-2xl text-green-600 font-bold pt-4">
                   Công Việc Mới Nhất
                 </div>
-                {!showPagination && (
-                  <div className="flex justify-center items-center">
-                    <Link to="job" className="pt-4 mr-2">
-                      Xem tất cả
-                    </Link>
-                    <span className="pt-4 mr-1">
-                      <MdOutlineChevronLeft
-                        className="border-2 rounded-full"
-                        size={30}
-                      />
-                    </span>
-                    <span className="pt-4 mr-2">
-                      <MdOutlineChevronRight
-                        className="border-2 rounded-full"
-                        size={30}
-                      />
-                    </span>
-                  </div>
-                )}
+
+                <div className="flex justify-center items-center">
+                  <Link
+                    to="/jobs"
+                    className="pt-4 mr-2 underline hover:text-green-700"
+                  >
+                    Xem tất cả
+                  </Link>
+                  <span className="pt-4 mr-1">
+                    <MdOutlineChevronLeft
+                      className="border-2 rounded-full"
+                      size={30}
+                    />
+                  </span>
+                  <span className="pt-4 mr-2">
+                    <MdOutlineChevronRight
+                      className="border-2 rounded-full"
+                      size={30}
+                    />
+                  </span>
+                </div>
               </div>
             </Col>
 
@@ -269,8 +195,8 @@ const JobCard = (props: IProps) => {
                 </span>
                 <Select
                   className="cus-select"
-                  value={mainFilter}
-                  onChange={handleMainFilterChange}
+                  value={filters.main}
+                  onChange={(value) => handleFilterChange("main", value)}
                   style={{ width: 165 }}
                 >
                   <Option value="location">Địa điểm</Option>
@@ -282,16 +208,25 @@ const JobCard = (props: IProps) => {
             </Col>
 
             <Col span={17} className="flex justify-between items-center">
-              <span className="mr-4 cursor-pointer" onClick={scrollLeft}>
+              <span
+                className="mr-4 cursor-pointer"
+                onClick={() => scrollFilterContainer(-1)}
+              >
                 <MdOutlineChevronLeft
                   className="border-2 rounded-full"
                   size={30}
                 />
               </span>
-              <div className="whitespace-nowrap overflow-hidden" ref={filterButtonContainerRef}>
-                {getSubFilterButtons()}
+              <div
+                className="whitespace-nowrap overflow-hidden"
+                ref={filterContainerRef}
+              >
+                {renderFilterButtons()}
               </div>
-              <span className="ml-4 cursor-pointer" onClick={scrollRight}>
+              <span
+                className="ml-4 cursor-pointer"
+                onClick={() => scrollFilterContainer(1)}
+              >
                 <MdOutlineChevronRight
                   className="border-2 rounded-full"
                   size={30}
@@ -299,42 +234,63 @@ const JobCard = (props: IProps) => {
               </span>
             </Col>
 
-            {displayJob?.map((item) => {
+            {jobs?.map((item) => {
               return (
                 <Col span={24} md={8} key={item._id}>
                   <Card
-                    size="small"
+                    className="w-full "
                     title={null}
                     hoverable
-                    onClick={() => handleViewDetailJob(item)}
+                    onClick={() => viewJobDetails(item)}
                   >
-                    <div className={styles["card-job-content"]}>
-                      <div className={styles["card-job-left"]}>
+                    <div className="flex justify-between">
+                      <div className="mr-4">
                         <img
-                          alt="example"
+                          className="w-16 h-auto"
+                          alt={`${
+                            import.meta.env.VITE_BACKEND_URL
+                          }/images/company/${item?.company?.name}`}
                           src={`${
                             import.meta.env.VITE_BACKEND_URL
                           }/images/company/${item?.company?.logo}`}
                         />
                       </div>
-                      <div className={styles["card-job-right"]}>
-                        <div className={styles["job-title"]}>{item.name}</div>
-                        <div className={styles["job-location"]}>
-                          <EnvironmentOutlined style={{ color: "#58aaab" }} />
-                          &nbsp;{getLocationName(item.location)}
+
+                      <div className="flex-1 overflow-hidden">
+                        <div className="text-lg font-semibold truncate">
+                          {item.name}
                         </div>
-                        <div>
-                          <ThunderboltOutlined style={{ color: "orange" }} />
-                          &nbsp;
-                          {(item.salary + "")?.replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ","
-                          )}{" "}
-                          đ
+                        <div className="text-md text-gray-500 font-semibold truncate">
+                          {item?.company?.name}
                         </div>
-                        <div className={styles["job-updatedAt"]}>
-                          {dayjs(item.updatedAt).fromNow()}
+                        <div className="w-full flex mt-2 mb-2">
+                          <div className="w-1/2 flex items-center mr-2 overflow-hidden whitespace-nowrap">
+                            <IoLocationOutline
+                              style={{
+                                fontSize: 20,
+                                color: "green",
+                                marginRight: "4px",
+                              }}
+                            />
+                            {getLocationName(item.location)}
+                          </div>
+
+                          <div className="w-1/2 flex items-center overflow-hidden whitespace-nowrap">
+                            <HiOutlineCurrencyDollar
+                              style={{
+                                fontSize: 20,
+                                color: "green",
+                                marginRight: "4px",
+                              }}
+                            />
+                            {item.salary}
+                            vnđ
+                          </div>
                         </div>
+                        <CiHeart
+                          className="absolute right-2 bottom-2 hover:text-green-600"
+                          size={25}
+                        />
                       </div>
                     </div>
                   </Card>
@@ -342,30 +298,29 @@ const JobCard = (props: IProps) => {
               );
             })}
 
-            {(!displayJob || (displayJob && displayJob.length === 0)) &&
-              !isLoading && (
-                <div className={styles["empty"]}>
-                  <Empty description="Không có dữ liệu" />
-                </div>
+            {(!jobs || (jobs && jobs.length === 0)) && !loading && (
+              <div className={styles["empty"]}>
+                <Empty description="Không có dữ liệu" />
+              </div>
+            )}
+
+            {jobs &&
+              jobs.length > 0 &&
+              pagination.total > pagination.pageSize && (
+                <Col
+                  span={24}
+                  className="flex justify-center items-center whitespace-nowrap"
+                >
+                  <Pagination
+                    defaultCurrent={pagination.current}
+                    total={pagination.total}
+                    pageSize={pagination.pageSize}
+                    responsive
+                    onChange={handlePageChange}
+                  />
+                </Col>
               )}
           </Row>
-
-          {showPagination && (
-            <>
-              <div style={{ marginTop: 30 }}></div>
-              <Row style={{ display: "flex", justifyContent: "center" }}>
-                <Pagination
-                  current={current}
-                  total={total}
-                  pageSize={pageSize}
-                  responsive
-                  onChange={(p: number, s: number) =>
-                    handleOnchangePage({ current: p, pageSize: s })
-                  }
-                />
-              </Row>
-            </>
-          )}
         </Spin>
       </div>
     </div>
