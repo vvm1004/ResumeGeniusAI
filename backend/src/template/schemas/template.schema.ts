@@ -5,13 +5,22 @@ export type TemplateDocument = HydratedDocument<Template>;
 @Schema({ timestamps: true })
 export class Template{
   @Prop({ required: true })
-  id: string;
+  name: string; 
 
   @Prop({ required: true })
-  name: string;
+  description: string; 
 
   @Prop({ required: true })
-  preview: string;
+  layout: string; 
+
+  @Prop()
+  previewImage: string;
+
+  @Prop({ type: Object })
+  settings: {
+    colors: string[];
+    fonts: string[];
+  };
 
   @Prop({ type: Object })
   updatedBy: {

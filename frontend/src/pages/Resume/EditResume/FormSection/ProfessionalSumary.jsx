@@ -215,6 +215,8 @@ function ProfessionalSummary() {
 
   const handleSummarySelect = (text) => {
     setEditorValues(text);
+    handleEditorChange(text);
+
     setSunnaryModalOpen(false);
   };
 

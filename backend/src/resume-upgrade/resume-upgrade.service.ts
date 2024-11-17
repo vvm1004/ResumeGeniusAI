@@ -31,7 +31,7 @@ export class ResumeUpgradeService {
         }
     }
     async uploadResume(file: Express.Multer.File, userId: string): Promise<any> {
-        const uploadDir = path.resolve(__dirname, '../../upload-files'); // Chỉnh sửa ở đây
+        const uploadDir = path.resolve(__dirname, '../../public/images/resume'); // Chỉnh sửa ở đây
         const filePath = path.join(uploadDir, file.originalname);
 
         await fsPromises.mkdir(uploadDir, { recursive: true });
@@ -60,7 +60,7 @@ export class ResumeUpgradeService {
                     },
                 }),
             );
-            console.log("\n\n\n\n", processResumeData(response.data.data, userId))
+            // console.log("\n\n\n\n", processResumeData(response.data.data, userId))
 
             return processResumeData(response.data.data, userId);
         } catch (error) {
@@ -119,7 +119,7 @@ export class ResumeUpgradeService {
                     },
                 }),
             );
-            console.log("data: ", response.data.summary)
+            // console.log("data: ", response.data.summary)
             return { data: response.data.summary };
         } catch (error) {
             console.error('Error calling Flask API:', error);
@@ -135,7 +135,7 @@ export class ResumeUpgradeService {
                     },
                 }),
             );
-            console.log("data: ", response.data.Description)
+            // console.log("data: ", response.data.Description)
             return { data: response.data.Description };
         } catch (error) {
             console.error('Error calling Flask API:', error);

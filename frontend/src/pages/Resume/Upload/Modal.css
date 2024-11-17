@@ -64,12 +64,14 @@
     /* Spacing below description */
 }
 
-.custom-button {
+.upload-custom-button {
     background-color: #3b82f6;
     /* Tailwind blue */
     color: white;
     padding: 10px 20px;
+    margin: 10px;
     border-radius: 8px;
+    width: 150px;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
