@@ -7,10 +7,12 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import { IUser } from 'src/users/users.interface';
 import mongoose from 'mongoose';
+import { JobNotificationGateway } from 'src/websocket/jobNotificationGateway';
+import { JobNotificationService } from 'src/websocket/jobNotificationService';
 
 @Injectable()
 export class ResumeService {
-  constructor(@InjectModel(Resume.name) private resumeModel: SoftDeleteModel<ResumeDocument>) { }
+  constructor(@InjectModel(Resume.name) private resumeModel: SoftDeleteModel<ResumeDocument>, private readonly jobNotificationService: JobNotificationService) { }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { url, companyId, jobId } = createUserCvDto;
@@ -35,6 +37,10 @@ export class ResumeService {
       }
 
     });
+    const jobIdString: string = jobId.toString();  // Chuyển ObjectId thành string
+
+    this.jobNotificationService.sendJobApplicationNotification(jobIdString, user._id)
+
     return {
       _id: newResume?._id,
       createdAt: newResume?.createdAt

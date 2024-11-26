@@ -58,7 +58,10 @@ def normalize_keys(data):
     else:
         return data
 def get_job_position(data):
-  
+    # Ensure that data is not None and is a dictionary
+    if data is None:
+        return ""
+
     possible_keys = ['Job_Position', 'Job_Title', 'Job','job_title','job_position','job','Job_title','Job_position', 'Title','Jobtitle','JobTitle']
 
     for key in possible_keys:
@@ -68,6 +71,7 @@ def get_job_position(data):
 
     # Trường hợp không tìm thấy key nào phù hợp
     return ""
+
 def process_data(data):
     new_data = {}
     
