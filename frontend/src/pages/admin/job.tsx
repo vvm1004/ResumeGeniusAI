@@ -68,6 +68,7 @@ const JobPage = () => {
                 const str = "" + entity.salary;
                 return <>{str?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</>
             },
+            hideInSearch: true,
         },
         {
             title: 'Level',
