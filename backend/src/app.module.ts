@@ -22,6 +22,10 @@ import { ResumeBuildersModule } from './resume-builders/resume-builders.module';
 import { ResumeUpgradeModule } from './resume-upgrade/resume-upgrade.module';
 import { TemplateModule } from './template/template.module';
 import { ResumeRegistrationModule } from './resume-registration/resume-registration.module';
+import { JobNotificationGateway } from './websocket/JobNotificationGateway';
+import { JobNotificationService } from './websocket/JobNotificationService';
+import { JobNotificationModule } from './websocket/JobNotificationModule';
+import { NotificationsModule } from './notifications/notifications.module';
 
 
 @Module({
@@ -82,18 +86,24 @@ import { ResumeRegistrationModule } from './resume-registration/resume-registrat
 
     ResumeRegistrationModule,
 
-
-
+    JobNotificationModule,
+   
+    NotificationsModule,
 
 
   ],
   controllers: [AppController],
-  providers: [AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+  // providers: [AppService,
+  //   // {
+  //   //   provide: APP_GUARD,
+  //   //   useClass: JwtAuthGuard,
+  //   // },
 
+  // ],
+  providers: [
+    AppService,
+    // JobNotificationGateway, // Đăng ký Gateway
+    // JobNotificationService, // Đăng ký Service
   ],
 })
 export class AppModule { }
