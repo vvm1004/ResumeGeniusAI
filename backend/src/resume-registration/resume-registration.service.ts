@@ -12,7 +12,15 @@ export class ResumeRegistrationService {
 
     // Phương thức tạo một Resume mới
     async create(createResumeDto: any) {
-        const newResume = new this.resumeModel(createResumeDto);
+        //const newResume = new this.resumeModel(createResumeDto);
+
+        let newResume = await this.resumeModel.create({
+            ...createResumeDto,
+            createdBy: {
+                _id: createResumeDto.userId,
+                email: createResumeDto.email
+            }
+        })
         return newResume.save();
     }
 

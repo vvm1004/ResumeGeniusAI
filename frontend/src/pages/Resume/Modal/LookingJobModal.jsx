@@ -176,8 +176,8 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
                 )}
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>I have no need</Button>
-                <Button variant="success" onClick={handleEnableClick}>Turn on job search now</Button>
+                <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                <Button variant="success" onClick={handleEnableClick}>Save</Button>
             </Modal.Footer>
         </Modal>
     );

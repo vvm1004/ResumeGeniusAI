@@ -12,8 +12,16 @@ export class NotificationsService {
     ) { }
 
     async create(createNotificationDto: CreateNotificationDto) {
-        const createdNotification = new this.notificationModel(createNotificationDto);
-        return createdNotification.save();
+        // const createdNotification = new this.notificationModel(createNotificationDto);
+        let newNoti = await this.notificationModel.create({
+            ...createNotificationDto,
+            createdBy: {
+                _id: createNotificationDto.senderId,
+                email: ""
+            }
+        })
+
+        return newNoti;
     }
 
     async findAll() {

@@ -23,6 +23,30 @@ export class Notification {
 
     @Prop({ default: false })
     isRead: boolean;
+
+    @Prop({ type: Object })
+    updatedBy: {
+      _id: mongoose.Schema.Types.ObjectId;
+      email: string;
+    };
+  
+    @Prop({ type: Object })
+    createdBy: {
+      _id: mongoose.Schema.Types.ObjectId;
+      email: string;
+    };
+  
+    @Prop({ type: Object })
+    deletedBy: {
+      _id: mongoose.Schema.Types.ObjectId;
+      email: string;
+    };
+  
+    @Prop()
+    createdAt: Date;
+  
+    @Prop()
+    updatedAt: Date;
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
