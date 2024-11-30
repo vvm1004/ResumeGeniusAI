@@ -14,6 +14,7 @@ export class NotificationsController {
     findAll() {
         return this.notificationsService.findAll();
     }
+    @Public()
     @Post()
     create(@Body() createNotificationDto: CreateNotificationDto) {
         return this.notificationsService.create(createNotificationDto);
