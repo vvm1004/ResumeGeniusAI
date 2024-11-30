@@ -41,7 +41,7 @@ export class ResumeBuildersService {
 
   async remove(id: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return `Not found resumeBuilder`;
+      throw new BadRequestException (`Not found resumeBuilder`);
     }
     await this.resumeBuidlerModel.updateOne(
       { _id: id },

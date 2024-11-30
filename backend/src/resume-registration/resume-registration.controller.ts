@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { ResumeRegistrationService } from './resume-registration.service';
-import { ResumeRegistration, ResumeRegistrationSchema } from './schema/schema';
+import { ResumeRegistration, ResumeRegistrationSchema } from './schemas/resume-registration.schema';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Public, ResponseMessage, SkipCheckPermission } from 'src/decorator/customize';
 import { Throttle } from '@nestjs/throttler';

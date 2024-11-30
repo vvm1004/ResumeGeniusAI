@@ -1,9 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-@Schema()
+export type ResumeRegistrationDocument = HydratedDocument<ResumeRegistration>;
+
+@Schema({ timestamps: true })
 export class ResumeRegistration {
-    @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
     id: mongoose.Types.ObjectId;
 
     @Prop({ required: true })
@@ -51,5 +53,3 @@ export class ResumeRegistration {
 }
 
 export const ResumeRegistrationSchema = SchemaFactory.createForClass(ResumeRegistration);
-
-export type ResumeRegistrationDocument = HydratedDocument<ResumeRegistration>;

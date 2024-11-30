@@ -16,7 +16,7 @@ import {
   ResumeBuilder,
   ResumeBuilderSchema,
 } from 'src/resume-builders/schemas/resume-builder.schema';
-import { ResumeRegistration, ResumeRegistrationSchema } from 'src/resume-registration/schema/schema';
+import { ResumeRegistration, ResumeRegistrationSchema } from '../resume-registration/schemas/resume-registration.schema';
 
 @Module({
   imports: [

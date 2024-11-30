@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ResumeRegistration, ResumeRegistrationDocument } from './schema/schema';
+import { ResumeRegistration, ResumeRegistrationDocument } from './schemas/resume-registration.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
