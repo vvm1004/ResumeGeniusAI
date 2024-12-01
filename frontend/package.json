@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/charts": "^2.2.3",
     "@ant-design/icons": "4.8.0",
     "@ant-design/pro-components": "2.6.46",
     "@ant-design/pro-layout": "7.17.19",

@@ -113,7 +113,7 @@ export class JobsService {
 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id))
-      throw new BadRequestException("Not found job with id: " + id)
+      throw new BadRequestException("Not found jobb with id: " + id)
     return this.jobModel.findById(id)
   }
 
@@ -145,5 +145,14 @@ export class JobsService {
     return this.jobModel.softDelete({
       _id: id,
     })
+  }
+  async getJobCount(): Promise<number> {
+    try {
+
+      const count = await this.jobModel.countDocuments();
+      return count;  // Trả về số lượng công việc
+    } catch (error) {
+      throw new Error('Failed to count jobs: ' + error.message);
+    }
   }
 }

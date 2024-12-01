@@ -68,7 +68,9 @@ export const callFetchCompany = (query: string) => {
 export const callFetchCompanyById = (id: string) => {
     return axios.get<IBackendRes<ICompany>>(`/api/v1/companies/${id}`);
 }
-
+export const callNumberOfCompany = () => {
+    return axios.post(`/api/v1/companies/companyCount`);
+}
 
 /**
  * 
@@ -89,7 +91,9 @@ export const callDeleteUser = (id: string) => {
 export const callFetchUser = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IUser>>>(`/api/v1/users?${query}`);
 }
-
+export const callNumberOfUser = () => {
+    return axios.post(`/api/v1/users/userCount`);
+}
 /**
  * 
 Module Job
@@ -112,7 +116,9 @@ export const callFetchJob = (query: string) => {
 export const callFetchJobWithAdmin = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobs/admin?${query}`);
 }
-
+export const callNumberOfJobs = () => {
+    return axios.post(`/api/v1/jobs/jobCount`);
+}
 
 export const callFetchJobById = (id: string) => {
     return axios.get<IBackendRes<IJob>>(`/api/v1/jobs/${id}`);
@@ -145,6 +151,15 @@ export const callFetchResumeById = (id: string) => {
 export const callFetchResumeByUser = () => {
     return axios.post<IBackendRes<IResume[]>>(`/api/v1/resumes/by-user`);
 }
+
+// export const callNumberOfResumeOverTime = () => {
+//     return axios.post(`/api/v1/resume-builders/count-by-date?startDate=2024-10-10&endDate=2024-11-29`);
+// }
+// API call với tham số startDate và endDate
+export const callNumberOfResumeOverTime = (startDate: String, endDate: String) => {
+    return axios.post(`/api/v1/resume-builders/count-by-date?startDate=${startDate}&endDate=${endDate}`);
+};
+
 
 /**
  * 
@@ -226,3 +241,4 @@ export const callFetchSubscriberById = (id: string) => {
 export const callSendNewJob = (jobId: string) => {
     return axios.post<IBackendRes<any>>(`/api/v1/mail/send-job/${jobId}`);
 }
+

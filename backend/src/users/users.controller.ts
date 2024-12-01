@@ -55,4 +55,10 @@ export class UsersController {
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.usersService.remove(id, user);
   }
+  @Public()
+  @ResponseMessage("Get the number of User")
+  @Post('userCount')
+  count() {
+    return this.usersService.getCount();
+  }
 }

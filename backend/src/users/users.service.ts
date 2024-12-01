@@ -160,4 +160,13 @@ export class UsersService {
         select: { name: 1 }
       })
   }
+  async getCount(): Promise<number> {
+    try {
+
+      const count = await this.userModel.countDocuments();
+      return count;  
+    } catch (error) {
+      throw new Error('Failed to count User: ' + error.message);
+    }
+  }
 }

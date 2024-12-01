@@ -14,7 +14,7 @@ export class CompaniesService {
   constructor(@InjectModel(Company.name) private companyModel: SoftDeleteModel<CompanyDocument>) { }
 
   create(createCompanyDto: CreateCompanyDto, user: IUser) {
-    if(createCompanyDto.minScale >= createCompanyDto.maxScale){
+    if (createCompanyDto.minScale >= createCompanyDto.maxScale) {
       throw new BadRequestException('minScale must be less than maxScale');
     }
     return this.companyModel.create({
@@ -58,14 +58,14 @@ export class CompaniesService {
   }
 
   async findOne(id: string) {
-    if(!mongoose.Types.ObjectId.isValid(id))
+    if (!mongoose.Types.ObjectId.isValid(id))
       return `Not found company with id ${id}`
     return this.companyModel.findById(id)
   }
 
 
   async update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
-    if(updateCompanyDto.minScale >= updateCompanyDto.maxScale){
+    if (updateCompanyDto.minScale >= updateCompanyDto.maxScale) {
       throw new BadRequestException('minScale must be less than maxScale');
     }
     return await this.companyModel.updateOne(
@@ -92,5 +92,14 @@ export class CompaniesService {
     return this.companyModel.softDelete({
       _id: id,
     })
+  }
+  async getCount(): Promise<number> {
+    try {
+
+      const count = await this.companyModel.countDocuments();
+      return count;  // Trả về số lượng công việc
+    } catch (error) {
+      throw new Error('Failed to count Company: ' + error.message);
+    }
   }
 }

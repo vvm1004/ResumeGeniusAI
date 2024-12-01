@@ -70,4 +70,10 @@ export class ResumeBuildersController {
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.resumeBuildersService.remove(id, user);
   }
+
+  @Post('count-by-date')
+  @Public()
+  async getResumeCountByDate(@Query('startDate') startDate: string, @Query('endDate') endDate: string) {
+    return this.resumeBuildersService.getResumeCountByDate(startDate, endDate);
+  }
 }

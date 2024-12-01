@@ -60,4 +60,10 @@ export class JobsController {
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.jobsService.remove(id, user);
   }
+  @Public()
+  @ResponseMessage("Get the number of Job")
+  @Post('jobCount')
+  count() {
+    return this.jobsService.getJobCount();
+  }
 }

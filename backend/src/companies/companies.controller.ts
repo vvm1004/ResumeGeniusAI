@@ -47,4 +47,10 @@ export class CompaniesController {
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.companiesService.remove(id, user);
   }
+  @Public()
+  @ResponseMessage("Get the number of Company")
+  @Post('companyCount')
+  count() {
+    return this.companiesService.getCount();
+  }
 }

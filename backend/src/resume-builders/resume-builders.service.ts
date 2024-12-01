@@ -126,5 +126,33 @@ export class ResumeBuildersService {
     return this.resumeBuidlerModel.findById(id)
       .populate('template', 'name preview')
   }
+  async getResumeCountByDate(startDate: string, endDate: string) {
+    const pipeline = [
+      {
+        $match: {
+          createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          '_id.year': 1,  // Sort by year in ascending order
+          '_id.month': 1, // Sort by month in ascending order
+          '_id.day': 1,   // Sort by day in ascending order
+        } as Record<string, 1 | -1>,  // Explicitly cast to Record<string, 1 | -1>
+      },
+    ];
+
+    return await this.resumeBuidlerModel.aggregate(pipeline);
+  }
 
 }

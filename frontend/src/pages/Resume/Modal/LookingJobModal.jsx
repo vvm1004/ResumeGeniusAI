@@ -122,6 +122,7 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
                 await createResumeRegistration(resume._id, resume.title, skills);
             }
         }
+        
 
         // 3. Collect unselected resumes to check for deletions
         const unselectedResumes = resumeRegistrations.filter(registration => !selectedIds.includes(registration.resumeId));
