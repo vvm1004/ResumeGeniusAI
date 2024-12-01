@@ -5,8 +5,6 @@ export type ResumeRegistrationDocument = HydratedDocument<ResumeRegistration>;
 
 @Schema({ timestamps: true })
 export class ResumeRegistration {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
-    id: mongoose.Types.ObjectId;
 
     @Prop({ required: true })
     userId: string;
@@ -23,8 +21,9 @@ export class ResumeRegistration {
     @Prop({ required: true })
     resumeTitle: string;
 
-    @Prop({ required: false })
-    resumeSkill: string;
+    @Prop([{ title: String, value: String }])
+    resumeSkill: Array<any>;
+  
 
 //--------------------------------------------
     @Prop({ type: Object })

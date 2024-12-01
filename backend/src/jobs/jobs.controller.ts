@@ -31,6 +31,12 @@ export class JobsController {
     return this.jobsService.findAll(+currentPage, +limit, qs);
   }
 
+  @Public()
+  @ResponseMessage('Fetch Matching Job')
+  @Get('matching-jobs')
+  async getMatchingJobs() {
+    return this.jobsService.findMatchingJobs();
+  }
   @Get('admin')
   @ResponseMessage('Fetch List Job with admin page')
   findAllWithAdminPage(
@@ -60,4 +66,6 @@ export class JobsController {
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.jobsService.remove(id, user);
   }
+
+ 
 }
