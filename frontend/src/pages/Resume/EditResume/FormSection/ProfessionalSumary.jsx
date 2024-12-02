@@ -345,6 +345,7 @@ function ProfessionalSummary() {
               setIndex(index);
               setText(content);
               setEditorValues(content);
+
             }}
           />
         </div>

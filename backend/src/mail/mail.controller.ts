@@ -21,7 +21,7 @@ import { User, UserDocument } from 'src/users/schemas/user.schema'; // import Us
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron } from '@nestjs/schedule';
 import { ApiTags } from '@nestjs/swagger';
-import { ResumeRegistration, ResumeRegistrationDocument } from 'src/resume-registration/schema/schema';
+import { ResumeRegistration, ResumeRegistrationDocument } from '../resume-registration/schemas/resume-registration.schema';
 
 @ApiTags('mail')
 @Controller('mail')

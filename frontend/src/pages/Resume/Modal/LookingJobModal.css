@@ -1,7 +1,8 @@
-/* JobAlertModal.css */
+/* JobAlertModal.css
 
 .job-alert-modal .modal-content {
   border-radius: 10px;
+  z-index: 1051;
 }
 
 .modal-overlay {
@@ -11,17 +12,23 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1051;
 
 }
+
+
+
 
 .modal-content {
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
+  max-width: 900px !important;
+  max-height: 900px !important;
+
 }
 
 .job-alert-modal .modal-dialog {
@@ -29,12 +36,12 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  z-index: 1051;
 }
 
 .modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.5) !important;
+  background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
-  /* Hiệu ứng làm mờ */
 }
 
 .modal-header {
@@ -42,11 +49,17 @@
   padding: 10px;
   background-color: #0056b3;
   color: white;
+  z-index: 1051;
 }
 
 .modal-title {
   font-size: 1.2rem;
   font-weight: bold;
+  text-align: center;
+}
+
+.modal-body p {
+  text-align: center;
 }
 
 .cv-list .form-check {
@@ -88,7 +101,82 @@
   padding-top: 15px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* Tạo 3 cột với chiều rộng bằng nhau */
   gap: 10px;
-  /* Khoảng cách giữa các mục */
+} */
+
+/* LookingJobModal.css */
+/* LookingJobModal.css */
+
+/* Style for the modal header */
+.job-alert-modal .ant-modal-header {
+  background-color: #0056b3;
+  /* Blue background */
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.ant-modal-content {
+  padding: 10px !important;
+}
+
+.job-alert-modal .ant-modal-body {
+  max-height: 60vh;
+  /* Đặt chiều cao tối đa của modal body (60% chiều cao của viewport) */
+  overflow-y: auto;
+  /* Cho phép cuộn dọc khi nội dung vượt quá chiều cao */
+  padding-bottom: 20px;
+  /* Thêm một chút padding ở dưới cùng để tránh nội dung bị cắt */
+}
+
+.job-alert-modal .ant-modal-title {
+  font-size: 1.5rem;
+  /* Larger font for the title */
+  font-weight: bold;
+  margin: 0;
+  color: rgb(255 255 255 / 88%);
+  /* Remove margin for better alignment */
+}
+
+.ant-modal-body p {
+  text-align: center;
+}
+
+/* Center the modal description text */
+.modal-description {
+  text-align: center;
+  font-size: 1rem;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+/* Style for the modal content */
+.cv-list {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  overflow-y: auto;
+  /* Cho phép cuộn dọc khi danh sách vượt quá chiều cao */
+
+}
+
+/* Modal footer */
+.modal-footer {
+  display: flex;
+  justify-content: end;
+  margin-top: 20px;
+}
+
+.modal-footer .ant-btn-primary {
+  background-color: #0056b3;
+}
+
+.modal-footer .ant-btn-secondary {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modal-footer .ant-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }

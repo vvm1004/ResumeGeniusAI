@@ -96,8 +96,7 @@ const DashboardResumes = () => {
     try {
       setIsOpenLoading(true);
       const response = await axios.get(
-        `${
-          import.meta.env.VITE_BACKEND_URL
+        `${import.meta.env.VITE_BACKEND_URL
         }/api/v1/resume-builders/user/${userId}`,
         {
           params: {
@@ -238,7 +237,7 @@ const DashboardResumes = () => {
           openNotification("error", "Error creating CV!");
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -253,7 +252,7 @@ const DashboardResumes = () => {
       onOk: async () => {
         navigate(`edit/${id}`);
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -277,14 +276,14 @@ const DashboardResumes = () => {
           openNotification("error", "Error when deleting CV!");
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
   const [isOpenLoading, setIsOpenLoading] = useState(false);
 
   const OpenLoading = () => setIsOpenLoading(true);
   const CloseLoading = () => setIsOpenLoading(false);
-  useEffect(() => {}, fileInputRef.current);
+  useEffect(() => { }, fileInputRef.current);
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -374,32 +373,29 @@ const DashboardResumes = () => {
           <div className="mt-8">
             <ul className="text-gray-600 font-medium">
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
-                  activeMenuItem === "dashboard"
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "dashboard"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
-                }`}
+                  }`}
                 onClick={() => handleMenuClick("dashboard", "/dashboard")}
               >
                 <MdDashboard className="mr-4 text-xl" /> Dashboard
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
-                  activeMenuItem === "resumes"
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "resumes"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
-                }`}
+                  }`}
                 onClick={() => handleMenuClick("resumes", "/resumes")}
               >
                 <IoDocumentTextOutline className="mr-4 text-xl" />
                 My Resumes
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
-                  activeMenuItem === "recommendedJob"
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
-                }`}
+                  }`}
                 onClick={() =>
                   handleMenuClick("recommendedJob", "/recommendedJob")
                 }
@@ -408,11 +404,10 @@ const DashboardResumes = () => {
                 Jobs
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
-                  activeMenuItem === "dashboard"
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
-                }`}
+                  }`}
                 onClick={() => handleMenuClick("dashboard", "/dashboard")}
               >
                 <IoIosMore className="mr-4 text-xl" /> Other

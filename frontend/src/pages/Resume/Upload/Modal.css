@@ -14,7 +14,7 @@
     /* Ensure it stays on top */
 }
 
-.modal-content {
+.modal-content-upload {
     position: relative;
     /* Needed for positioning the close button */
     background: white;
@@ -31,6 +31,7 @@
     /* Scrollable if content exceeds */
     text-align: center;
     /* Center align text */
+    background-color: aliceblue !important;
 }
 
 .close-button {

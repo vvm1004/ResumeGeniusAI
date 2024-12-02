@@ -18,7 +18,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { callLogout } from "@/config/api";
 import { setLogoutAction } from "@/redux/slice/accountSlide";
 import ManageAccount from "./modal/manage.account";
-import { ConfigProvider, Menu, Dropdown, Space, Avatar, Drawer, Badge } from "antd";
+import { ConfigProvider, Menu, Dropdown, Space, Avatar, Drawer, Badge ,Modal} from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import "./header.css"
 import { useSocket } from '../../hook/useSocket';  // Đảm bảo bạn đã tạo đúng đường dẫn

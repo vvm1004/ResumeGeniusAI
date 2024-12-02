@@ -41,7 +41,7 @@
 //                         <div className="loader"></div>
 //                     </div>
 //                 )}
-//                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+//                 <div className="modal-content-upload" onClick={(e) => e.stopPropagation()}>
 //                     <button className="close-button" onClick={onClose}>
 //                         &times; {/* Dấu X */}
 //                     </button>
@@ -177,7 +177,7 @@ const UploadResumeModal = ({ isOpen, onClose, handleFileChange, fileInputRef, is
                         <div className="loader"></div>
                     </div>
                 )}
-                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-content-upload" onClick={(e) => e.stopPropagation()}>
                     <button className="close-button" onClick={onClose}>
                         &times;
                     </button>

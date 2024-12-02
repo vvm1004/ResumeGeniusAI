@@ -154,5 +154,45 @@ export class JobsService {
     } catch (error) {
       throw new Error('Failed to count jobs: ' + error.message);
     }
+
+  }
+  async findMatchingJobs(): Promise<Job[]> {
+    const jobs = await this.jobModel.aggregate([
+      {
+        $lookup: {
+          from: 'resumeregistrations', // Tên collection của ResumeRegistration trong MongoDB
+          localField: 'skills', // Trường skills trong Job
+          foreignField: 'resumeSkill', // Trường resumeSkill trong ResumeRegistration
+          as: 'matchedResumes', // Kết quả nối sẽ được lưu vào mảng matchedResumes
+        },
+      },
+      {
+        $match: {
+          'matchedResumes.resumeTitle': { $exists: true }, // Lọc các công việc có resumeTitle
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          skills: 1,
+          company: 1,
+          location: 1,
+          salary: 1,
+          quantity: 1,
+          level: 1,
+          description: 1,
+          startDate: 1,
+          endDate: 1,
+          isActive: 1,
+          updatedBy: 1,
+          createdBy: 1,
+          deletedBy: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
+
+    return jobs;
   }
 }

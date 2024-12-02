@@ -3,7 +3,7 @@ import { ResumeRegistrationController } from './resume-registration.controller';
 import { ResumeRegistrationService } from './resume-registration.service';
 
 import { MongooseModule } from '@nestjs/mongoose';
-import { ResumeRegistration, ResumeRegistrationSchema } from './schema/schema';
+import { ResumeRegistration, ResumeRegistrationSchema } from './schemas/resume-registration.schema'
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: ResumeRegistration.name, schema: ResumeRegistrationSchema }])],

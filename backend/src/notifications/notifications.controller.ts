@@ -3,7 +3,8 @@ import { NotificationsService } from './notifications.service';
 import { Notification } from './schemas/notification.schema';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/decorator/customize';
+import { Public, User } from 'src/decorator/customize';
+import { IUser } from 'src/users/users.interface';
 @ApiTags('notifications')
 @Controller('notifications')
 export class NotificationsController {
