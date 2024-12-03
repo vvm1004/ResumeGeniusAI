@@ -18,8 +18,16 @@ export class Template{
 
   @Prop({ type: Object })
   settings: {
-    colors: string[];
-    fonts: string[];
+    colors: {
+      header: string[];
+      footer: string[];
+      text: string[];
+      background: string[];
+    };
+    fonts: {
+      primary: string[];
+      secondary: string[];
+    };
   };
 
   @Prop({ type: Object })

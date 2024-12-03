@@ -32,6 +32,20 @@ export class ResumeBuilder {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Template' })
   template: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ type: Object })
+  settings: {
+    colors: {
+      header: string[];
+      footer: string[];
+      text: string[];
+      background: string[];
+    };
+    fonts: {
+      primary: string[];
+      secondary: string[];
+    };
+  };
+
   @Prop([
     {
       title: String,

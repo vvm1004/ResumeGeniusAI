@@ -22,7 +22,7 @@ import { User } from "lucide-react";
 
 const DashboardResumes = () => {
   const [data, setData] = useState([]);
-  const [template, setTemplate] = useState([]);
+  // const [template, setTemplate] = useState([]);
 
   const [activeMenuItem, setActiveMenuItem] = useState("resumes");
   const [editTitleId, setEditTitleId] = useState(null);
@@ -96,7 +96,8 @@ const DashboardResumes = () => {
     try {
       setIsOpenLoading(true);
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL
+        `${
+          import.meta.env.VITE_BACKEND_URL
         }/api/v1/resume-builders/user/${userId}`,
         {
           params: {
@@ -122,20 +123,20 @@ const DashboardResumes = () => {
     }
   }, [userId, sortOption, access_token]);
 
-  useEffect(() => {
-    const fetchTemplate = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/api/v1/template/${templateId}`
-        );
-        setTemplate(response.data.data);
-      } catch (error) {
-        console.error("Failed to fetch template:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchTemplate = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:8000/api/v1/template/${templateId}`
+  //       );
+  //       setTemplate(response.data.data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch template:", error);
+  //     }
+  //   };
 
-    fetchTemplate();
-  }, []);
+  //   fetchTemplate();
+  // }, []);
   const handleTitleEditClick = (resumeId, title) => {
     setEditTitleId(resumeId);
     setNewTitle(title);
@@ -181,7 +182,7 @@ const DashboardResumes = () => {
     }
   };
 
-  const templateId = "67125252513c2654c1ddd087";
+  const templateId = "674e93b3bfb654c104907060";
 
   const handleNewResumeClick = async () => {
     AntModal.confirm({
@@ -201,7 +202,19 @@ const DashboardResumes = () => {
               image: "",
             },
             summary: "",
-            template: template,
+            template: templateId,
+            settings: {
+              colors: {
+                header: [],
+                footer: [],
+                text: [],
+                background: [],
+              },
+              fonts: {
+                primary: [],
+                secondary: [],
+              },
+            },
             experience: [],
             education: [],
             projects: [],
@@ -237,7 +250,7 @@ const DashboardResumes = () => {
           openNotification("error", "Error creating CV!");
         }
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -252,7 +265,7 @@ const DashboardResumes = () => {
       onOk: async () => {
         navigate(`edit/${id}`);
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -276,14 +289,14 @@ const DashboardResumes = () => {
           openNotification("error", "Error when deleting CV!");
         }
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
   const [isOpenLoading, setIsOpenLoading] = useState(false);
 
   const OpenLoading = () => setIsOpenLoading(true);
   const CloseLoading = () => setIsOpenLoading(false);
-  useEffect(() => { }, fileInputRef.current);
+  useEffect(() => {}, fileInputRef.current);
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -373,29 +386,32 @@ const DashboardResumes = () => {
           <div className="mt-8">
             <ul className="text-gray-600 font-medium">
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "dashboard"
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
+                  activeMenuItem === "dashboard"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
-                  }`}
+                }`}
                 onClick={() => handleMenuClick("dashboard", "/dashboard")}
               >
                 <MdDashboard className="mr-4 text-xl" /> Dashboard
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "resumes"
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
+                  activeMenuItem === "resumes"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
-                  }`}
+                }`}
                 onClick={() => handleMenuClick("resumes", "/resumes")}
               >
                 <IoDocumentTextOutline className="mr-4 text-xl" />
                 My Resumes
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob"
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
+                  activeMenuItem === "recommendedJob"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
-                  }`}
+                }`}
                 onClick={() =>
                   handleMenuClick("recommendedJob", "/recommendedJob")
                 }
@@ -404,10 +420,11 @@ const DashboardResumes = () => {
                 Jobs
               </li>
               <li
-                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard"
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${
+                  activeMenuItem === "dashboard"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
-                  }`}
+                }`}
                 onClick={() => handleMenuClick("dashboard", "/dashboard")}
               >
                 <IoIosMore className="mr-4 text-xl" /> Other
@@ -505,123 +522,124 @@ const DashboardResumes = () => {
             <option value="-createdAt">Oldest</option>
             <option value="-updatedAt">Updatest</option>
           </select>
-          {isOpenLoading && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          {isOpenLoading ? (
+            <div className="flex justify-center items-center h-full">
               <div className="loader"></div>
             </div>
-          )}
-          <div className="rounded-lg grid grid-cols-2 gap-4">
-            {data.length > 0 ? (
-              data.map((resume) => (
-                <div
-                  className="w-full flex items-center p-4 cursor-pointer"
-                  key={resume._id}
-                >
+          ) : (
+            <div className="rounded-lg grid grid-cols-2 gap-4">
+              {data.length > 0 ? (
+                data.map((resume) => (
                   <div
-                    className="mr-6"
-                    onClick={() => handleResumeClick(resume._id)}
+                    className="w-full flex items-center p-4 cursor-pointer"
+                    key={resume._id}
                   >
-                    <img
-                      src={
-                        resume?.imageResume ||
-                        "https://th.bing.com/th/id/OIP.wzvz7KNJz_DYS_M6MibRXAAAAA?rs=1&pid=ImgDetMain"
-                      }
-                      alt="Resume"
-                      className="w-44 h-60 object-cover border-2 rounded-md"
-                    />
-                  </div>
-                  <div className="flex-1 pl-4">
-                    <div className="flex justify-content items-center">
-                      {editTitleId === resume._id ? (
-                        <input
-                          type="text"
-                          value={newTitle}
-                          onChange={handleTitleChange}
-                          onBlur={() => handleTitleBlur(resume._id)}
-                          onKeyPress={(e) => handleKeyPress(e, resume._id)}
-                          className="outline-none text-xl font-bold border-blue-300 border-b-2"
-                          autoFocus
-                        />
-                      ) : (
-                        <h2
-                          className="text-xl font-bold hover:text-blue-600 mr-2"
-                          onClick={() => handleResumeClick(resume._id)}
-                        >
-                          {resume.title}
-                        </h2>
-                      )}
-                      <MdDriveFileRenameOutline
-                        className="hover:text-blue-600"
-                        size={25}
-                        onClick={() =>
-                          handleTitleEditClick(resume._id, resume.title)
-                        }
-                      />
-                    </div>
                     <div
-                      className="text-gray-500 hover:text-blue-600"
+                      className="mr-6"
                       onClick={() => handleResumeClick(resume._id)}
                     >
-                      Updated{" "}
-                      {resume.updatedAt
-                        ? new Date(resume.updatedAt).toLocaleString()
-                        : "Unknown"}
+                      <img
+                        src={
+                          resume?.template.previewImage ||
+                          "https://th.bing.com/th/id/OIP.wzvz7KNJz_DYS_M6MibRXAAAAA?rs=1&pid=ImgDetMain"
+                        }
+                        alt="Resume"
+                        className="w-44 h-60 object-cover border-2 rounded-md"
+                      />
                     </div>
-                    <div className="mt-2 text-green-600 font-medium hover:text-blue-600">
-                      {resume.score !== undefined ? resume.score : 100}% Your
-                      resume score
-                    </div>
-
-                    <div className="mt-4">
-                      <button className="text-600 font-medium flex items-center hover:text-blue-600">
-                        Tailor to job listing
-                        <span className="ml-2 bg-gray-200 text-xs px-2 py-1 rounded-full">
-                          NEW
-                        </span>
-                      </button>
-                      <button className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600">
-                        <FaRegFilePdf className="mr-2 text-xl" />
-                        Download PDF
-                      </button>
-                      <button
-                        className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600"
-                        onClick={() => handleDeleteClick(resume._id)}
+                    <div className="flex-1 pl-4">
+                      <div className="flex justify-content items-center">
+                        {editTitleId === resume._id ? (
+                          <input
+                            type="text"
+                            value={newTitle}
+                            onChange={handleTitleChange}
+                            onBlur={() => handleTitleBlur(resume._id)}
+                            // onKeyPress={(e) => handleKeyPress(e, resume._id)}
+                            className="outline-none text-xl font-bold border-blue-300 border-b-2"
+                            autoFocus
+                          />
+                        ) : (
+                          <h2
+                            className="text-xl font-bold hover:text-blue-600 mr-2"
+                            onClick={() => handleResumeClick(resume._id)}
+                          >
+                            {resume.title}
+                          </h2>
+                        )}
+                        <MdDriveFileRenameOutline
+                          className="hover:text-blue-600"
+                          size={25}
+                          onClick={() =>
+                            handleTitleEditClick(resume._id, resume.title)
+                          }
+                        />
+                      </div>
+                      <div
+                        className="text-gray-500 hover:text-blue-600"
+                        onClick={() => handleResumeClick(resume._id)}
                       >
-                        <RiDeleteBin6Line className="mr-2 text-xl" />
-                        Delete
-                      </button>
+                        Updated{" "}
+                        {resume.updatedAt
+                          ? new Date(resume.updatedAt).toLocaleString()
+                          : "Unknown"}
+                      </div>
+                      <div className="mt-2 text-green-600 font-medium hover:text-blue-600">
+                        {resume.score !== undefined ? resume.score : 100}% Your
+                        resume score
+                      </div>
 
-                      <button className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600">
-                        <IoIosMore className="mr-2 text-xl" />
-                        More
-                      </button>
+                      <div className="mt-4">
+                        <button className="text-600 font-medium flex items-center hover:text-blue-600">
+                          Tailor to job listing
+                          <span className="ml-2 bg-gray-200 text-xs px-2 py-1 rounded-full">
+                            NEW
+                          </span>
+                        </button>
+                        <button className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600">
+                          <FaRegFilePdf className="mr-2 text-xl" />
+                          Download PDF
+                        </button>
+                        <button
+                          className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600"
+                          onClick={() => handleDeleteClick(resume._id)}
+                        >
+                          <RiDeleteBin6Line className="mr-2 text-xl" />
+                          Delete
+                        </button>
+
+                        <button className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600">
+                          <IoIosMore className="mr-2 text-xl" />
+                          More
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <></>
-            )}
+                ))
+              ) : (
+                <>
+                  <div className="w-full flex items-center p-4 cursor-pointer">
+                    <div
+                      className="w-44 min-h-60 border border-dashed rounded-lg h-full flex justify-center items-center cursor-pointer"
+                      onClick={handleNewResumeClick}
+                    >
+                      <span className="w-16 h-16 text-blue-600 text-3xl bg-gray-200 rounded-full flex justify-center items-center">
+                        +
+                      </span>
+                    </div>
 
-            <div className="w-full flex items-center p-4 cursor-pointer">
-              <div
-                className="w-44 min-h-60 border border-dashed rounded-lg h-full flex justify-center items-center cursor-pointer"
-                onClick={handleNewResumeClick}
-              >
-                <span className="w-16 h-16 text-blue-600 text-3xl bg-gray-200 rounded-full flex justify-center items-center">
-                  +
-                </span>
-              </div>
-
-              <div className="flex-1 p-5">
-                <div className="text-gray-700 text-2xl">New Resume</div>
-                <div className="text-gray-400 text-sm mt-2">
-                  Create a tailored resume for each job application. Double your
-                  chances of getting hired!
-                </div>
-              </div>
+                    <div className="flex-1 p-5">
+                      <div className="text-gray-700 text-2xl">New Resume</div>
+                      <div className="text-gray-400 text-sm mt-2">
+                        Create a tailored resume for each job application.
+                        Double your chances of getting hired!
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

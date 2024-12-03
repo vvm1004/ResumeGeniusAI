@@ -73,6 +73,7 @@ export class ResumeBuildersService {
       .limit(limit)
       .sort(sort as any)
       .populate(population)
+      .populate('template')
       .select(projection as any)
       .exec();
 
