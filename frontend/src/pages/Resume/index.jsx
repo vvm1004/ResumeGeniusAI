@@ -367,7 +367,6 @@ const DashboardResumes = () => {
     <>
       <div className="flex min-h-screen">
         <div className="w-1/6 p-6 sticky top-14 h-[calc(100vh-3.5rem)] ">
-          {/* overflow-y-auto z-100 */}
           <div className="flex justify-between items-center">
             <img
               className="w-12 h-12 object-contain border-2 rounded-full font-12"
@@ -468,7 +467,7 @@ const DashboardResumes = () => {
               />
 
               <button
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg"
+                className="bg-blue-500 text-white px-6 py-2 rounded-lg mr-2 custom-button"
                 onClick={handleNewResumeClick}
               >
                 + Create New
@@ -540,7 +539,7 @@ const DashboardResumes = () => {
                     >
                       <img
                         src={
-                          resume?.template.previewImage ||
+                          resume?.template?.previewImage ||
                           "https://th.bing.com/th/id/OIP.wzvz7KNJz_DYS_M6MibRXAAAAA?rs=1&pid=ImgDetMain"
                         }
                         alt="Resume"

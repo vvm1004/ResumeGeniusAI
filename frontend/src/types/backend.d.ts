@@ -107,6 +107,8 @@ export interface IJob {
 
 export interface IResume {
     _id?: string;
+    title?: string;
+    typeUrl: string;
     email: string;
     userId: string;
     url: string;

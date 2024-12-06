@@ -17,6 +17,16 @@ interface SearchClientProps {
   showTitle?: boolean;
 }
 
+const removeAccents = (str: string) => {
+  return str
+    .normalize("NFD") // Chuyển sang dạng Normalization Form D (tách ký tự và dấu)
+    .replace(/[\u0300-\u036f]/g, "") // Loại bỏ các dấu
+    .replace(/đ/g, "d") // Chuyển "đ" thành "d"
+    .replace(/Đ/g, "D") // Chuyển "Đ" thành "D"
+    .replace(/\s+/g, "") // Loại bỏ khoảng trắng
+    .toUpperCase(); // Chuyển thành chữ in hoa
+};
+
 const SearchClient: React.FC<SearchClientProps> = ({
   showCarousel = true,
   showTitle = true,
@@ -47,8 +57,10 @@ const SearchClient: React.FC<SearchClientProps> = ({
     skills: string;
     locations: string;
   }) => {
+    const normalizedLocations = removeAccents(locations || "");
+
     const link = `/jobs?${skills ? `name=/${skills}/i&` : ""}${
-      locations ? `location=/${locations}/i` : ""
+      locations ? `location=/${normalizedLocations}/i` : ""
     }`;
     navigate(link);
   };
@@ -132,7 +144,7 @@ const SearchClient: React.FC<SearchClientProps> = ({
               span={24}
               className="font-bold text-3xl text-center text-white pt-8"
             >
-              <h2>Tìm việc làm nhanh 24h, việc làm mới nhất trên toàn quốc.</h2>
+              <h2>Find jobs fast 24 hours, latest jobs nationwide.</h2>
             </Col>
           )}
 
@@ -146,7 +158,7 @@ const SearchClient: React.FC<SearchClientProps> = ({
                 fieldNames={{ label: "label", value: "label" }}
                 placeholder={
                   <>
-                    <MonitorOutlined /> Vị trí tuyển dụng...
+                    <MonitorOutlined /> Job vacancy...
                   </>
                 }
               ></AutoComplete>
@@ -163,7 +175,7 @@ const SearchClient: React.FC<SearchClientProps> = ({
                 fieldNames={{ label: "label", value: "label" }}
                 placeholder={
                   <>
-                    <EnvironmentOutlined /> Địa điểm...
+                    <EnvironmentOutlined /> Location...
                   </>
                 }
               ></AutoComplete>

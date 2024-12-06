@@ -38,6 +38,11 @@ export class CreateResumeDto {
 
 export class CreateUserCvDto {
     @IsNotEmpty({
+        message: "typeUrl không được để trống"
+    })
+    typeUrl: string;
+
+    @IsNotEmpty({
         message: "url không được để trống"
     })
     url: string;
