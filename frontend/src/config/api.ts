@@ -128,8 +128,8 @@ export const callFetchJobById = (id: string) => {
  * 
 Module Resume
  */
-export const callCreateResume = (url: string, companyId: any, jobId: any) => {
-    return axios.post<IBackendRes<IResume>>('/api/v1/resumes', { url, companyId, jobId })
+export const callCreateResume = (url: string, typeUrl: string, companyId: any, jobId: any) => {
+    return axios.post<IBackendRes<IResume>>('/api/v1/resumes', { url, typeUrl, companyId, jobId })
 }
 
 export const callUpdateResumeStatus = (id: any, status: string) => {

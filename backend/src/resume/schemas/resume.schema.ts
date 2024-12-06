@@ -8,6 +8,9 @@ export type ResumeDocument = HydratedDocument<Resume>
 @Schema({ timestamps: true })
 export class Resume {
   @Prop()
+  typeUrl: string;
+
+  @Prop()
   email: string;
 
   @Prop()

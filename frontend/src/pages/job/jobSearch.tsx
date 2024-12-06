@@ -8,6 +8,7 @@ import {
   Pagination,
   Radio,
   Row,
+  Skeleton,
   Spin,
   Tag,
   Typography,
@@ -48,12 +49,12 @@ const JobSearch = (props: any) => {
 
   const fetchJobs = useCallback(async () => {
     setLoading(true);
-    // const queryParams = `name=${name}&location=${location}&current=${pagination.current}&pageSize=${pagination.pageSize}`;
     const queryParams = [
       name ? `name=${name}` : "",
       location ? `location=${location}` : "",
       `current=${pagination.current}`,
       `pageSize=${pagination.pageSize}`,
+      `sort=${selectedOption}`,
     ]
       .filter(Boolean)
       .join("&");
@@ -61,7 +62,10 @@ const JobSearch = (props: any) => {
       const res = await callFetchJob(queryParams);
       if (res?.data) {
         setDataJobSearch(res.data.result);
-        setPagination((prev) => ({ ...prev, total: res?.data?.meta?.total || 0 }));
+        setPagination((prev) => ({
+          ...prev,
+          total: res?.data?.meta?.total || 0,
+        }));
       } else {
         setDataJobSearch([]);
         setPagination((prev) => ({ ...prev, total: 0 }));
@@ -75,7 +79,7 @@ const JobSearch = (props: any) => {
 
   useEffect(() => {
     fetchJobs();
-  }, [fetchJobs]);
+  }, [fetchJobs, selectedOption]);
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPagination((prev) => ({
@@ -87,11 +91,70 @@ const JobSearch = (props: any) => {
 
   const handleChange = (e: any) => {
     setSelectedOption(e.target.value);
+    setPagination((prev) => ({ ...prev, current: 1 }));
   };
 
   const handleViewDetailJob = (item: IJob) => {
     const slug = convertSlug(item.name);
     navigate(`/jobs/${slug}?id=${item._id}`);
+  };
+
+  const renderSkeletonCard = () => {
+    return (
+      <Card className="p-0 mb-4 shadow-sm" bodyStyle={{ padding: 12 }}>
+        <Row>
+          <Col span={4} className="p-2">
+            <Skeleton.Avatar
+              active
+              shape="square"
+              size={120}
+              className="rounded-md object-contain"
+            />
+          </Col>
+
+          <Col span={20} className="pl-6">
+            <div className="border-b pb-3 mb-2">
+              <div className="flex justify-between">
+                <div>
+                  <Skeleton.Input
+                    active
+                    style={{ width: 200, height: 24, marginBottom: 8 }}
+                  />
+                </div>
+                <Skeleton.Input active style={{ width: 100, height: 24 }} />
+              </div>
+              <Skeleton.Input active style={{ width: 150, height: 16 }} />
+              <div className="flex items-center space-x-2 mt-2">
+                <Skeleton.Button
+                  active
+                  style={{ width: 100, height: 24, borderRadius: "16px" }}
+                />
+                <Skeleton.Button
+                  active
+                  style={{ width: 140, height: 24, borderRadius: "16px" }}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <Skeleton.Input
+                active
+                style={{ width: "70%", height: 16, marginBottom: 8 }}
+              />
+              <Skeleton.Button
+                active
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  marginLeft: 16,
+                }}
+              />
+            </div>
+          </Col>
+        </Row>
+      </Card>
+    );
   };
 
   return (
@@ -104,7 +167,7 @@ const JobSearch = (props: any) => {
           <Col span={18} className="flex justify-between items-center">
             <div>
               <h2 className="text-lg font-bold">
-                Tuyển dụng {pagination.total} việc làm{" "}
+                Recruitment {pagination.total} jobs{" "}
                 {trimQueryString(name?.toString() || "")} [Update{" "}
                 {dayjs().format("DD/MM/YYYY")}]{" "}
               </h2>
@@ -116,7 +179,7 @@ const JobSearch = (props: any) => {
                       className="hover:underline"
                       to="/jobsAll"
                     >
-                      Trang chủ
+                      Home
                     </Link>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
@@ -125,7 +188,7 @@ const JobSearch = (props: any) => {
                       className="hover:underline"
                       to="/jobs"
                     >
-                      Việc làm
+                      Job
                     </Link>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
@@ -138,24 +201,24 @@ const JobSearch = (props: any) => {
               <span className="mr-2">
                 <FaRegBell />
               </span>
-              Tạo thông báo việc làm
+              Create job alert
             </button>
           </Col>
         </Row>
         <Row className="flex justify-center items-center mt-4">
           <Col span={18} className="flex justify-between items-center">
             <h2 className="text-xl text-green-600 font-bold">
-              Gợi ý việc làm phù hợp
+              Suggest suitable jobs
             </h2>
             <Link to="job" className="underline">
-              Xem tất cả
+              View all
             </Link>
           </Col>
         </Row>
         <Row className="flex justify-center items-center mt-4">
           <Col span={18} className="flex items-center">
             <h2 className="mr-4 text-md font-semibold">
-              Ưu tiên hiển thị theo:{" "}
+              Display priority by:{" "}
             </h2>
             <Radio.Group
               onChange={handleChange}
@@ -170,120 +233,123 @@ const JobSearch = (props: any) => {
                 <InfoCircleOutlined className="text-green-500" />
               </Radio>
               <Radio className="text-md font-semibold mr-6" value="ngay-dang">
-                Ngày đăng
+                Date posted
               </Radio>
               <Radio
                 className="text-md font-semibold mr-6"
                 value="ngay-cap-nhat"
               >
-                Ngày cập nhật
+                Update date
               </Radio>
               <Radio
                 className="text-md font-semibold mr-6"
                 value="luong-cao-den-thap"
               >
-                Lương cao đến thấp
+                Salary high to low
               </Radio>
               <Radio
                 className="text-md font-semibold mr-6"
                 value="can-tuyen-gap"
               >
-                Cần tuyển gấp
+                Urgent hiring
               </Radio>
             </Radio.Group>
           </Col>
         </Row>
 
         {/* Danh sách công việc */}
-        <Spin spinning={loading} tip="Loading...">
-          <Row className="flex justify-center items-center mt-4">
-            <Col span={18}>
-              {dataJobSearch ? (
-                dataJobSearch.map((job) => (
-                  <Card
-                    key={job._id}
-                    className="p-0 mb-4 shadow-sm hover:border-green-500 group"
-                    bodyStyle={{ padding: 12 }}
-                    onClick={() => handleViewDetailJob(job)}
-                  >
-                    <Row className="">
-                      <Col span={4} className="flex items-center">
-                        <img
-                          src={`${
-                            import.meta.env.VITE_BACKEND_URL
-                          }/images/company/${job?.company?.logo}`}
-                          alt={job?.company?.name}
-                          className="w-32 h-auto border p-2 rounded-md object-contain"
-                        />
-                      </Col>
-                      <Col span={20} className="pl-6">
-                        <div className="border-b pb-3 mb-2">
-                          <div className="flex justify-between">
-                            <div>
-                              <Title
-                                level={5}
-                                style={{ fontWeight: "bold", fontSize: "20px" }}
-                                className="mb-0 group-hover:text-green-600"
-                              >
-                                {job?.name}{" "}
-                              </Title>
-                              <Text className="text-gray-500 font-semibold">
-                                {job?.company?.name}
-                              </Text>
-                            </div>
-                            <Text className="text-green-600 font-bold">
-                              {job?.salary
-                                ? `${job?.salary.toLocaleString()} VND`
-                                : "Thỏa thuận"}
+        {/* <Spin spinning={loading} tip="Loading..."> */}
+        <Row className="flex justify-center items-center mt-4">
+          <Col span={18}>
+            {loading ? (
+              Array.from({ length: pagination?.pageSize || 5 }).map(
+                (_, index) => <div key={index}>{renderSkeletonCard()}</div>
+              )
+            ) : dataJobSearch && dataJobSearch.length > 0 ? (
+              dataJobSearch.map((job) => (
+                <Card
+                  key={job._id}
+                  className="p-0 mb-4 shadow-sm hover:border-green-500 group"
+                  bodyStyle={{ padding: 12 }}
+                  onClick={() => handleViewDetailJob(job)}
+                >
+                  <Row className="">
+                    <Col span={4} className="flex items-center">
+                      <img
+                        src={`${
+                          import.meta.env.VITE_BACKEND_URL
+                        }/images/company/${job?.company?.logo}`}
+                        alt={job?.company?.name}
+                        className="w-32 h-auto border p-2 rounded-md object-contain"
+                      />
+                    </Col>
+                    <Col span={20} className="pl-6">
+                      <div className="border-b pb-3 mb-2">
+                        <div className="flex justify-between">
+                          <div>
+                            <Title
+                              level={5}
+                              style={{ fontWeight: "bold", fontSize: "20px" }}
+                              className="mb-0 group-hover:text-green-600"
+                            >
+                              {job?.name}{" "}
+                            </Title>
+                            <Text className="text-gray-500 font-semibold">
+                              {job?.company?.name}
                             </Text>
                           </div>
-                          <div className="flex items-center space-x-2 mt-2 font-semibold">
-                            <Tag className="bg-gray-100 border rounded-xl">
-                              {getLocationName(job?.location)}
-                            </Tag>
-                            <Tag className="bg-gray-100 border rounded-xl">
-                              {job?.level
-                                ? job?.level
-                                : "Không yêu cầu kinh nghiệm"}
-                            </Tag>
-                          </div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <Text className="text-md font-semibold text-gray-400">
-                            Frontend Developer
+                          <Text className="text-green-600 font-bold">
+                            {job?.salary
+                              ? `${job?.salary.toLocaleString()} VND`
+                              : "Thỏa thuận"}
                           </Text>
-                          <div className="flex items-center font-semibold text-gray-400">
-                            Cập nhật{" "}
-                            {dayjs(job?.updatedAt).format("DD/MM/YYYY")}
-                            <span className="ml-4 p-2 border border-green-600 rounded-full">
-                              <FaRegHeart
-                                size={20}
-                                className=" cursor-pointer text-green-600"
-                              />
-                            </span>
-                          </div>
                         </div>
-                      </Col>
-                    </Row>
-                  </Card>
-                ))
-              ) : (
-                <Empty description="Không có dữ liệu công việc" />
-              )}
-            </Col>
-          </Row>
+                        <div className="flex items-center space-x-2 mt-2 font-semibold">
+                          <Tag className="bg-gray-100 border rounded-xl">
+                            {getLocationName(job?.location)}
+                          </Tag>
+                          <Tag className="bg-gray-100 border rounded-xl">
+                            {job?.level
+                              ? job?.level
+                              : "Không yêu cầu kinh nghiệm"}
+                          </Tag>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <Text className="text-md font-semibold text-gray-400">
+                          {job?.name}
+                        </Text>
+                        <div className="flex items-center font-semibold text-gray-400">
+                          Update {dayjs(job?.updatedAt).format("DD/MM/YYYY")}
+                          <span className="ml-4 p-2 border border-green-600 rounded-full">
+                            <FaRegHeart
+                              size={20}
+                              className=" cursor-pointer text-green-600"
+                            />
+                          </span>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                </Card>
+              ))
+            ) : (
+              <Empty description="Không có dữ liệu công việc" />
+            )}
+          </Col>
+        </Row>
 
-          {dataJobSearch && dataJobSearch.length > 0 && (
-            <Row className="flex justify-center items-center mt-4">
-              <Pagination
-                current={pagination.current}
-                pageSize={pagination.pageSize}
-                total={pagination.total}
-                onChange={handlePageChange}
-              />
-            </Row>
-          )}
-        </Spin>
+        {dataJobSearch && dataJobSearch.length > 0 && (
+          <Row className="flex justify-center items-center mt-4">
+            <Pagination
+              current={pagination.current}
+              pageSize={pagination.pageSize}
+              total={pagination.total}
+              onChange={handlePageChange}
+            />
+          </Row>
+        )}
+        {/* </Spin> */}
       </div>
     </>
   );

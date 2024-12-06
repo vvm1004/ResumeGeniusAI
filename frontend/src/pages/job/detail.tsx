@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { IJob } from "@/types/backend";
-import { callFetchJobById } from "@/config/api";
+import { ICompany, IJob } from "@/types/backend";
+import { callFetchCompanyById, callFetchJobById } from "@/config/api";
 import { Breadcrumb, Col, Row, Skeleton } from "antd";
 import { getLocationName } from "@/config/utils";
 import dayjs from "dayjs";
@@ -18,6 +18,7 @@ dayjs.extend(relativeTime);
 
 const ClientJobDetailPage = (props: any) => {
   const [jobDetail, setJobDetail] = useState<IJob | null>(null);
+  const [companyDetail, setCompanyDetail] = useState<ICompany | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -27,14 +28,124 @@ const ClientJobDetailPage = (props: any) => {
 
   useEffect(() => {
     const fetchJobDetail = async () => {
+      setIsLoading(true);
       if (id) {
         const res = await callFetchJobById(id);
         setJobDetail(res.data || null);
       }
+    };
+    const fetchCompanyDetail = async () => {
+      if (jobDetail?.company?._id) {
+        // const res = await callFetchCompanyById(jobDetail.company._id);
+        const res = await callFetchCompanyById("670bd5024c872eb686978a2f");
+        setCompanyDetail(res.data || null);
+      }
+    };
+    const fetchData = async () => {
+      await fetchJobDetail();
+      await fetchCompanyDetail();
       setIsLoading(false);
     };
-    fetchJobDetail();
+
+    fetchData();
   }, [id]);
+
+  const renderSkeleton = () => {
+    return (
+      <div className="w-full flex">
+        <div className="w-2/3 ml-36 flex justify-end items-center flex-wrap">
+          <Row
+            className="w-full flex items-center rounded-md bg-white p-4"
+            gutter={[20, 5]}
+          >
+            <Col span={24}>
+              <Skeleton.Input active size="small" block />
+            </Col>
+            <Col span={24}>
+              <Skeleton.Button
+                active
+                size="small"
+                style={{ width: 100 }}
+                block
+              />
+            </Col>
+            <Col md={24} className="flex items-center mt-4">
+              <div className="w-1/3 flex items-center mr-2">
+                <Skeleton.Avatar
+                  active
+                  size="large"
+                  shape="square"
+                  className="mr-2"
+                />
+                <Skeleton.Input active size="small" block />
+              </div>
+              <div className="w-1/3 flex items-center mr-2">
+                <Skeleton.Avatar
+                  active
+                  size="large"
+                  shape="square"
+                  className="mr-2"
+                />
+                <Skeleton.Input active size="small" block />
+              </div>
+              <div className="w-1/3 flex items-center">
+                <Skeleton.Avatar
+                  active
+                  size="large"
+                  shape="square"
+                  className="mr-2"
+                />
+                <Skeleton.Input active size="small" block />
+              </div>
+            </Col>
+            <Col span={9} className="mt-4">
+              <Skeleton.Input active size="default" block />
+            </Col>
+            <Col span={18} className="mt-4">
+              <Skeleton.Button active size="large" block />
+            </Col>
+            <Col span={5} className="mt-4">
+              <Skeleton.Button active size="large" block />
+            </Col>
+          </Row>
+          <Row
+            className="mt-6 w-full flex items-center rounded-md bg-white p-4"
+            gutter={[20, 5]}
+          >
+            <Col span={24}>
+              <Skeleton.Input active size="large" block />
+            </Col>
+            <Col span={24}>
+              <Skeleton active paragraph={{ rows: 5 }} />
+            </Col>
+          </Row>
+        </div>
+
+        <div className="w-1/3 ml-10 mr-36 bg-white rounded-md self-start">
+          <Row className="w-full flex justify-center p-4" gutter={[20, 15]}>
+            <Col span={8}>
+              <Skeleton.Avatar active size={100} shape="square" />
+            </Col>
+            <Col span={15}>
+              <Skeleton.Input active size="small" block />
+            </Col>
+            <Col span={22}>
+              <Skeleton.Input active size="small" block />
+            </Col>
+            <Col span={22}>
+              <Skeleton.Input active size="small" block />
+            </Col>
+            <Col span={22}>
+              <Skeleton.Input active size="small" block />
+            </Col>
+            <Col span={15}>
+              <Skeleton.Button active size="small" block />
+            </Col>
+          </Row>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -47,13 +158,13 @@ const ClientJobDetailPage = (props: any) => {
           <Col md={19}>
             <Breadcrumb className="text-lg">
               {[
-                { name: "Trang chủ", path: "/jobsAll" },
-                { name: "Việc làm", path: "/jobs" },
+                { name: "Home", path: "/jobsAll" },
+                { name: "Job", path: "/jobs" },
                 // {
                 //   name: "Tìm việc làm Front End Developer",
                 //   path: "/jobSearch",
                 // },
-                { name: `Tuyển ${jobDetail?.name}`, path: null },
+                { name: `Recruitment ${jobDetail?.name}`, path: null },
               ].map((breadcrumb, index) => (
                 <Breadcrumb.Item key={index}>
                   {breadcrumb.path ? (
@@ -74,7 +185,7 @@ const ClientJobDetailPage = (props: any) => {
         </Row>
 
         {isLoading ? (
-          <Skeleton />
+          renderSkeleton()
         ) : (
           <>
             <div className="w-full flex">
@@ -104,9 +215,7 @@ const ClientJobDetailPage = (props: any) => {
                             />
                           </div>
                           <div>
-                            <div className="text-md font-semibold">
-                              Mức lương
-                            </div>
+                            <div className="text-md font-semibold">Salary</div>
                             {jobDetail?.salary}
                           </div>
                         </div>
@@ -120,7 +229,7 @@ const ClientJobDetailPage = (props: any) => {
                           </div>
                           <div>
                             <div className="text-md font-semibold">
-                              Địa điểm
+                              Location
                             </div>
                             {getLocationName(jobDetail?.location)}
                           </div>
@@ -135,18 +244,18 @@ const ClientJobDetailPage = (props: any) => {
                           </div>
                           <div>
                             <div className="text-md font-semibold">
-                              Kinh nghiệm
+                              Experience
                             </div>
                             {jobDetail?.level}
                           </div>
                         </div>
                       </Col>
                       <Col
-                        span={7}
+                        span={9}
                         className="mt-4 p-2 flex items-center bg-gray-200 text-md text-gray-600 rounded-sm"
                       >
                         <FaRegClock size={20} className="mr-2" />
-                        Hạn nộp hồ sơ:{" "}
+                        Application deadline:{" "}
                         {dayjs(jobDetail?.endDate).format("DD/MM/YYYY")}
                       </Col>
                       <Col
@@ -156,15 +265,15 @@ const ClientJobDetailPage = (props: any) => {
                       >
                         <button className="flex justify-center items-center font-bold text-white text-md">
                           <IoIosSend size={30} />
-                          Ứng tuyển ngay
+                          Apply now
                         </button>
                       </Col>
                       <Col
-                        span={4}
-                        className="mt-4 p-2 text-lg rounded-sm font-semibold flex justify-center items-center cursor-pointer border border-green-400 text-green-600 hover:border-green-600"
+                        span={5}
+                        className="mt-4 p-2 text-lg rounded-sm font-semibold flex justify-center items-center cursor-pointer border-1 border-green-400 text-green-600 hover:border-green-600"
                       >
                         <IoMdHeartEmpty className="mr-2" size={20} />
-                        Lưu tin
+                        Save news
                       </Col>
                     </Row>
                     <Row
@@ -176,11 +285,11 @@ const ClientJobDetailPage = (props: any) => {
                         className="p-2 flex justify-between items-center"
                       >
                         <div className="pl-2 border-l-8 border-l-green-600 text-xl font-bold">
-                          Chi tiết tin tuyển dụng
+                          Job posting details
                         </div>
-                        <button className="p-2 text-md rounded-sm font-semibold flex items-center cursor-pointer border border-green-400 text-green-600 hover:border-green-600">
+                        <button className="p-2 text-md rounded-sm font-semibold flex items-center cursor-pointer border-1 border-green-400 text-green-600 hover:border-green-600">
                           <FaRegBell className="mr-2" />
-                          Gửi tôi việc làm tương tự
+                          Send me similar jobs
                         </button>
                       </Col>
                       <Col
@@ -216,27 +325,35 @@ const ClientJobDetailPage = (props: any) => {
                       span={22}
                     >
                       <FaUser className="mr-2" size={15} />
-                      Quy mô:
-                      <span className="ml-4 text-black">100-499 nhân viên</span>
+                      Scale:
+                      <span className="ml-4 text-black">
+                        {companyDetail?.minScale && companyDetail?.maxScale
+                          ? `${companyDetail.minScale} - ${companyDetail.maxScale} staffs`
+                          : ""}
+                      </span>
                     </Col>
                     <Col
                       className="p-2 flex items-center text-md text-gray-600 font-semibold"
                       span={22}
                     >
                       <FaUser className="mr-2" size={15} />
-                      Lĩnh vực:
-                      <span className="ml-4 text-black">IT - Phần mềm</span>
+                      Field:
+                      <span className="ml-4 text-black">
+                        {companyDetail?.name ? companyDetail?.name : ""}
+                      </span>
                     </Col>
                     <Col
                       className="p-2 flex items-center text-md text-gray-600 font-semibold"
                       span={22}
                     >
                       <FaUser className="mr-2" size={15} />
-                      Địa điểm:
-                      <span className="ml-4 text-black">Đà Nẵng</span>
+                      Location:
+                      <span className="ml-4 text-black">
+                        {companyDetail?.address ? companyDetail?.address : ""}
+                      </span>
                     </Col>
                     <Col className="flex justify-center items-center text-green-600 text-md font-bold hover:underline">
-                      Xem trang công ty{" "}
+                      View company page{" "}
                       <BsBoxArrowInUpRight className="ml-2" size={18} />
                     </Col>
                   </Row>

@@ -10,6 +10,9 @@ const ClientJobPage = (props: any) => {
       <div className="bg-gray-100">
         <JobCard />
       </div>
+      <div className="bg-gray-100">
+        <JobCard />
+      </div>
     </>
   );
 };
