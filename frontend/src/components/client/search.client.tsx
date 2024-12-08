@@ -94,7 +94,7 @@ const SearchClient: React.FC<SearchClientProps> = ({
               icon={<RightOutlined />}
             />
           </span>
-          <Carousel ref={carouselRef}>
+          <Carousel ref={carouselRef} autoplay>
             {carouselContent.map((src, index) => (
               <div key={index} className="relative w-full">
                 <img
@@ -161,6 +161,11 @@ const SearchClient: React.FC<SearchClientProps> = ({
                     <MonitorOutlined /> Job vacancy...
                   </>
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    form.submit();
+                  }
+                }}
               ></AutoComplete>
             </ProForm.Item>
           </Col>
@@ -178,13 +183,18 @@ const SearchClient: React.FC<SearchClientProps> = ({
                     <EnvironmentOutlined /> Location...
                   </>
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    form.submit();
+                  }
+                }}
               ></AutoComplete>
             </ProForm.Item>
           </Col>
 
           <Col span={3}>
             <Button
-              className="custome-btn h-12 w-full bg-green-500 flex justify-center items-center"
+              className="custome-btn h-12 w-full bg-blue-700 flex justify-center items-center"
               onClick={() => form.submit()}
             >
               <span className="mr-2">

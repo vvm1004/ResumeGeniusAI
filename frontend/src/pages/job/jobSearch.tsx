@@ -162,7 +162,7 @@ const JobSearch = (props: any) => {
       <div className="search-content">
         <SearchClient showCarousel={false} showTitle={false} />
       </div>
-      <div className={`${styles["home-section"]} bg-gray-100 pt-4 pb-4`}>
+      <div className={`${styles["home-section"]} bg-gray-100 pt-4 pb-8`}>
         <Row className="flex justify-center items-center">
           <Col span={18} className="flex justify-between items-center">
             <div>
@@ -175,7 +175,7 @@ const JobSearch = (props: any) => {
                 <Breadcrumb className="text-md">
                   <Breadcrumb.Item>
                     <Link
-                      style={{ color: "green", fontWeight: "600" }}
+                      style={{ color: "blue", fontWeight: "600" }}
                       className="hover:underline"
                       to="/jobsAll"
                     >
@@ -184,7 +184,7 @@ const JobSearch = (props: any) => {
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
                     <Link
-                      style={{ color: "green", fontWeight: "600" }}
+                      style={{ color: "blue", fontWeight: "600" }}
                       className="hover:underline"
                       to="/jobs"
                     >
@@ -197,7 +197,7 @@ const JobSearch = (props: any) => {
                 </Breadcrumb>
               </div>
             </div>
-            <button className="flex justify-between items-center bg-white rounded-sm font-semibold p-2  hover:text-green-700 hover:border hover:border-green-700">
+            <button className="flex justify-between items-center bg-white rounded-sm font-semibold p-2  hover:text-blue-700 hover:border hover:border-blue-700">
               <span className="mr-2">
                 <FaRegBell />
               </span>
@@ -207,12 +207,12 @@ const JobSearch = (props: any) => {
         </Row>
         <Row className="flex justify-center items-center mt-4">
           <Col span={18} className="flex justify-between items-center">
-            <h2 className="text-xl text-green-600 font-bold">
+            <h2 className="text-xl text-blue-600 font-bold">
               Suggest suitable jobs
             </h2>
-            <Link to="job" className="underline">
+            {/* <Link to="job" className="underline">
               View all
-            </Link>
+            </Link> */}
           </Col>
         </Row>
         <Row className="flex justify-center items-center mt-4">
@@ -230,7 +230,7 @@ const JobSearch = (props: any) => {
                 className="flex items-center text-md mr-6 font-semibold"
               >
                 <span className="mr-1">Search by AI</span>
-                <InfoCircleOutlined className="text-green-500" />
+                <InfoCircleOutlined className="text-blue-500" />
               </Radio>
               <Radio className="text-md font-semibold mr-6" value="ngay-dang">
                 Date posted
@@ -269,7 +269,7 @@ const JobSearch = (props: any) => {
               dataJobSearch.map((job) => (
                 <Card
                   key={job._id}
-                  className="p-0 mb-4 shadow-sm hover:border-green-500 group"
+                  className="p-0 mb-4 shadow-sm hover:border-blue-500 group"
                   bodyStyle={{ padding: 12 }}
                   onClick={() => handleViewDetailJob(job)}
                 >
@@ -290,7 +290,7 @@ const JobSearch = (props: any) => {
                             <Title
                               level={5}
                               style={{ fontWeight: "bold", fontSize: "20px" }}
-                              className="mb-0 group-hover:text-green-600"
+                              className="mb-0 group-hover:text-blue-600"
                             >
                               {job?.name}{" "}
                             </Title>
@@ -298,7 +298,7 @@ const JobSearch = (props: any) => {
                               {job?.company?.name}
                             </Text>
                           </div>
-                          <Text className="text-green-600 font-bold">
+                          <Text className="text-blue-600 font-bold">
                             {job?.salary
                               ? `${job?.salary.toLocaleString()} VND`
                               : "Thỏa thuận"}
@@ -321,10 +321,10 @@ const JobSearch = (props: any) => {
                         </Text>
                         <div className="flex items-center font-semibold text-gray-400">
                           Update {dayjs(job?.updatedAt).format("DD/MM/YYYY")}
-                          <span className="ml-4 p-2 border border-green-600 rounded-full">
+                          <span className="ml-4 p-2 border border-blue-600 rounded-full">
                             <FaRegHeart
                               size={20}
-                              className=" cursor-pointer text-green-600"
+                              className=" cursor-pointer text-blue-600"
                             />
                           </span>
                         </div>
