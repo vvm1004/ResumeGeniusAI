@@ -35,6 +35,7 @@ import DashboardResumes from "./pages/Resume";
 import EditResume from "./pages/Resume/EditResume";
 import JobSearch from "./pages/job/jobSearch";
 import ViewResume from "./pages/Resume/view";
+import SelectTemplate from "./pages/Resume/SelectTemplate";
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -92,6 +93,7 @@ export default function App() {
         { path: "company", element: <ClientCompanyPage /> },
         { path: "company/:id", element: <ClientCompanyDetailPage /> },
         { path: "resumes", element: <DashboardResumes /> },
+        { path: "resumes/template", element: <SelectTemplate /> },
         { path: "resumes/edit/:id", element: <EditResume /> },
         { path: "resumes/view/:id", element: <ViewResume /> },
       ],

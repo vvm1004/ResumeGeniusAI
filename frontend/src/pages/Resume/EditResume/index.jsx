@@ -106,7 +106,7 @@ function EditResume() {
     fetchTemplateData();
     fetchResume();
   }, [id, access_token]);
-  const handleDownload = () => {
+  const handleView = () => {
     if (id) {
       navigate(`/resumes/view/${id}`);
     } else {
@@ -165,7 +165,7 @@ function EditResume() {
 
                 <div className="flex items-center">
                   <button
-                    onClick={handleDownload}
+                    onClick={handleView}
                     className="bg-green-500 text-white px-4 py-2 ml-4 rounded"
                   >
                     View
