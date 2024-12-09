@@ -35,13 +35,10 @@ import DashboardResumes from "./pages/Resume";
 import EditResume from "./pages/Resume/EditResume";
 import JobSearch from "./pages/job/jobSearch";
 import ViewResume from "./pages/Resume/view";
-<<<<<<< HEAD
 import SelectTemplate from "./pages/Resume/SelectTemplate";
-=======
 import MyResumes from "./pages/Resume/resumes";
 import AccountManagement from "./pages/Resume/account-management";
 import SpreadCV from "./pages/Resume/spread-cv";
->>>>>>> 4e0fa5af0308fddd33d21e5ca873fdd2365b99b1
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -98,10 +95,8 @@ export default function App() {
         { path: "jobs/:id", element: <ClientJobDetailPage /> },
         { path: "company", element: <ClientCompanyPage /> },
         { path: "company/:id", element: <ClientCompanyDetailPage /> },
-<<<<<<< HEAD
         { path: "resumes", element: <DashboardResumes /> },
         { path: "resumes/template", element: <SelectTemplate /> },
-=======
         {
           path: "",
           element: <DashboardResumes />,
@@ -111,11 +106,9 @@ export default function App() {
             { path: "spread-cv", element: <SpreadCV /> },
           ],
         },
->>>>>>> 4e0fa5af0308fddd33d21e5ca873fdd2365b99b1
         { path: "resumes/edit/:id", element: <EditResume /> },
         { path: "resumes/view/:id", element: <ViewResume /> },
         // { path: "account-management", element: <AccountManagement /> },
-
       ],
     },
 
