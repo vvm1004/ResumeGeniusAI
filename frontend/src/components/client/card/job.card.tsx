@@ -59,34 +59,33 @@ const JobCard = () => {
   const filterOptions = useMemo(
     () => ({
       location: [
-        { value: "", label: "Tất cả" },
+        { value: "", label: "All" },
         { value: "HANOI", label: "Hà Nội" },
         { value: "DANANG", label: "Đà Nẵng" },
         { value: "HOCHIMINH", label: "Thành phố Hồ Chí Minh" },
       ],
       salary: [
-        { value: "", label: "Tất cả" },
-        { value: "below10", label: "Dưới 10 triệu" },
-        { value: "10-15", label: "Từ 10 đến 15 triệu" },
-        { value: "15-20", label: "Từ 15 đến 20 triệu" },
-        { value: "20-30", label: "Từ 20 đến 30 triệu" },
-        { value: "above30", label: "Trên 30 triệu" },
-        { value: "thoathuan", label: "Thỏa thuận" },
+        { value: "", label: "All" },
+        { value: "below10", label: "Under 10 million" },
+        { value: "10-15", label: "From 10 to 15 million" },
+        { value: "15-20", label: "From 15 to 20 million" },
+        { value: "20-30", label: "From 20 to 30 million" },
+        { value: "above30", label: "Over 30 million" },
+        { value: "thoathuan", label: "Agree" },
       ],
       experience: [
-        { value: "", label: "Tất cả" },
-        { value: "0", label: "Chưa có kinh nghiệm" },
-        { value: "1", label: "1 năm" },
-        // { value: "1", label: "1 năm" },
-        // { value: "2", label: "2 năm" },
-        // { value: "3", label: "3 năm" },
+        { value: "", label: "All" },
+        { value: "0", label: "No experience" },
+        { value: "1", label: "1 year" },
+        { value: "2", label: "2 years" },
+        { value: "3", label: "3 years" },
       ],
       industry: [
         { value: "", label: "Tất cả" },
-        { value: "it", label: "Công nghệ thông tin" },
+        { value: "it", label: "Information technology" },
         { value: "marketing", label: "Marketing" },
-        { value: "finance", label: "Tài chính" },
-        { value: "education", label: "Giáo dục" },
+        { value: "finance", label: "Finance" },
+        { value: "education", label: "Education" },
       ],
     }),
     []
@@ -94,9 +93,8 @@ const JobCard = () => {
 
   const fetchJobs = useCallback(async () => {
     setLoading(true);
-    // const query = `current=${pagination.current}&pageSize=${pagination.pageSize}&${filters.main}=${filters.sub}&${filters.sort}`;
-    // const query = `current=${pagination.current}&pageSize=${pagination.pageSize}&${filters.sort}`;
-    const query = `current=${pagination.current}&pageSize=${pagination.pageSize}&${filters.sort}&${filters.main}=${filters.sub}`;
+    const query = `current=${pagination.current}&pageSize=${pagination.pageSize}&${filters.main}=${filters.sub}`;
+    // const query = `current=${pagination.current}&pageSize=${pagination.pageSize}&${filters.sort}&${filters.main}=${filters.sub}`;
 
     try {
       const res = await callFetchJob(query);
@@ -172,26 +170,26 @@ const JobCard = () => {
             <div
               className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}
             >
-              <div className="text-2xl text-green-600 font-bold pt-4">
+              <div className="text-2xl text-blue-600 font-bold pt-4">
                 Latest Jobs
               </div>
 
               <div className="flex justify-center items-center">
                 <Link
                   to="/jobs"
-                  className="pt-4 mr-2 underline hover:text-green-700"
+                  className="pt-4 mr-2 underline hover:text-blue-700"
                 >
                   View all
                 </Link>
                 <span className="pt-4 mr-1">
                   <MdOutlineChevronLeft
-                    className="border-2 rounded-full"
+                    className="border-2 rounded-full hover:border-blue-400"
                     size={30}
                   />
                 </span>
                 <span className="pt-4 mr-2">
                   <MdOutlineChevronRight
-                    className="border-2 rounded-full"
+                    className="border-2 rounded-full hover:border-blue-400"
                     size={30}
                   />
                 </span>
@@ -229,7 +227,7 @@ const JobCard = () => {
               onClick={() => scrollFilterContainer(-1)}
             >
               <MdOutlineChevronLeft
-                className="border-2 rounded-full"
+                className="border-2 rounded-full hover:border-blue-400"
                 size={30}
               />
             </span>
@@ -244,7 +242,7 @@ const JobCard = () => {
               onClick={() => scrollFilterContainer(1)}
             >
               <MdOutlineChevronRight
-                className="border-2 rounded-full"
+                className="border-2 rounded-full hover:border-blue-400"
                 size={30}
               />
             </span>
@@ -336,7 +334,7 @@ const JobCard = () => {
                               <IoLocationOutline
                                 style={{
                                   fontSize: 20,
-                                  color: "green",
+                                  color: "blue",
                                   marginRight: "4px",
                                 }}
                               />
@@ -347,7 +345,7 @@ const JobCard = () => {
                               <HiOutlineCurrencyDollar
                                 style={{
                                   fontSize: 20,
-                                  color: "green",
+                                  color: "blue",
                                   marginRight: "4px",
                                 }}
                               />
@@ -356,7 +354,7 @@ const JobCard = () => {
                             </div>
                           </div>
                           <CiHeart
-                            className="absolute right-2 bottom-2 hover:text-green-600"
+                            className="absolute right-2 bottom-2 hover:text-blue-600"
                             size={25}
                           />
                         </div>

@@ -132,7 +132,7 @@ ul {
 }
 
 .custome-btn:hover {
-  background-color: #16a34a;
+  background-color: blue;
 }
 
 /*End Search */
@@ -148,11 +148,11 @@ ul {
 
 .cus-btn:hover {
   background: white;
-  border: 1px solid green;
+  border: 1px solid blue;
 }
 
 .choose-btn {
-  background: rgb(65, 208, 65) !important;
+  background: blue !important;
   color: white;
 }
 
@@ -178,3 +178,71 @@ ul {
 .square-avatar {
   border-radius: 0 !important;
 }
+
+/* Company List */
+
+.company-marquee {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  min-height: 260px;
+  padding-top: 50px;
+  padding-bottom: 100px;
+  position: relative;
+}
+
+.company-items-wrapper {
+  display: flex;
+  width: max-content;
+  animation: moveRightToLeft 20s linear infinite;
+}
+
+.company-marquee .company-items {
+  width: 20%;
+  position: relative;
+}
+
+.company-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.company-logo {
+  background-color: white;
+  border: 1px solid rgb(197, 188, 188);
+  border-radius: 50%;
+  padding: 20px;
+  max-width: 130px;
+  object-fit: contain;
+  animation: borderWave 5s ease-in-out infinite;
+}
+
+@keyframes moveRightToLeft {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-200%);
+  }
+}
+
+@keyframes borderWave {
+  0% {
+    border: 2px solid rgba(54, 50, 50, 0.3); /* Bắt đầu với border màu xám nhạt */
+    box-shadow: 0 0 20px rgba(177, 12, 12, 0); /* Không có sóng */
+  }
+  50% {
+    border: 2px solid rgba(169, 169, 169, 0.6); /* Đậm dần với màu xám */
+    box-shadow: 0 0 30px rgba(169, 169, 169, 0.4),
+      0 0 30px rgba(31, 1, 1, 0.2); /* Sóng lan tỏa màu xám */
+  }
+  100% {
+    border: 3px solid rgba(58, 47, 47, 0.3); /* Trở lại như ban đầu với màu xám nhạt */
+    box-shadow: 0 0 20px rgba(169, 169, 169, 0); /* Sóng tan dần */
+  }
+}
+
+/* End Company List */
