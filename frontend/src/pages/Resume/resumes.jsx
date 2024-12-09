@@ -398,7 +398,11 @@ const MyResumes = () => {
             </button>
           </div>
         </form>
-        <select className="bg-gray-100" onChange={handleSortChange} value={sortOption}>
+        <select
+          className="bg-gray-100"
+          onChange={handleSortChange}
+          value={sortOption}
+        >
           <option value="">Default</option>
           <option value="createdAt">Lastest</option>
           <option value="-createdAt">Oldest</option>
