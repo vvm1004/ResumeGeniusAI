@@ -61,7 +61,7 @@ const LayoutClient = () => {
       <div className={styles["content-app"]}>
         <Outlet context={[searchTerm, setSearchTerm]} />
       </div>
-      <Footer />
+      {!isViewResumePage && <Footer />}
     </div>
   );
 };
