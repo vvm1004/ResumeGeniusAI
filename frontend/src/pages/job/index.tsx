@@ -1,6 +1,7 @@
 import SearchClient from "@/components/client/search.client";
 import JobCard from "@/components/client/card/job.card";
 import CompanyList from "@/components/client/CompanyList.client";
+import SuggestJobCard from "@/components/client/card/suggestJob.card";
 
 const ClientJobPage = (props: any) => {
   return (
@@ -10,6 +11,7 @@ const ClientJobPage = (props: any) => {
       </div>
       <div className="bg-gray-100">
         <JobCard />
+        <SuggestJobCard />
       </div>
       {/* <div className="bg-gray-100">
         <JobCard />
