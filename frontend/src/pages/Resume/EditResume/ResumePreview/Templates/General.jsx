@@ -5,7 +5,7 @@ const General = ({ data, selectedColor }) => {
     <div className="flex flex-row border border-gray-300 min-h-screen w-full">
       {/* Sidebar */}
       <div
-        className="bg-blue-900 text-white p-6 flex flex-col w-1/3"
+        className="bg-blue-900 text-white p-6 flex flex-col w-1/3 flex-shrink-0"
         style={{
           background:
             data?.settings?.colors?.background?.length > 0
@@ -183,6 +183,10 @@ const General = ({ data, selectedColor }) => {
                 <p className="italic text-gray-600 break-words">
                   {exp.position} ({exp.date})
                 </p>
+                <p className="mb-2 text-gray-700 break-words">
+                  {exp.description}
+                </p>{" "}
+                {/* Mô tả năng lực */}
                 <ul className="list-disc ml-4">
                   {exp.responsibilities.map((res, index) => (
                     <li key={index} className="break-words">
@@ -210,6 +214,10 @@ const General = ({ data, selectedColor }) => {
                   {edu.institution} ({edu.date})
                 </p>
                 <p className="break-words">GPA: {edu.gpa}</p>
+                <p className="mb-2 text-gray-700 break-words">
+                  {edu.description}
+                </p>{" "}
+                {/* Mô tả năng lực */}
               </div>
             ))}
           </div>
@@ -224,7 +232,10 @@ const General = ({ data, selectedColor }) => {
             {data.projects.map((project) => (
               <div key={project._id} className="mb-4">
                 <p className="font-bold break-words">{project.title}</p>
-                <p className="break-words">{project.description}</p>
+                <p className="mb-2 text-gray-700 break-words">
+                  {project.description}
+                </p>{" "}
+                {/* Mô tả năng lực */}
                 <p className="break-words">
                   Technologies: {project.technologies}
                 </p>
