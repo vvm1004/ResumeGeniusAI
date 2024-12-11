@@ -1,0 +1,104 @@
+/* General styles for the registration page */
+.register-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f7f7f7;
+}
+
+.terms-content {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.terms-content h2 {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    color: #222831;
+    margin-bottom: 20px;
+}
+
+.terms-content p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.terms-content ul {
+    list-style-type: none;
+    margin-left: 20px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.terms-content ul li {
+    margin-bottom: 10px;
+}
+
+/* Registration form styles */
+.form-container {
+    max-width: 500px;
+    width: 100%;
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #222831;
+}
+
+.register-form {
+    max-width: 100%;
+}
+
+/* Style for input fields */
+.ant-input {
+    border-radius: 8px;
+    height: 40px;
+    font-size: 16px;
+}
+
+/* Style for the submit button */
+.register-form-button {
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: #fff;
+}
+
+.register-form-button:hover {
+    background-color: #0056b3;
+}
+
+/* Style for the checkbox */
+.ant-checkbox-wrapper {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Style for the anchor tag for the terms link */
+.register-form .ant-checkbox-wrapper a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.register-form .ant-checkbox-wrapper a:hover {
+    color: #0056b3;
+}

@@ -26,6 +26,7 @@ import { JobNotificationGateway } from './websocket/JobNotificationGateway';
 import { JobNotificationService } from './websocket/JobNotificationService';
 import { JobNotificationModule } from './websocket/JobNotificationModule';
 import { NotificationsModule } from './notifications/notifications.module';
+import { HrRegistrationModule } from './hr-registration/hr-registration.module';
 
 
 @Module({
@@ -87,8 +88,11 @@ import { NotificationsModule } from './notifications/notifications.module';
     ResumeRegistrationModule,
 
     JobNotificationModule,
-   
+
     NotificationsModule,
+
+    HrRegistrationModule,
+
 
 
   ],

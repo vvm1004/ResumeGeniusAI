@@ -1,0 +1,70 @@
+/* Ensure the container fills the entire screen */
+.thank-you-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    background: linear-gradient(45deg, #6a11cb, #2575fc); /* Background gradient */
+    color: white;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+    overflow: hidden; /* Hide overflow if content exceeds screen */
+}
+
+/* Title animation (fade in effect) */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Style the text */
+.thank-you-container h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.thank-you-container p {
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+/* Button styling */
+.thank-you-button {
+    background-color: #2575fc;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.25rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.thank-you-button:hover {
+    background-color: #6a11cb;
+}
+
+/* Add animation for the button */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.thank-you-button {
+    animation: bounce 1.5s ease infinite;
+    
+}

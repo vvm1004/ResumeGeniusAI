@@ -221,7 +221,11 @@ function ProfessionalSummary() {
   };
 
 
+  const handleTextChange = (text) => {
+    if (isCheckSpell) return;
+    handleEditorChange(text.replace(/<\/?p>/g, ''));
 
+  }
 
 
 
@@ -345,7 +349,7 @@ function ProfessionalSummary() {
               setIndex(index);
               setText(content);
               setEditorValues(content);
-
+              handleTextChange(content)
             }}
           />
         </div>

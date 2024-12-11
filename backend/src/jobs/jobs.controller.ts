@@ -70,6 +70,6 @@ export class JobsController {
   count() {
     return this.jobsService.getJobCount();
   }
-  
-  
+
+
 }

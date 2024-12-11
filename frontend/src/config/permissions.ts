@@ -35,7 +35,15 @@ export const ALL_PERMISSIONS = {
         UPDATE: { method: "PATCH", apiPath: '/api/v1/users/:id', module: "USERS" },
         DELETE: { method: "DELETE", apiPath: '/api/v1/users/:id', module: "USERS" },
     },
-}
+    HR_REGISTRATION: {
+        CREATE: { method: "POST", apiPath: '/api/v1/hr-registration', module: "HR_REGISTRATION" },
+        GET_ALL: { method: "GET", apiPath: '/api/v1/hr-registration', module: "HR_REGISTRATION" },
+        GET_BY_USER: { method: "GET", apiPath: '/api/v1/hr-registration/:userId', module: "HR_REGISTRATION" },
+        UPDATE_STATUS: { method: "PATCH", apiPath: '/api/v1/hr-registration/:userId', module: "HR_REGISTRATION" },
+        DELETE: { method: "DELETE", apiPath: '/api/v1/hr-registration/:userId', module: "HR_REGISTRATION" },
+        
+    }
+};
 
 export const ALL_MODULES = {
     AUTH: 'AUTH',
@@ -47,5 +55,6 @@ export const ALL_MODULES = {
     ROLES: 'ROLES',
     USERS: 'USERS',
     SUBSCRIBERS: 'SUBSCRIBERS',
-    TEMPLATE: 'TEMPLATE'
-}
+    TEMPLATE: 'TEMPLATE',
+    HR_REGISTRATION: 'HR_REGISTRATION',  
+};

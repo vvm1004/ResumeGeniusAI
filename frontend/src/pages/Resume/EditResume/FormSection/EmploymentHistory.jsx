@@ -317,6 +317,12 @@ function EmploymentHistory() {
 
   };
 
+  const handleTextChange = (text) => {
+    if (isCheckSpell) return;
+    console.log(text)
+    handleUpdateExperience(index, { description: text.replace(/<\/?p>/g, '') });
+
+  }
 
 
   return (
@@ -587,6 +593,7 @@ function EmploymentHistory() {
                           newValues[index] = content; // Cập nhật giá trị tương ứng
                           return newValues;
                         });
+                        handleTextChange(content);
                       }}
                     />
 

@@ -69,7 +69,12 @@ const LayoutAdmin = () => {
                 item.apiPath === ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE.apiPath
                 && item.method === ALL_PERMISSIONS.USERS.GET_PAGINATE.method
             )
+            const viewHrRegistration = permissions.find(item =>
+                // item.apiPath === ALL_PERMISSIONS.HR_REGISTRATION.GET_ALL.apiPath
+                // && 
+                item.method === ALL_PERMISSIONS.USERS.GET_PAGINATE.method
 
+            )
             const full = [
                 {
                     label: <Link to='/admin'>Dashboard</Link>,
@@ -106,6 +111,11 @@ const LayoutAdmin = () => {
                 ...(viewRole ? [{
                     label: <Link to='/admin/role'>Role</Link>,
                     key: '/admin/role',
+                    icon: <ExceptionOutlined />
+                }] : []),
+                ...(viewHrRegistration ? [{
+                    label: <Link to=''>HR Registration</Link>,
+                    key: '',
                     icon: <ExceptionOutlined />
                 }] : []),
 

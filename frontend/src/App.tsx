@@ -39,7 +39,8 @@ import ViewResume from "./pages/Resume/view";
 import MyResumes from "./pages/Resume/resumes";
 import AccountManagement from "./pages/Resume/account-management";
 import SpreadCV from "./pages/Resume/spread-cv";
-
+import HrRegister from "./pages/hr_register";
+import ThankYouPage from "./pages/hr_register/ThankYouPage";
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
@@ -61,7 +62,7 @@ const LayoutClient = () => {
       <div className={styles["content-app"]}>
         <Outlet context={[searchTerm, setSearchTerm]} />
       </div>
-      {!isViewResumePage && <Footer />}
+      <Footer />
     </div>
   );
 };
@@ -92,6 +93,7 @@ export default function App() {
         { index: true, element: <HomePage /> },
         { path: "jobsAll", element: <ClientJobPage /> },
         { path: "jobs", element: <JobSearch /> },
+
         { path: "jobs/:id", element: <ClientJobDetailPage /> },
         { path: "company", element: <ClientCompanyPage /> },
         { path: "company/:id", element: <ClientCompanyDetailPage /> },
@@ -108,7 +110,8 @@ export default function App() {
         { path: "resumes/edit/:id", element: <EditResume /> },
         { path: "resumes/view/:id", element: <ViewResume /> },
         { path: "resumes/template", element: <SelectTemplate /> },
-
+        { path: "hr_register", element: <HrRegister /> },
+        { path: "thank-you-register", element: <ThankYouPage /> },
         // { path: "account-management", element: <AccountManagement /> },
       ],
     },

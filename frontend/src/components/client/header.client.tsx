@@ -18,12 +18,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { callLogout } from "@/config/api";
 import { setLogoutAction } from "@/redux/slice/accountSlide";
 import ManageAccount from "./modal/manage.account";
-import { ConfigProvider, Menu, Dropdown, Space, Avatar, Drawer, Badge ,Modal} from "antd";
+import { ConfigProvider, Menu, Dropdown, Space, Avatar, Drawer, Badge, Modal } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import "./header.css"
 import { useSocket } from '../../hook/useSocket';  // Đảm bảo bạn đã tạo đúng đường dẫn
 import { useSelector } from "react-redux";
 import { getUnreadNotifications, markNotificationAsRead } from "./handleContent";
+import Logo from '../../assets/LogoIcon-removebg-preview.png';
 
 const items: MenuProps["items"] = [
   {
@@ -36,11 +37,11 @@ const items: MenuProps["items"] = [
     key: "/jobSearch",
     icon: <CodeOutlined />,
   },
-  {
-    label: <Link to={"/job"}>Job Application</Link>,
-    key: "/job",
-    icon: <CodeOutlined />,
-  },
+  // {
+  //   label: <Link to={"/job"}>Job Application</Link>,
+  //   key: "/job",
+  //   icon: <CodeOutlined />,
+  // },
   {
     label: <Link to={"/company"}>Top IT Companies</Link>,
     key: "/company",
@@ -210,13 +211,25 @@ const Header = (props: any) => {
                   },
                 }}
               >
+                <div className="logoContent" >
+                  <img className="logo" src={Logo} alt="Logo" />
+                  {isAuthenticated === true && user.role.name == "USER" && (
+                    <Link className="hr_register" to="/hr_register">
+                      Register Become Human Resource ?
+                    </Link>
+                  )}
+
+                </div>
+
                 <Menu
                   onClick={onClick}
-                  className="flex-1 ml-32"
+                  className="flex-1"  // Loại bỏ margin-left trong className
+                  style={{ marginLeft: '5%' }}  // Sử dụng style trực tiếp để canh lệch trái
                   selectedKeys={[current]}
                   mode="horizontal"
                   items={items}
                 />
+
               </ConfigProvider>
 
               <Dropdown
@@ -261,6 +274,7 @@ const Header = (props: any) => {
                   </div>
                 }
               >
+
                 <Badge count={notifications.length} dot>
                   <BellOutlined
                     style={{
@@ -280,7 +294,7 @@ const Header = (props: any) => {
 
               <div className={`${styles["extra"]} mr-8`}>
                 {isAuthenticated === false ? (
-                  <Link to={"/login"}>Đăng Nhập</Link>
+                  <Link to={"/login"}>Login</Link>
                 ) : (
                   <Dropdown
                     menu={{ items: itemsDropdown }}
@@ -296,14 +310,14 @@ const Header = (props: any) => {
                 )}
               </div>
             </div>
-          </div>
+          </div >
         ) : (
           <div className={styles["header-mobile"]}>
             <span>Your APP</span>
             <MenuFoldOutlined onClick={() => setOpenMobileMenu(true)} />
           </div>
         )}
-      </div>
+      </div >
       <Drawer
         title="Chức năng"
         placement="right"

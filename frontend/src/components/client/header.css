@@ -63,3 +63,34 @@
 .notification-item:hover {
   background-color: #f0f0f0;
 }
+
+div .logo {
+  height: 25%;
+  width: 24%;
+  align-items: center;
+  margin: 0;
+  padding-left: 30px;
+  filter: brightness(200%);
+
+}
+
+.logoContent {
+  display: flex;
+  align-items: center;
+  width: 25%;
+}
+
+div .hr_register {
+  color: white;
+  font-style: italic;
+  opacity: 0.6;
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: small;
+  margin-left: 10px;
+}
+
+.hr_register:hover {
+  opacity: 1;
+  /* Khi hover thì làm rõ hơn */
+}
