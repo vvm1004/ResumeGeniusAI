@@ -9,10 +9,15 @@ import mongoose from 'mongoose';
 import aqp from 'api-query-params';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
+import { ResumeRegistration, ResumeRegistrationDocument } from 'src/resume-registration/schemas/resume-registration.schema';
 
 @Injectable()
 export class JobsService {
-  constructor(@InjectModel(Job.name) private jobModel: SoftDeleteModel<JobDocument>, private readonly httpService: HttpService) { }
+  constructor(
+    @InjectModel(Job.name) private jobModel: SoftDeleteModel<JobDocument>, private readonly httpService: HttpService,
+    @InjectModel(ResumeRegistration.name) private resumeRegistrationModel: SoftDeleteModel<ResumeRegistrationDocument>,
+
+  ) { }
 
   async create(createJobDto: CreateJobDto, user: IUser) {
     let newJob = await this.jobModel.create({
@@ -156,43 +161,47 @@ export class JobsService {
     }
 
   }
-  async findMatchingJobs(): Promise<Job[]> {
-    const jobs = await this.jobModel.aggregate([
-      {
-        $lookup: {
-          from: 'resumeregistrations', // Tên collection của ResumeRegistration trong MongoDB
-          localField: 'skills', // Trường skills trong Job
-          foreignField: 'resumeSkill', // Trường resumeSkill trong ResumeRegistration
-          as: 'matchedResumes', // Kết quả nối sẽ được lưu vào mảng matchedResumes
-        },
-      },
-      {
-        $match: {
-          'matchedResumes.resumeTitle': { $exists: true }, // Lọc các công việc có resumeTitle
-        },
-      },
-      {
-        $project: {
-          name: 1,
-          skills: 1,
-          company: 1,
-          location: 1,
-          salary: 1,
-          quantity: 1,
-          level: 1,
-          description: 1,
-          startDate: 1,
-          endDate: 1,
-          isActive: 1,
-          updatedBy: 1,
-          createdBy: 1,
-          deletedBy: 1,
-          createdAt: 1,
-          updatedAt: 1,
-        },
-      },
-    ]);
-
-    return jobs;
+  async findMatchingJobsByUserId(userId: string) {
+    // Lấy danh sách resume từ userId
+    const resumes = await this.resumeRegistrationModel.find({ userId });
+    if (!resumes || resumes.length === 0) {
+      throw new Error('No resumes found for this user');
+    }
+  
+    // Tạo tập hợp tất cả kỹ năng và tiêu đề từ ResumeRegistration
+    const skillValues = new Set<string>();
+    const titles = new Set<string>();
+  
+    resumes.forEach((resume) => {
+      resume.resumeSkill.forEach((skill) => skillValues.add(skill.value));
+      titles.add(resume.resumeTitle);
+    });
+  
+    // Chuyển skills và titles thành regex để không phân biệt hoa thường
+    const skillRegexes = Array.from(skillValues).map((skill) => new RegExp(skill, 'i'));
+    const titleRegexes = Array.from(titles).map((title) => new RegExp(title, 'i'));
+  
+    // Lọc các job theo skills hoặc titles
+    const matchingJobs = await this.jobModel.find({
+      $or: [
+        { skills: { $in: skillRegexes } }, // Lọc theo skills (không phân biệt hoa thường)
+        { name: { $in: titleRegexes } },  // Lọc theo tên job (không phân biệt hoa thường)
+      ],
+    }).limit(4); // Giới hạn tối đa 4 công việc matching
+  
+    const matchingJobCount = matchingJobs.length;
+  
+    // Nếu số lượng matchingJobs nhỏ hơn 4, bổ sung các job ngẫu nhiên
+    if (matchingJobCount < 4) {
+      const randomJobs = await this.jobModel.aggregate([
+        { $match: { _id: { $nin: matchingJobs.map((job) => job._id) } } }, // Loại bỏ các job đã matching
+        { $sample: { size: 4 - matchingJobCount } }, // Lấy thêm công việc ngẫu nhiên để tổng là 4
+      ]);
+  
+      return [...matchingJobs, ...randomJobs]; // Ghép danh sách matching jobs và random jobs
+    }
+  
+    return matchingJobs; // Trả về danh sách matching nếu đủ 4 job
   }
+  
 }

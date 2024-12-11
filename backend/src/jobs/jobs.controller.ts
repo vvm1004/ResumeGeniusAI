@@ -30,7 +30,11 @@ export class JobsController {
   ) {
     return this.jobsService.findAll(+currentPage, +limit, qs);
   }
-
+  @Public()
+  @Get('matching-by-user')
+  async getMatchingJobsByUserId(@Query('userId') userId: string) {
+    return await this.jobsService.findMatchingJobsByUserId(userId);
+  }
   @Get('admin')
   @ResponseMessage('Fetch List Job with admin page')
   findAllWithAdminPage(
@@ -66,4 +70,6 @@ export class JobsController {
   count() {
     return this.jobsService.getJobCount();
   }
+  
+  
 }

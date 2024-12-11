@@ -27,7 +27,7 @@ const General = ({ data, selectedColor }) => {
             className="rounded-full w-32 h-32 mb-4 border-4 border-white"
           />
           <h2 className="text-xl font-bold break-words">
-            {data.personalInformation?.name || "Họ và Tên"}
+            {data.personalInformation?.name || "Full Name"}
           </h2>
           <p className="break-words">
             {data.personalInformation?.email || "Email"}
@@ -37,16 +37,16 @@ const General = ({ data, selectedColor }) => {
         {/* Liên hệ */}
         <div className="mb-6">
           <h3 className="font-bold text-lg mb-3 border-b-2 border-white">
-            Liên hệ
+            Contact Information
           </h3>
           {data.personalInformation?.phone && (
             <p className="break-words">
-              Điện thoại: {data.personalInformation.phone}
+              Phone: {data.personalInformation.phone}
             </p>
           )}
           {data.personalInformation?.address && (
             <p className="break-words">
-              Địa chỉ: {data.personalInformation.address}
+              Address: {data.personalInformation.address}
             </p>
           )}
           {data.personalInformation?.github && (
@@ -65,12 +65,12 @@ const General = ({ data, selectedColor }) => {
         {data.skills?.length > 0 && (
           <div className="mb-6">
             <h3 className="font-bold text-lg mb-3 border-b-2 border-white">
-              Kỹ năng
+              Skills
             </h3>
             <ul className="list-disc w-full max-w-full">
               {data.skills.map((skill) => (
                 <li
-                  key={skill._id.$oid}
+                  key={skill._id}
                   className="break-words overflow-wrap-anywhere w-full"
                 >
                   {skill.title}
@@ -87,15 +87,76 @@ const General = ({ data, selectedColor }) => {
         {data.languages?.length > 0 && (
           <div>
             <h3 className="font-bold text-lg mb-3 border-b-2 border-white">
-              Ngôn ngữ
+              Languages
             </h3>
             <ul className="list-disc ml-4">
               {data.languages.map((lang) => (
-                <li key={lang._id.$oid} className="break-words">
+                <li key={lang._id} className="break-words">
                   {lang.title} - {lang.level}
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Awards */}
+        {data.awards?.length > 0 && (
+          <div className="mb-6">
+            <h3 className="font-bold text-lg mb-3 border-b-2 border-white">
+              Awards
+            </h3>
+            <ul className="list-disc ml-4">
+              {data.awards.map((award, index) => (
+                <li key={index} className="break-words">
+                  {award.title} - {award.issuer} ({award.date})
+                  <p className="break-words">{award.description}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Certifications */}
+        {data.certifications?.length > 0 && (
+          <div className="mb-6">
+            <h3 className="font-bold text-lg mb-3 border-b-2 border-white">
+              Certifications
+            </h3>
+            <ul className="list-disc ml-4">
+              {data.certifications.map((cert, index) => (
+                <li key={index} className="break-words">
+                  {cert.name} - {cert.year}
+                  {cert.link && (
+                    <p className="break-words">
+                      Link:{" "}
+                      <a href={cert.link} className="text-blue-600">
+                        {cert.link}
+                      </a>
+                    </p>
+                  )}
+                  <p className="break-words">{cert.details}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Custom Fields */}
+        {data.customFields?.length > 0 && (
+          <div className="mb-6">
+            {data.customFields.map((field, index) => (
+              <div key={index} className="mb-4">
+                <h3 className="font-bold text-lg mb-3 border-b-2 border-white">
+                  {field.title}{" "}
+                  {/* This will display the title of each custom field */}
+                </h3>
+                <ul className="list-disc ml-4">
+                  <li className="break-words">
+                    {field.value} ({field.date})
+                  </li>
+                </ul>
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -104,20 +165,20 @@ const General = ({ data, selectedColor }) => {
       <div className="bg-white p-6 flex-grow">
         {/* Tiêu đề và Thông tin chung */}
         <h1 className="text-3xl font-bold mb-4 break-words">
-          {data.title || "Tiêu đề CV"}
+          {data.title || "CV Title"}
         </h1>
         <h2 className="text-xl text-gray-600 mb-6 break-words">
-          {data.summary || "Tóm tắt thông tin"}
+          {data.summary || "Summary Information"}
         </h2>
 
         {/* Kinh nghiệm làm việc */}
         {data.experience?.length > 0 && (
           <div className="mb-6">
             <h3 className="font-bold text-lg mb-3 border-b-2 border-blue-900">
-              Kinh nghiệm làm việc
+              Work Experience
             </h3>
             {data.experience.map((exp) => (
-              <div key={exp._id.$oid} className="mb-4">
+              <div key={exp._id} className="mb-4">
                 <p className="font-bold break-words">{exp.company}</p>
                 <p className="italic text-gray-600 break-words">
                   {exp.position} ({exp.date})
@@ -138,10 +199,10 @@ const General = ({ data, selectedColor }) => {
         {data.education?.length > 0 && (
           <div className="mb-6">
             <h3 className="font-bold text-lg mb-3 border-b-2 border-blue-900">
-              Học vấn
+              Education
             </h3>
             {data.education.map((edu) => (
-              <div key={edu._id.$oid} className="mb-3">
+              <div key={edu._id} className="mb-3">
                 <p className="font-bold break-words">
                   {edu.degree} - {edu.major}
                 </p>
@@ -158,13 +219,15 @@ const General = ({ data, selectedColor }) => {
         {data.projects?.length > 0 && (
           <div className="mb-6">
             <h3 className="font-bold text-lg mb-3 border-b-2 border-blue-900">
-              Dự án
+              Projects
             </h3>
             {data.projects.map((project) => (
-              <div key={project._id.$oid} className="mb-4">
+              <div key={project._id} className="mb-4">
                 <p className="font-bold break-words">{project.title}</p>
                 <p className="break-words">{project.description}</p>
-                <p className="break-words">Công nghệ: {project.technologies}</p>
+                <p className="break-words">
+                  Technologies: {project.technologies}
+                </p>
                 {project.githubLink && (
                   <p className="break-words">
                     GitHub:{" "}
@@ -182,15 +245,15 @@ const General = ({ data, selectedColor }) => {
         {data.references?.length > 0 && (
           <div>
             <h3 className="font-bold text-lg mb-3 border-b-2 border-blue-900">
-              Người tham khảo
+              References
             </h3>
             {data.references.map((ref) => (
-              <div key={ref._id.$oid} className="mb-3">
+              <div key={ref._id} className="mb-3">
                 <p className="font-bold break-words">{ref.name}</p>
                 <p className="break-words">
-                  {ref.position} tại {ref.organization}
+                  {ref.position} at {ref.organization}
                 </p>
-                <p className="break-words">Liên hệ: {ref.contact}</p>
+                <p className="break-words">Contact: {ref.contact}</p>
               </div>
             ))}
           </div>
