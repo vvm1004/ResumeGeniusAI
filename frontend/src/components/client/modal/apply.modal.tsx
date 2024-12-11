@@ -70,15 +70,10 @@ const ApplyModal = (props: IProps) => {
   }, [user._id, access_token]);
 
   const handleOkButton = async () => {
-    if (!urlCV && !libraryCV) {
+    if (!urlCV && !libraryCV && isAuthenticated) {
       message.error("Please upload or select CV from library!");
       return;
     }
-
-    // if (!urlCV && isAuthenticated) {
-    //   message.error("Please upload CV!");
-    //   return;
-    // }
 
     if (!isAuthenticated) {
       setIsModalOpen(false);
@@ -145,7 +140,7 @@ const ApplyModal = (props: IProps) => {
         // title="Apply for Job"
         style={{ padding: 0 }}
         title={
-          <div className="bg-green-500 p-2 rounded-md text-white font-bold text-center text-xl">
+          <div className="bg-blue-500 p-2 rounded-md text-white font-bold text-center text-xl">
             Apply for Job
           </div>
         }

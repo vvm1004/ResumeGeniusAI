@@ -14,6 +14,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import { FaAddressBook, FaRegBell, FaRegClock, FaUser } from "react-icons/fa";
 import { IoIosSend, IoMdHeartEmpty } from "react-icons/io";
 import { BsBoxArrowInUpRight } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 dayjs.extend(relativeTime);
 
 const ClientJobDetailPage = (props: any) => {
@@ -22,6 +23,7 @@ const ClientJobDetailPage = (props: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  const navigate = useNavigate();
   let location = useLocation();
   let params = new URLSearchParams(location.search);
   const id = params?.get("id");
@@ -36,8 +38,8 @@ const ClientJobDetailPage = (props: any) => {
     };
     const fetchCompanyDetail = async () => {
       if (jobDetail?.company?._id) {
-        // const res = await callFetchCompanyById(jobDetail.company._id);
-        const res = await callFetchCompanyById("670bd5024c872eb686978a2f");
+        const res = await callFetchCompanyById(jobDetail.company._id);
+        // const res = await callFetchCompanyById("670bd5024c872eb686978a2f");
         setCompanyDetail(res.data || null);
       }
     };
@@ -147,6 +149,10 @@ const ClientJobDetailPage = (props: any) => {
     );
   };
 
+  const handleClick = (name: string, id: string) => {
+    navigate(`/company/${name}?id=${id}`);
+  };
+
   return (
     <>
       <div className="">
@@ -169,7 +175,7 @@ const ClientJobDetailPage = (props: any) => {
                 <Breadcrumb.Item key={index}>
                   {breadcrumb.path ? (
                     <Link
-                      style={{ color: "green", fontWeight: "600" }}
+                      style={{ color: "blue", fontWeight: "600" }}
                       className="hover:underline"
                       to={breadcrumb.path}
                     >
@@ -211,7 +217,7 @@ const ClientJobDetailPage = (props: any) => {
                             <RiMoneyDollarCircleLine
                               className="mr-2"
                               size={40}
-                              color="green"
+                              color="blue"
                             />
                           </div>
                           <div>
@@ -224,7 +230,7 @@ const ClientJobDetailPage = (props: any) => {
                             <IoLocationSharp
                               className="mr-2"
                               size={40}
-                              color="green"
+                              color="blue"
                             />
                           </div>
                           <div>
@@ -239,7 +245,7 @@ const ClientJobDetailPage = (props: any) => {
                             <FaAddressBook
                               className="mr-2"
                               size={40}
-                              color="green"
+                              color="blue"
                             />
                           </div>
                           <div>
@@ -260,7 +266,7 @@ const ClientJobDetailPage = (props: any) => {
                       </Col>
                       <Col
                         span={18}
-                        className="mt-4 mr-2 p-2 bg-green-500 flex justify-center items-center rounded-md cursor-pointer hover:bg-green-600"
+                        className="mt-4 mr-2 p-2 bg-blue-500 flex justify-center items-center rounded-md cursor-pointer hover:bg-blue-600"
                         onClick={() => setIsModalOpen(true)}
                       >
                         <button className="flex justify-center items-center font-bold text-white text-md">
@@ -270,7 +276,7 @@ const ClientJobDetailPage = (props: any) => {
                       </Col>
                       <Col
                         span={5}
-                        className="mt-4 p-2 text-lg rounded-sm font-semibold flex justify-center items-center cursor-pointer border-1 border-green-400 text-green-600 hover:border-green-600"
+                        className="mt-4 p-2 text-lg rounded-sm font-semibold flex justify-center items-center cursor-pointer border-1 border-blue-400 text-blue-600 hover:border-blue-600"
                       >
                         <IoMdHeartEmpty className="mr-2" size={20} />
                         Save news
@@ -284,10 +290,10 @@ const ClientJobDetailPage = (props: any) => {
                         span={24}
                         className="p-2 flex justify-between items-center"
                       >
-                        <div className="pl-2 border-l-8 border-l-green-600 text-xl font-bold">
+                        <div className="pl-2 border-l-8 border-l-blue-600 text-xl font-bold">
                           Job posting details
                         </div>
-                        <button className="p-2 text-md rounded-sm font-semibold flex items-center cursor-pointer border-1 border-green-400 text-green-600 hover:border-green-600">
+                        <button className="p-2 text-md rounded-sm font-semibold flex items-center cursor-pointer border-1 border-blue-400 text-blue-600 hover:border-blue-600">
                           <FaRegBell className="mr-2" />
                           Send me similar jobs
                         </button>
@@ -352,7 +358,7 @@ const ClientJobDetailPage = (props: any) => {
                         {companyDetail?.address ? companyDetail?.address : ""}
                       </span>
                     </Col>
-                    <Col className="flex justify-center items-center text-green-600 text-md font-bold hover:underline">
+                    <Col className="flex justify-center items-center text-blue-600 text-md font-bold hover:underline" onClick={() => handleClick(companyDetail?.name || "", companyDetail?._id || "")}>
                       View company page{" "}
                       <BsBoxArrowInUpRight className="ml-2" size={18} />
                     </Col>
