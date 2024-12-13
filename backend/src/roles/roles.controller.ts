@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -6,11 +15,10 @@ import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { ApiTags } from '@nestjs/swagger';
 
-
 @ApiTags('roles')
 @Controller('roles')
 export class RolesController {
-  constructor(private readonly rolesService: RolesService) { }
+  constructor(private readonly rolesService: RolesService) {}
 
   @Post()
   @ResponseMessage('Create a new role')
@@ -22,9 +30,9 @@ export class RolesController {
   @Public()
   @ResponseMessage('Fetch List Role with paginate')
   findAll(
-    @Query("current") currentPage: string,
-    @Query("pageSize") limit: string,
-    @Query() qs: string
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
+    @Query() qs: string,
   ) {
     return this.rolesService.findAll(+currentPage, +limit, qs);
   }
@@ -41,11 +49,10 @@ export class RolesController {
   update(
     @Param('id') id: string,
     @Body() updatePermissionDto: UpdateRoleDto,
-    @User() user: IUser
+    @User() user: IUser,
   ) {
     return this.rolesService.update(id, updatePermissionDto, user);
   }
-
 
   @ResponseMessage('Delete a role')
   @Delete(':id')

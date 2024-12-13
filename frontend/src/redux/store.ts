@@ -1,16 +1,13 @@
-import {
-  Action,
-  configureStore,
-  ThunkAction,
-} from '@reduxjs/toolkit';
-import accountReducer from './slice/accountSlide';
-import companyReducer from './slice/companySlide';
-import userReducer from './slice/userSlide';
-import jobReducer from './slice/jobSlide';
-import resumeReducer from './slice/resumeSlide';
-import permissionReducer from './slice/permissionSlide';
-import roleReducer from './slice/roleSlide';
-import adminJobReducer from './slice/jobSlideAdmin';
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import accountReducer from "./slice/accountSlide";
+import companyReducer from "./slice/companySlide";
+import userReducer from "./slice/userSlide";
+import jobReducer from "./slice/jobSlide";
+import resumeReducer from "./slice/resumeSlide";
+import permissionReducer from "./slice/permissionSlide";
+import roleReducer from "./slice/roleSlide";
+import adminJobReducer from "./slice/jobSlideAdmin";
+import HrRegisterReducer from "./slice/hrRegistrationSlide";
 
 export const store = configureStore({
   reducer: {
@@ -21,10 +18,10 @@ export const store = configureStore({
     resume: resumeReducer,
     permission: permissionReducer,
     role: roleReducer,
-    adminJob: adminJobReducer
+    adminJob: adminJobReducer,
+    HrRegister: HrRegisterReducer,
   },
 });
-
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

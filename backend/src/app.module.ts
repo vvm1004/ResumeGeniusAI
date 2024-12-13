@@ -28,14 +28,15 @@ import { JobNotificationModule } from './websocket/JobNotificationModule';
 import { NotificationsModule } from './notifications/notifications.module';
 import { HrRegistrationModule } from './hr-registration/hr-registration.module';
 
-
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 10,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     //  MongooseModule.forRoot('mongodb://localhost:27017/Job_Finding'),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -44,7 +45,7 @@ import { HrRegistrationModule } from './hr-registration/hr-registration.module';
         connectionFactory: (connection) => {
           connection.plugin(softDeletePlugin);
           return connection;
-        }
+        },
       }),
       inject: [ConfigService],
     }),
@@ -81,9 +82,7 @@ import { HrRegistrationModule } from './hr-registration/hr-registration.module';
 
     ResumeUpgradeModule,
 
-
     TemplateModule,
-
 
     ResumeRegistrationModule,
 
@@ -92,9 +91,6 @@ import { HrRegistrationModule } from './hr-registration/hr-registration.module';
     NotificationsModule,
 
     HrRegistrationModule,
-
-
-
   ],
   controllers: [AppController],
   // providers: [AppService,
@@ -110,4 +106,4 @@ import { HrRegistrationModule } from './hr-registration/hr-registration.module';
     // JobNotificationService, // Đăng ký Service
   ],
 })
-export class AppModule { }
+export class AppModule {}

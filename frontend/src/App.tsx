@@ -23,6 +23,7 @@ import PermissionPage from "./pages/admin/permission";
 import ResumePage from "./pages/admin/resume";
 import RolePage from "./pages/admin/role";
 import UserPage from "./pages/admin/user";
+import Admin_hr_register_Page from "./pages/admin/hr_register";
 import { fetchAccount } from "./redux/slice/accountSlide";
 import LayoutApp from "./components/share/layout.app";
 import JobPage from "./pages/admin/job";
@@ -112,6 +113,7 @@ export default function App() {
         { path: "resumes/template", element: <SelectTemplate /> },
         { path: "hr_register", element: <HrRegister /> },
         { path: "thank-you-register", element: <ThankYouPage /> },
+
         // { path: "account-management", element: <AccountManagement /> },
       ],
     },
@@ -146,6 +148,14 @@ export default function App() {
           element: (
             <ProtectedRoute>
               <UserPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "manage_resgister_hr",
+          element: (
+            <ProtectedRoute>
+              <Admin_hr_register_Page />
             </ProtectedRoute>
           ),
         },
