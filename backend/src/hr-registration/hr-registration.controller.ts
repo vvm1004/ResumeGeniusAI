@@ -1,10 +1,11 @@
 // src/hr-registration/hr-registration.controller.ts
-import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, Query } from '@nestjs/common';
 import { HrRegistrationService } from './hr-registration.service';
 import { HrRegistration } from './schema/schema';
 import { ObjectId } from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import { Public, SkipCheckPermission } from 'src/decorator/customize';
+import aqp from 'api-query-params';
 @ApiTags('hr-registration')
 @Controller('hr-registration')
 export class HrRegistrationController {
@@ -31,14 +32,21 @@ export class HrRegistrationController {
             body.fullName,
             body.phone,
             body.address
-            
+
         );
     }
-
+    @Get('admin')
+    @Public()
     // Lấy tất cả đăng ký HR
-    @Get()
-    async getAllRegistrations() {
-        return this.hrRegistrationService.getAllRegistrations();
+    async getAllRegistrations(
+        @Query("current") currentPage: string,
+        @Query("pageSize") limit: string,
+        @Query() qs: string                       // Dùng AQP để xử lý các tham số tìm kiếm, lọc, v.v.
+    ) {
+        const queryParams = aqp(qs);  // Xử lý các tham số truy vấn
+
+        // Truyền phân trang và các tham số lọc/sắp xếp vào service
+        return this.hrRegistrationService.getAllRegistrations(+currentPage, +limit, qs);
     }
 
     // Lấy đăng ký HR theo userId
