@@ -1,5 +1,5 @@
 // src/hr-registration/hr-registration.service.ts
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { HrRegistration, HrRegistrationDocument } from './schema/schema';
