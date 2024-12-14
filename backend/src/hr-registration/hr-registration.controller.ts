@@ -7,12 +7,14 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { HrRegistrationService } from './hr-registration.service';
 import { HrRegistration } from './schema/schema';
 import { ObjectId } from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import { Public, SkipCheckPermission } from 'src/decorator/customize';
+import aqp from 'api-query-params';
 @ApiTags('hr-registration')
 @Controller('hr-registration')
 export class HrRegistrationController {
@@ -20,6 +22,7 @@ export class HrRegistrationController {
 
   // Tạo mới đăng ký HR
   @Post()
+  // @SkipCheckPermission()
   // @Public()
   async createRegistration(
     @Body()
@@ -41,24 +44,32 @@ export class HrRegistrationController {
       body.address,
     );
   }
-
-  // Lấy tất cả đăng ký HR
-  @Get()
+  @Get('admin')
   // @Public()
-  async getAllRegistrations() {
-    return this.hrRegistrationService.getAllRegistrations();
+  // Lấy tất cả đăng ký HR
+  async getAllRegistrations(
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
+    @Query() qs: string, // Dùng AQP để xử lý các tham số tìm kiếm, lọc, v.v.
+  ) {
+    const queryParams = aqp(qs); // Xử lý các tham số truy vấn
+
+    // Truyền phân trang và các tham số lọc/sắp xếp vào service
+    return this.hrRegistrationService.getAllRegistrations(
+      +currentPage,
+      +limit,
+      qs,
+    );
   }
 
   // Lấy đăng ký HR theo userId
   @Get(':userId')
-  // @Public()
   async getRegistrationByUserId(@Param('userId') userId: string) {
     return this.hrRegistrationService.findByUserId(userId);
   }
 
   // Cập nhật trạng thái đăng ký HR
   @Patch(':userId')
-  // @Public()
   async updateStatus(
     @Param('userId') userId: string,
     @Body()
@@ -76,7 +87,6 @@ export class HrRegistrationController {
 
   // Xóa đăng ký HR (soft delete)
   @Delete(':userId')
-  // @Public()
   async deleteRegistration(
     @Param('userId') userId: string,
     @Body() body: { deletedBy: { _id: ObjectId; email: string } },

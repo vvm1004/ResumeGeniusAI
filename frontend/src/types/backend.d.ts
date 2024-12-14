@@ -177,14 +177,18 @@ export interface ISubscribers {
 }
 export interface IHrRegistration {
   _id?: string;
-  userId: string;
-  company: string;
-  email: string;
-  fullName: string;
+  userId?: string;
+  company?: string;
+  email?: string;
+  fullName?: string;
   phone?: string;
   address?: string;
-  status: string;
+  status?: string;
 
+  updatedBy?: {
+    userId?: string;
+    email?: string;
+  };
   createdBy?: string;
   isDeleted?: boolean;
   deletedAt?: boolean | null;

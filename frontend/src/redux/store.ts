@@ -19,7 +19,7 @@ export const store = configureStore({
     permission: permissionReducer,
     role: roleReducer,
     adminJob: adminJobReducer,
-    HrRegister: HrRegisterReducer,
+    hrRegistration: HrRegisterReducer,
   },
 });
 

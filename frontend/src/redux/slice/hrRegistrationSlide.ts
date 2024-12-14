@@ -1,63 +1,119 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { callFetchHrRegister } from "@/config/api";
-import { IUser } from "@/types/backend";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { IHrRegistration } from "@/types/backend";
+import { callFetchHrRegister, callFetchHrRegisterById } from "@/config/api";
 
-// Define the shape of the state interface
-interface HrRegistrationState {
-  data: IUser[];
-  isLoading: boolean;
-  error: string | null;
+interface IState {
+  isFetching: boolean;
+  isFetchSingle: boolean;
+  meta: {
+    current: number;
+    pageSize: number;
+    pages: number;
+    total: number;
+  };
+  result: IHrRegistration[];
+  singleHrRegistration: IHrRegistration;
 }
 
-// Initial state
-const initialState: HrRegistrationState = {
-  data: [],
-  isLoading: false,
-  error: null,
-};
-
-// Async thunk to fetch HR registrations
-export const fetchHrRegister = createAsyncThunk(
-  "hrRegistration/fetchHrRegister",
-  async (_, thunkAPI) => {
-    try {
-      const response = await callFetchHrRegister();
-      return response.data; // Assuming `response.data` contains the array of users
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Something went wrong"
-      );
-    }
+export const fetchHr = createAsyncThunk(
+  "hrRegistration/fetchHrRegistration",
+  async ({ query }: { query: string }) => {
+    const response = await callFetchHrRegister(query);
+    return response;
   }
 );
 
-// Slice definition
-const hrRegistrationSlice = createSlice({
+export const fetchHrById = createAsyncThunk(
+  "hrRegistration/fetchHrRegistrationById",
+  async (id: string) => {
+    const response = await callFetchHrRegisterById(id);
+    return response;
+  }
+);
+
+const initialState: IState = {
+  isFetching: false,
+  isFetchSingle: false,
+  meta: {
+    current: 1,
+    pageSize: 10,
+    pages: 0,
+    total: 0,
+  },
+  result: [],
+  singleHrRegistration: {
+    _id: "",
+    userId: "",
+    company: "",
+    email: "",
+    fullName: "",
+    phone: "",
+    address: "",
+    status: "",
+  },
+};
+
+export const hrRegistrationSlice = createSlice({
   name: "hrRegistration",
   initialState,
-  reducers: {},
+  reducers: {
+    resetSingleHr: (state) => {
+      state.singleHrRegistration = {
+        _id: "",
+        userId: "",
+        company: "",
+        email: "",
+        fullName: "",
+        phone: "",
+        address: "",
+        status: "",
+      };
+    },
+  },
   extraReducers: (builder) => {
+    // fetchHr
     builder
-      .addCase(fetchHrRegister.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+      .addCase(fetchHr.pending, (state) => {
+        state.isFetching = true;
       })
-      .addCase(
-        fetchHrRegister.fulfilled,
-        (state, action: PayloadAction<IUser[]>) => {
-          state.isLoading = false;
-          state.data = action.payload;
+      .addCase(fetchHr.fulfilled, (state, action) => {
+        if (action.payload?.data) {
+          state.isFetching = false;
+          state.meta = action.payload.data.meta;
+          state.result = action.payload.data.result;
         }
-      )
-      .addCase(
-        fetchHrRegister.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.isLoading = false;
-          state.error = action.payload;
+      })
+      .addCase(fetchHr.rejected, (state, action) => {
+        state.isFetching = false;
+      });
+
+    // fetchHrById
+    builder
+      .addCase(fetchHrById.pending, (state) => {
+        state.isFetchSingle = true;
+        state.singleHrRegistration = {
+          _id: "",
+          userId: "",
+          company: "",
+          email: "",
+          fullName: "",
+          phone: "",
+          address: "",
+          status: "",
+        };
+      })
+      .addCase(fetchHrById.fulfilled, (state, action) => {
+        if (action.payload?.data) {
+          state.isFetchSingle = false;
+          state.singleHrRegistration = action.payload.data;
         }
-      );
+      })
+      .addCase(fetchHrById.rejected, (state, action) => {
+        state.isFetchSingle = false;
+      });
   },
 });
 
-// Export the reducer
+export const { resetSingleHr } = hrRegistrationSlice.actions;
+
 export default hrRegistrationSlice.reducer;

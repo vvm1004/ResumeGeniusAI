@@ -78,8 +78,9 @@ const LayoutAdmin = () => {
 
       const viewHrRegistration = permissions.find(
         (item) =>
-          item.apiPath === ALL_PERMISSIONS.HR_REGISTRATION.GET_ALL.apiPath &&
-          item.method === ALL_PERMISSIONS.HR_REGISTRATION.GET_ALL.method
+          item.apiPath ===
+            ALL_PERMISSIONS.HR_REGISTRATION.GET_PAGINATE.apiPath &&
+          item.method === ALL_PERMISSIONS.HR_REGISTRATION.GET_PAGINATE.method
       );
       const full = [
         {
@@ -196,7 +197,7 @@ const LayoutAdmin = () => {
       key: "logout",
     },
   ];
-
+  // console.log(permissions);
   return (
     <>
       <Layout style={{ minHeight: "100vh" }} className="layout-admin">

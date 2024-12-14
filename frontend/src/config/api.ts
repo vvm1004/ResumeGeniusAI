@@ -10,6 +10,7 @@ import {
   IPermission,
   IRole,
   ISubscribers,
+  IHrRegistration,
 } from "@/types/backend";
 import axios from "config/axios-customize";
 
@@ -344,12 +345,34 @@ export const callSendNewJob = (jobId: string) => {
   return axios.post<IBackendRes<any>>(`/api/v1/mail/send-job/${jobId}`);
 };
 
-export const callFetchHrRegister = () => {
-  return axios.get<IBackendRes<any>>(`/api/v1/hr-registration`);
+/**
+ * 
+Hr Registration
+ */
+export const callFetchHrRegister = (query: string) => {
+  return axios.get<IBackendRes<IModelPaginate<IHrRegistration>>>(
+    `/api/v1/hr-registration/admin?${query}`
+  );
 };
-export const callCreateHrRegister = () => {
-  return axios.post<IBackendRes<any>>(`/api/v1/hr-registration`);
+export const callFetchHrRegisterById = (id: string) => {
+  return axios.get<IBackendRes<IHrRegistration>>(
+    `/api/v1/hr-registration/${id}`
+  );
 };
-export const callUpdateHrRegister = (id: string) => {
-  return axios.post<IBackendRes<any>>(`/api/v1/hr-registration/${id}`);
+
+export const callUpdateHrRegister = (
+  id: string,
+  IHrRegistration: IHrRegistration
+) => {
+  return axios.patch<IBackendRes<IHrRegistration>>(
+    `/api/v1/hr-registration/${id}`,
+    {
+      ...IHrRegistration,
+    }
+  );
+};
+export const callDeleteHrRegister = (id: string) => {
+  return axios.delete<IBackendRes<IHrRegistration>>(
+    `/api/v1/hr-registration/${id}`
+  );
 };

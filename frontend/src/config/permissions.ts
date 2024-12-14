@@ -80,20 +80,25 @@ export const ALL_PERMISSIONS = {
     DELETE: { method: "DELETE", apiPath: "/api/v1/users/:id", module: "USERS" },
   },
   HR_REGISTRATION: {
-    GET_ALL: {
+    GET_PAGINATE: {
       method: "GET",
-      apiPath: "/api/v1/hr-registration",
-      module: "	HR_REGISTRATION",
+      apiPath: "/api/v1/hr-registration/admin",
+      module: "HR_REGISTRATION",
     },
     CREATE: {
       method: "POST",
       apiPath: "/api/v1/hr-registration",
-      module: "	HR_REGISTRATION",
+      module: "HR_REGISTRATION",
     },
     UPDATE: {
       method: "PATCH",
       apiPath: "/api/v1/hr-registration/:id",
-      module: "	HR_REGISTRATION",
+      module: "HR_REGISTRATION",
+    },
+    DELETE: {
+      method: "DELETE",
+      apiPath: "/api/v1/hr-registration/:id",
+      module: "HR_REGISTRATION",
     },
   },
 };
