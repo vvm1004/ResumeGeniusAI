@@ -4,8 +4,9 @@ import { HrRegistrationService } from './hr-registration.service';
 import { HrRegistration } from './schema/schema';
 import { ObjectId } from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
-import { Public, SkipCheckPermission } from 'src/decorator/customize';
+import { Public, SkipCheckPermission, User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
+import { IUser } from 'src/users/users.interface';
 @ApiTags('hr-registration')
 @Controller('hr-registration')
 export class HrRegistrationController {
@@ -56,12 +57,13 @@ export class HrRegistrationController {
     }
 
     // Cập nhật trạng thái đăng ký HR
-    @Patch(':userId')
+    @Patch(':id')
     async updateStatus(
-        @Param('userId') userId: string,
-        @Body() body: { status: 'approved' | 'rejected'; updatedBy: { _id: ObjectId; email: string } }
+        @Param('id') id: string,
+        @Body() body: { status: 'approved' | 'rejected'; },
+        @User() user: IUser
     ) {
-        return this.hrRegistrationService.updateStatus(userId, body.status, body.updatedBy);
+        return this.hrRegistrationService.updateStatus(id, body.status, user);
     }
 
     // Xóa đăng ký HR (soft delete)

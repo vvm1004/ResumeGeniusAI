@@ -1,5 +1,5 @@
 // src/hr-registration/hr-registration.service.ts
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { HrRegistration, HrRegistrationDocument } from './schema/schema';
@@ -21,6 +21,7 @@ export class HrRegistrationService {
         phone: string,
         address: string
     ) {
+
         try {
             // Create a new registration document
             const newRegistration = new this.hrRegistrationModel({
@@ -97,15 +98,26 @@ export class HrRegistrationService {
 
     // Cập nhật trạng thái đăng ký HR
     async updateStatus(
-        userId: string,
+        id: string,
         status: 'approved' | 'rejected',
-        updatedBy: { _id: mongoose.Schema.Types.ObjectId; email: string }
+        user: IUser
     ) {
-        return this.hrRegistrationModel.findOneAndUpdate(
-            { userId },
-            { status, updatedBy },
-            { new: true }
-        ).exec();
+
+        if (!mongoose.Types.ObjectId.isValid(id))
+            throw new BadRequestException(`Not found role with id ${id}`)
+
+        return await this.hrRegistrationModel.updateOne(
+            { _id: id },
+            {
+                status: status,
+
+                updatedBy: {
+                    _id: user._id,
+                    email: user.email
+                }
+            }
+        );
+
     }
 
     // Xóa một đăng ký HR (soft delete)

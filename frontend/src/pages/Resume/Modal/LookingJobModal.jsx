@@ -185,7 +185,7 @@
 
 // export default LookingJobModal;
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Checkbox, Spin } from 'antd';
+import { Modal, Button, Checkbox, Spin, notification } from 'antd';
 import axios from 'axios';
 import './LookingJobModal.css';
 import { forEach } from 'lodash';
@@ -345,7 +345,13 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
         }
     }, [user._id, show]);
 
-
+    const openNotification = (type, message) => {
+        notification[type]({
+            message: message,
+            placement: "topRight",
+            duration: 2,
+        });
+    };
     const fetchResumeRegistrations = async () => {
         try {
             setLoading(true);
@@ -456,28 +462,40 @@ const LookingJobModal = ({ show, handleClose, data = [], user }) => {
         //console.log("selectedIds:", selectedIds)
 
         // 1. Check selected resumes and create new ResumeRegistrations if necessary
-        for (const resume of selectedResumes) {
-            if (!checkOriginalResumeRegistrationExist(resume._id)) {
-                //console.log("checkOriginalResumeRegistrationExist(resume._id): ", checkOriginalResumeRegistrationExist(resume._id))
-                var skills = resume.skills;
-                await createResumeRegistration(resume._id, resume.title, skills);
+        try {
+
+
+            for (const resume of selectedResumes) {
+                if (!checkOriginalResumeRegistrationExist(resume._id)) {
+                    //console.log("checkOriginalResumeRegistrationExist(resume._id): ", checkOriginalResumeRegistrationExist(resume._id))
+                    var skills = resume.skills;
+                    await createResumeRegistration(resume._id, resume.title, skills);
+                }
             }
-        }
-        //console.log("\n\n\n\n\nresumeRegistrations:", resumeRegistrations)
+            //console.log("\n\n\n\n\nresumeRegistrations:", resumeRegistrations)
 
-        // 3. Collect unselected resumes to check for deletions
-        const unselectedResumes = resumeRegistrations.filter(registration => !selectedIds.includes(registration.resumeId));
-        //console.log("\n\n\n\n\nnselectedResumes:", unselectedResumes)
-        //console.log("\n\n\n\n\nriginalResumeRegistrationsId:", originalResumeRegistrationsId)
+            // 3. Collect unselected resumes to check for deletions
+            const unselectedResumes = resumeRegistrations.filter(registration => !selectedIds.includes(registration.resumeId));
+            //console.log("\n\n\n\n\nnselectedResumes:", unselectedResumes)
+            //console.log("\n\n\n\n\nriginalResumeRegistrationsId:", originalResumeRegistrationsId)
 
-        setNotSelectedResumes(unselectedResumes);
+            setNotSelectedResumes(unselectedResumes);
 
-        // 4. Check for resumes that are unselected but still have a ResumeRegistration, and delete them
-        for (const resume of unselectedResumes) {
-            if (checkOriginalResumeRegistrationExist(resume.resumeId)) {
+            // 4. Check for resumes that are unselected but still have a ResumeRegistration, and delete them
+            for (const resume of unselectedResumes) {
+                if (checkOriginalResumeRegistrationExist(resume.resumeId)) {
 
-                await deleteResumeRegistration(resume.resumeId);
+                    await deleteResumeRegistration(resume.resumeId);
+                }
             }
+
+            openNotification("success", "Register successfully!");
+
+        } catch (error) {
+            openNotification(
+                "error",
+                "An error occurred while registration. Please try again."
+            )
         }
         setIsLoading(false)
         // setSelectedResumes([]);
