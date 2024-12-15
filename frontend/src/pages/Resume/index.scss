@@ -18,7 +18,7 @@
 }
 
 .custom-tabs .ant-tabs-tab {
-  font-size: 18px; 
+  font-size: 18px;
   font-weight: bold;
   color: #333;
 }
@@ -27,4 +27,16 @@
 }
 
 .custom-tabs .ant-tabs-nav-list {
+}
+
+.change-profile {
+  .ant-card-body {
+    padding: 0;
+  }
+
+  .ant-form-item-label {
+    display: flex;
+    align-items: center; /* Vertically center label */
+    justify-content: center; /* Horizontally center label */
+  }
 }
