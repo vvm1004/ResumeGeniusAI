@@ -1,48 +1,53 @@
-// src/hr-registration/hr-registration.service.ts
+import { UsersService } from './../users/users.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { HrRegistration, HrRegistrationDocument } from './schema/schema';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
-
+import { CreateHrRegisDto } from './dto/create-hr-registration.dto';
+import { UpdateHrRegisDto } from './dto/update-hr-registration.dto';
+import { ADMIN_ROLE } from 'src/databases/sample';
+import {
+  HrRegistration,
+  HrRegistrationDocument,
+} from './schemas/hr-registration.schema';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+// import * as generator from 'secure-random-password';
 @Injectable()
 export class HrRegistrationService {
   constructor(
     @InjectModel(HrRegistration.name)
-    private readonly hrRegistrationModel: Model<HrRegistrationDocument>,
+    private hrRegistrationModel: SoftDeleteModel<HrRegistrationDocument>,
+    private readonly usersService: UsersService,
   ) {}
 
   // Tạo mới đăng ký HR
-  async createRegistration(
-    userId: string,
-    company: string,
-    email: string,
-    fullName: string,
-    phone: string,
-    address: string,
-  ) {
+  async create(CreateHrRegisDto: CreateHrRegisDto, user: IUser) {
     try {
-      // Create a new registration document
-      const newRegistration = new this.hrRegistrationModel({
-        userId,
+      const { company, email, fullName, phone, address, age, gender, status } =
+        CreateHrRegisDto;
+      const isExist = await this.hrRegistrationModel.findOne({ email });
+      if (isExist) {
+        throw new BadRequestException(`Đăng ký HR với email đã tồn tại`);
+      }
+      const newHrRegis = await this.hrRegistrationModel.create({
         company,
         email,
         fullName,
         phone,
         address,
-        createdBy: { _id: userId, email: email },
-        status: 'pending', // Default status is 'pending'
+        age,
+        gender,
+        status,
+        createdBy: {
+          _id: user._id,
+          email: user.email,
+        },
       });
-
-      // Save the registration to the database
-      await newRegistration.save();
-
-      // Return a success response to the frontend
       return {
         success: true,
         message: 'Registration successful!',
-        data: newRegistration, // Optionally, you can return the saved registration data if needed
+        data: newHrRegis, // Optionally, you can return the saved registration data if needed
       };
     } catch (error) {
       // Return an error response if something goes wrong
@@ -89,28 +94,97 @@ export class HrRegistrationService {
     };
   }
   // Lấy đăng ký theo userId
-  async findByUserId(userId: string) {
-    return this.hrRegistrationModel.findOne({ userId }).exec();
+  async findByUserId(id: string) {
+    return this.hrRegistrationModel.findOne({ id }).exec();
   }
 
-  // Cập nhật trạng thái đăng ký HR
-  async updateStatus(
-    userId: string,
-    status: 'approved' | 'rejected',
-    updatedBy: { _id: mongoose.Schema.Types.ObjectId; email: string },
-  ) {
-    return this.hrRegistrationModel
-      .findOneAndUpdate({ userId }, { status, updatedBy }, { new: true })
-      .exec();
+  async update(id: string, updateHrRegisDto: UpdateHrRegisDto, user: IUser) {
+    // Kiểm tra ID có hợp lệ không
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`Not found Hr Registration with id ${id}`);
+    }
+
+    const { company, email, fullName, phone, address, age, gender, status } =
+      updateHrRegisDto;
+
+    // Cập nhật HR Registration
+    const updateResult = await this.hrRegistrationModel.updateOne(
+      { _id: id },
+      {
+        company,
+        email,
+        fullName,
+        phone,
+        address,
+        age,
+        gender,
+        status,
+        updatedBy: {
+          _id: user._id,
+          email: user.email,
+        },
+      },
+    );
+
+    if (status === 'approved') {
+      const existingUser = await this.usersService.findOneByUsername(email);
+      if (existingUser) {
+        throw new BadRequestException(
+          `User with email ${email} already exists.`,
+        );
+      }
+
+      // // Tạo mật khẩu ngẫu nhiên
+      // const password = generator.generate({
+      //   length: 8,
+      //   numbers: true,
+      //   symbols: true,
+      //   uppercase: true,
+      //   lowercase: true,
+      //   excludeSimilarCharacters: true,
+      // });
+      const roleid = '670f7904f261c5eb15016692';
+      const passTemp = '123456';
+      // Tạo người dùng mới
+      const newUser = await this.usersService.create(
+        {
+          name: fullName,
+          email: email,
+          password: passTemp,
+          // password:password,
+          age: age,
+          gender: gender,
+          address: address,
+          role: new mongoose.Types.ObjectId(roleid),
+          company: company,
+        },
+        user,
+      );
+
+      return {
+        updateResult,
+        newUser,
+      };
+    }
+
+    return updateResult;
   }
 
   // Xóa một đăng ký HR (soft delete)
-  async deleteRegistration(
-    userId: string,
-    deletedBy: { _id: mongoose.Schema.Types.ObjectId; email: string },
-  ) {
-    return this.hrRegistrationModel
-      .findOneAndUpdate({ userId }, { deletedBy }, { new: true })
-      .exec();
+  async remove(id: string, user: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      throw new BadRequestException(`Not found Hr Registr with id ${id}`);
+    await this.hrRegistrationModel.updateOne(
+      { _id: id },
+      {
+        deletedBy: {
+          _id: user._id,
+          email: user.email,
+        },
+      },
+    );
+    return this.hrRegistrationModel.softDelete({
+      _id: id,
+    });
   }
 }

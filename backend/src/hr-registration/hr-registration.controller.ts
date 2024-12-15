@@ -1,4 +1,3 @@
-// src/hr-registration/hr-registration.controller.ts
 import {
   Controller,
   Post,
@@ -10,7 +9,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { HrRegistrationService } from './hr-registration.service';
-import { HrRegistration } from './schema/schema';
+import { HrRegistration } from './schemas/hr-registration.schema';
+import { CreateHrRegisDto } from './dto/create-hr-registration.dto';
+import { UpdateHrRegisDto } from './dto/update-hr-registration.dto';
 import { ObjectId } from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import { Public, SkipCheckPermission, User } from 'src/decorator/customize';
@@ -26,28 +27,14 @@ export class HrRegistrationController {
   // @SkipCheckPermission()
   // @Public()
   async createRegistration(
-    @Body()
-    body: {
-      userId: string;
-      company: string;
-      email: string;
-      fullName: string;
-      phone?: string;
-      address?: string;
-    },
+    @Body() createHrRegisDto: CreateHrRegisDto,
+    @User() user: IUser,
   ) {
-    return this.hrRegistrationService.createRegistration(
-      body.userId,
-      body.company,
-      body.email,
-      body.fullName,
-      body.phone,
-      body.address,
-    );
+    return this.hrRegistrationService.create(createHrRegisDto, user);
   }
+
   @Get('admin')
   // @Public()
-  // Lấy tất cả đăng ký HR
   async getAllRegistrations(
     @Query('current') currentPage: string,
     @Query('pageSize') limit: string,
@@ -64,37 +51,24 @@ export class HrRegistrationController {
   }
 
   // Lấy đăng ký HR theo userId
-  @Get(':userId')
-  async getRegistrationByUserId(@Param('userId') userId: string) {
-    return this.hrRegistrationService.findByUserId(userId);
+  @Get(':id')
+  async getRegistrationByUserId(@Param('id') id: string) {
+    return this.hrRegistrationService.findByUserId(id);
   }
 
   // Cập nhật trạng thái đăng ký HR
-  @Patch(':userId')
-  async updateStatus(
-    @Param('userId') userId: string,
-    @Body()
-    body: {
-      status: 'approved' | 'rejected';
-      updatedBy: { _id: ObjectId; email: string };
-    },
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateHrRegisDto: UpdateHrRegisDto,
+    @User() user: IUser,
   ) {
-    return this.hrRegistrationService.updateStatus(
-      userId,
-      body.status,
-      body.updatedBy,
-    );
+    return this.hrRegistrationService.update(id, updateHrRegisDto, user);
   }
 
   // Xóa đăng ký HR (soft delete)
-  @Delete(':userId')
-  async deleteRegistration(
-    @Param('userId') userId: string,
-    @Body() body: { deletedBy: { _id: ObjectId; email: string } },
-  ) {
-    return this.hrRegistrationService.deleteRegistration(
-      userId,
-      body.deletedBy,
-    );
+  @Delete(':id')
+  remove(@Param('id') id: string, @User() user: IUser) {
+    return this.hrRegistrationService.remove(id, user);
   }
 }

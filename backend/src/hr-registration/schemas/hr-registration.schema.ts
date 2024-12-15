@@ -7,28 +7,35 @@ export type HrRegistrationDocument = HydratedDocument<HrRegistration>;
 
 @Schema({ timestamps: true }) // Để tự động thêm createdAt và updatedAt
 export class HrRegistration {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  userId: mongoose.Schema.Types.ObjectId; // ID của người dùng đăng ký HR
+  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+  // userId: mongoose.Schema.Types.ObjectId; // ID của người dùng đăng ký HR
 
-  @Prop({ required: true })
-  company: string; // Tên công ty của HR đăng ký
+  company: {
+    _id: mongoose.Schema.Types.ObjectId;
+    name: string;
+  };
 
   @Prop({ required: true })
   email: string; // Email của HR đăng ký
 
   @Prop({ required: true })
-  fullName: string; // Tên đầy đủ của HR đăng ký
+  fullName: string;
 
   @Prop({ required: false })
-  phone?: string; // Số điện thoại của HR
+  phone?: string;
 
   @Prop({ required: false })
-  address?: string; // Địa chỉ của HR đăng ký
+  address?: string;
+
+  @Prop()
+  age: number;
+
+  @Prop()
+  gender: string;
 
   @Prop({ enum: ['pending', 'approved', 'rejected'], default: 'pending' })
   status: 'pending' | 'approved' | 'rejected'; // Trạng thái đăng ký HR
 
-  // Các thông tin quản lý CRUD
   @Prop({ type: Object })
   updatedBy: {
     _id: mongoose.Schema.Types.ObjectId;

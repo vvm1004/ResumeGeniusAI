@@ -17,6 +17,7 @@ import { fetchHr, fetchHrById } from "@/redux/slice/hrRegistrationSlide";
 import ModalHrRegistration from "@/components/admin/hr_registration/modal.registration";
 import Access from "@/components/share/access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
+import { content } from "html2canvas/dist/types/css/property-descriptors/content";
 
 const HrRegistrationPage = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -52,32 +53,38 @@ const HrRegistrationPage = () => {
   const handleApproveReject = async (
     action: string,
     _id: string | undefined,
-    userId: string | undefined,
-    email: string | undefined
+    company: string | undefined,
+    email: string | undefined,
+    fullName: string | undefined,
+    phone: string | undefined,
+    address: string | undefined
   ) => {
     if (_id) {
-      // Cập nhật trạng thái (approved hoặc rejected)
-      const updatedHrRegistration: IHrRegistration = {
+      const updateStatus = {
+        company: company,
+        email: email,
+        fullName: fullName,
+        phone: phone,
+        address: address,
         status: action === "approved" ? "approved" : "rejected",
-        updatedBy: {
-          userId: userId,
-          email: email,
-        },
       };
 
       try {
         // Gọi API để cập nhật trạng thái HR Registration
-        await callUpdateHrRegister(_id, updatedHrRegistration);
-
-        // Hiển thị thông báo thành công
-        message.success(
-          `${
-            action === "approved" ? "Duyệt" : "Từ chối"
-          } HR Registration thành công`
-        );
-
-        // Tải lại bảng dữ liệu sau khi cập nhật
-        reloadTable();
+        const res = await callUpdateHrRegister(_id, updateStatus);
+        if (res.data) {
+          message.success(
+            `${
+              action === "approved" ? "Duyệt" : "Từ chối"
+            } HR Registration thành công`
+          );
+          reloadTable();
+        } else {
+          notification.error({
+            message: "Có lỗi xảy ra",
+            description: res?.message || "Không thể cập nhật trạng thái",
+          });
+        }
       } catch (error) {
         message.error("Có lỗi xảy ra khi cập nhật trạng thái.");
       }
@@ -166,8 +173,11 @@ const HrRegistrationPage = () => {
                   handleApproveReject(
                     "approved",
                     entity._id,
-                    entity.userId,
-                    entity.email
+                    entity.company,
+                    entity.email,
+                    entity.fullName,
+                    entity.phone,
+                    entity.address
                   )
                 }
               >
@@ -179,8 +189,11 @@ const HrRegistrationPage = () => {
                   handleApproveReject(
                     "rejected",
                     entity._id,
-                    entity.userId,
-                    entity.email
+                    entity.company,
+                    entity.email,
+                    entity.fullName,
+                    entity.phone,
+                    entity.address
                   )
                 }
               >
@@ -268,15 +281,6 @@ const HrRegistrationPage = () => {
             ),
           }}
           rowSelection={false}
-          toolBarRender={() => [
-            <Button
-              icon={<PlusOutlined />}
-              type="primary"
-              onClick={() => setOpenModal(true)}
-            >
-              Thêm mới
-            </Button>,
-          ]}
         />
       </Access>
       {/* {selectedId && (
