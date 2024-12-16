@@ -25,12 +25,13 @@ import { useSocket } from '../../hook/useSocket';  // Đảm bảo bạn đã t�
 import { useSelector } from "react-redux";
 import { getUnreadNotifications, markNotificationAsRead } from "./handleContent";
 import Logo from '../../assets/LogoIcon-removebg-preview.png';
+import { HomeIcon } from "lucide-react";
 
 const items: MenuProps["items"] = [
   {
     label: <Link to={"/"}>Home Page</Link>,
     key: "/",
-    icon: <TwitterOutlined />,
+    icon: <HomeIcon />,
   },
   {
     label: <Link to={"/jobsAll"}>Find Jobs</Link>,

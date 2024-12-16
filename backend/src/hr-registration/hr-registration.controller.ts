@@ -20,16 +20,15 @@ import { IUser } from 'src/users/users.interface';
 @ApiTags('hr-registration')
 @Controller('hr-registration')
 export class HrRegistrationController {
-  constructor(private readonly hrRegistrationService: HrRegistrationService) {}
+  constructor(private readonly hrRegistrationService: HrRegistrationService) { }
 
   // Tạo mới đăng ký HR
   @Post()
-  // @SkipCheckPermission()
-  // @Public()
   async createRegistration(
     @Body() createHrRegisDto: CreateHrRegisDto,
     @User() user: IUser,
   ) {
+    console.log(createHrRegisDto, "\n\n", user)
     return this.hrRegistrationService.create(createHrRegisDto, user);
   }
 

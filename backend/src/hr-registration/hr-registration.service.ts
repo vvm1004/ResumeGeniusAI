@@ -19,7 +19,7 @@ export class HrRegistrationService {
     @InjectModel(HrRegistration.name)
     private hrRegistrationModel: SoftDeleteModel<HrRegistrationDocument>,
     private readonly usersService: UsersService,
-  ) {}
+  ) { }
 
   // Tạo mới đăng ký HR
   async create(CreateHrRegisDto: CreateHrRegisDto, user: IUser) {
