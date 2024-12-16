@@ -41,7 +41,7 @@
 }
 
 .footer p {
-  margin-top: 20px;
+  margin-top: 2px;
 }
 
 .footer a {
@@ -80,8 +80,7 @@ ul {
 
 /* Search */
 
-.custome-breadcrum {
-}
+.custome-breadcrum {}
 
 /* .custom-select .ant-select {
   border: none; 
@@ -116,8 +115,7 @@ ul {
   flex-wrap: nowrap;
 }
 
-.custom-select .ant-select-multiple .ant-select-selection-item {
-}
+.custom-select .ant-select-multiple .ant-select-selection-item {}
 
 .ant-col .ant-form-item {
   margin: 0;
@@ -143,8 +141,7 @@ ul {
   box-sizing: border-box;
 }
 
-.cus-btn {
-}
+.cus-btn {}
 
 .cus-btn:hover {
   background: white;
@@ -169,6 +166,7 @@ ul {
 
 .job-card {
   transition: transform 0.3s, box-shadow 0.3s;
+
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -224,6 +222,7 @@ ul {
   0% {
     transform: translateX(100%);
   }
+
   100% {
     transform: translateX(-200%);
   }
@@ -231,17 +230,25 @@ ul {
 
 @keyframes borderWave {
   0% {
-    border: 2px solid rgba(54, 50, 50, 0.3); /* Bắt đầu với border màu xám nhạt */
-    box-shadow: 0 0 20px rgba(177, 12, 12, 0); /* Không có sóng */
+    border: 2px solid rgba(54, 50, 50, 0.3);
+    /* Bắt đầu với border màu xám nhạt */
+    box-shadow: 0 0 20px rgba(177, 12, 12, 0);
+    /* Không có sóng */
   }
+
   50% {
-    border: 2px solid rgba(169, 169, 169, 0.6); /* Đậm dần với màu xám */
+    border: 2px solid rgba(169, 169, 169, 0.6);
+    /* Đậm dần với màu xám */
     box-shadow: 0 0 30px rgba(169, 169, 169, 0.4),
-      0 0 30px rgba(31, 1, 1, 0.2); /* Sóng lan tỏa màu xám */
+      0 0 30px rgba(31, 1, 1, 0.2);
+    /* Sóng lan tỏa màu xám */
   }
+
   100% {
-    border: 3px solid rgba(58, 47, 47, 0.3); /* Trở lại như ban đầu với màu xám nhạt */
-    box-shadow: 0 0 20px rgba(169, 169, 169, 0); /* Sóng tan dần */
+    border: 3px solid rgba(58, 47, 47, 0.3);
+    /* Trở lại như ban đầu với màu xám nhạt */
+    box-shadow: 0 0 20px rgba(169, 169, 169, 0);
+    /* Sóng tan dần */
   }
 }
 

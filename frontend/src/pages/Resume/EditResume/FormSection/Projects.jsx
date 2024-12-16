@@ -196,6 +196,10 @@ function Projects() {
       }, 5000);
     }
   };
+  const handleChange = (text) => {
+    handleUpdateProjects(index, { description: cleanContent(text) });
+
+  }
 
 
   return (
@@ -348,7 +352,7 @@ function Projects() {
                           toolbar: "formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | customButton",
                           setup: (editor) => {
                             editor.ui.registry.addButton("customButton", {
-                              text: "AI pre-written phrases +",
+                              text: " ",
                               onAction: () => {
                                 alert("Feature coming soon!");
                               },
@@ -372,6 +376,7 @@ function Projects() {
                             newValues[index] = content; // Cập nhật giá trị tương ứng
                             return newValues;
                           });
+                          handleChange(content);
                         }} />
                     </div>
                   </div></>

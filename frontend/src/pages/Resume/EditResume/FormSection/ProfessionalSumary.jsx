@@ -42,7 +42,8 @@ function ProfessionalSummary() {
 
     if (editorValues == data.summary) return;
 
-    setEditorValues(data);
+    setEditorValues(data.summary);
+    //console.log("data, ", data, "\n\n", editorValues)
   }, [data]);
 
 
@@ -223,7 +224,7 @@ function ProfessionalSummary() {
 
   const handleTextChange = (text) => {
     if (isCheckSpell) return;
-    handleEditorChange(text.replace(/<\/?p>/g, ''));
+    handleEditorChange(cleanContent(text.replace(/<\/?p>/g, '')));
 
   }
 
@@ -328,7 +329,7 @@ function ProfessionalSummary() {
                 "formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | customButton",
               setup: (editor) => {
                 editor.ui.registry.addButton("customButton", {
-                  text: "AI generate summary",
+                  text: "",
                   onAction: () => {
                     genSummary()
                   },

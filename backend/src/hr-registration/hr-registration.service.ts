@@ -136,12 +136,11 @@ export class HrRegistrationService {
           age: updateHrRegisDto.age,
           gender: updateHrRegisDto.gender,
           address: updateHrRegisDto.address,
-          role: new mongoose.Types.ObjectId(roleid),
+          role: new mongoose.Types.ObjectId(roleid) as any,
           company: updateHrRegisDto.company,
         },
         user,
       );
-
       return {
         updateResult,
         newUser,

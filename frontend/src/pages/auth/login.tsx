@@ -18,7 +18,7 @@ const LoginPage = () => {
     const callback = params?.get("callback");
 
     useEffect(() => {
-        //đã login => redirect to '/'
+        // Already logged in => redirect to '/'
         if (isAuthenticated) {
             // navigate('/');
             window.location.href = '/';
@@ -33,11 +33,11 @@ const LoginPage = () => {
         if (res?.data) {
             localStorage.setItem('access_token', res.data.access_token);
             dispatch(setUserLoginInfo(res.data.user))
-            message.success('Đăng nhập tài khoản thành công!');
+            message.success('Login successful!');
             window.location.href = callback ? callback : '/';
         } else {
             notification.error({
-                message: "Có lỗi xảy ra",
+                message: "An error occurred",
                 description:
                     res.message && Array.isArray(res.message) ? res.message[0] : res.message,
                 duration: 5
@@ -45,16 +45,14 @@ const LoginPage = () => {
         }
     };
 
-
     return (
         <div className={styles["login-page"]}>
             <main className={styles.main}>
                 <div className={styles.container}>
                     <section className={styles.wrapper}>
                         <div className={styles.heading}>
-                            <h2 className={`${styles.text} ${styles["text-large"]}`}>Đăng Nhập</h2>
+                            <h2 className={`${styles.text} ${styles["text-large"]}`}>Login</h2>
                             <Divider />
-
                         </div>
                         <Form
                             name="basic"
@@ -66,16 +64,16 @@ const LoginPage = () => {
                                 labelCol={{ span: 24 }} //whole column
                                 label="Email"
                                 name="username"
-                                rules={[{ required: true, message: 'Email không được để trống!' }]}
+                                rules={[{ required: true, message: 'Email is required!' }]}
                             >
                                 <Input />
                             </Form.Item>
 
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
-                                label="Mật khẩu"
+                                label="Password"
                                 name="password"
-                                rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
+                                rules={[{ required: true, message: 'Password is required!' }]}
                             >
                                 <Input.Password />
                             </Form.Item>
@@ -84,13 +82,13 @@ const LoginPage = () => {
                             // wrapperCol={{ offset: 6, span: 16 }}
                             >
                                 <Button type="primary" htmlType="submit" loading={isSubmit}>
-                                    Đăng nhập
+                                    Login
                                 </Button>
                             </Form.Item>
                             <Divider>Or</Divider>
-                            <p className="text text-normal">Chưa có tài khoản ?
+                            <p className="text text-normal">Don't have an account?
                                 <span>
-                                    <Link to='/register' > Đăng Ký </Link>
+                                    <Link to='/register' > Register </Link>
                                 </span>
                             </p>
                         </Form>

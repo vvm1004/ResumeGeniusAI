@@ -49,86 +49,31 @@ const Footer: React.FC = () => {
           </Row>
         </Col>
         <Col className="text-center services-text">
-          <Col md={3}>
-            <h5>Job Seekers</h5>
-            <ul className="list-unstyled">
+          <Row>
+            <ul className="">
               <li>
                 <a href="#">Create a Resume</a>
               </li>
-              <li>
-                <a href="#">Resume Examples</a>
-              </li>
-              <li>
-                <a href="#">Resume Templates</a>
-              </li>
-              <li>
-                <a href="#">Cover Letter Templates</a>
-              </li>
+            </ul>
+          </Row>
+        </Col>
+        <Col className="text-center services-text">
+          <Row>
+            <ul className="">
               <li>
                 <a href="#">Job Search</a>
               </li>
             </ul>
-          </Col>
-          <Col md={3}>
-            <h5>Career Resources</h5>
-            <ul className="list-unstyled">
+          </Row>
+        </Col>
+        <Col className="text-center services-text">
+          <Row>
+            <ul className="">
               <li>
-                <a href="#">Resume Help</a>
-              </li>
-              <li>
-                <a href="#">Job Interview</a>
-              </li>
-              <li>
-                <a href="#">Career</a>
-              </li>
-              <li>
-                <a href="#">Cover Letters</a>
-              </li>
-              <li>
-                <a href="#">Blog</a>
+                <a href="#">Resume Template</a>
               </li>
             </ul>
-          </Col>
-          <Col md={3}>
-            <h5>Our Company</h5>
-            <ul className="list-unstyled">
-              <li>
-                <a href="#">About Us</a>
-              </li>
-              <li>
-                <a href="#">Pricing</a>
-              </li>
-              <li>
-                <a href="#">Sponsorship Program</a>
-              </li>
-              <li>
-                <a href="#">Media Kit</a>
-              </li>
-              <li>
-                <a href="#">Affiliates</a>
-              </li>
-            </ul>
-          </Col>
-          <Col md={3}>
-            <h5>Support</h5>
-            <ul className="list-unstyled">
-              <li>
-                <a href="#">FAQ</a>
-              </li>
-              <li>
-                <a href="#">Contact Us</a>
-              </li>
-              <li>
-                <a href="#">Terms of Service</a>
-              </li>
-              <li>
-                <a href="#">Privacy</a>
-              </li>
-              <li>
-                <a href="#">Right of Withdrawal</a>
-              </li>
-            </ul>
-          </Col>
+          </Row>
         </Col>
       </Container>
       <Col className="text-center mt-4">
