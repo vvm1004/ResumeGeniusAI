@@ -41,24 +41,24 @@ const AccountManagement = () => {
   const renderInformation = () => {
     return (
       <>
-        <div className="font-bold" style={{ fontSize: "17px" }}>
+        <div className="font-bold text-gray-600" style={{ fontSize: "17px" }}>
           <div>
-            ID: <span className="font-normal">{data._id}</span>
+            ID: <span className="ml-2 font-normal">{data._id}</span>
           </div>
           <div className="mt-2">
-            User name: <span className="font-normal">{data.name}</span>
+            User name: <span className="ml-2 font-normal">{data.name}</span>
           </div>
           <div className="mt-2">
-            Email: <span className="font-normal">{data.email}</span>
+            Email: <span className="ml-2 font-normal">{data.email}</span>
           </div>
           <div className="mt-2">
-            Age: <span className="font-normal">{data.age}</span>
+            Age: <span className="ml-2 font-normal">{data.age}</span>
           </div>
           <div className="mt-2">
-            Gender: <span className="font-normal">{data.gender}</span>
+            Gender: <span className="ml-2 font-normal">{data.gender}</span>
           </div>
           <div className="mt-2">
-            Address: <span className="font-normal">{data.address}</span>
+            Address: <span className="ml-2 font-normal">{data.address}</span>
           </div>
         </div>
       </>

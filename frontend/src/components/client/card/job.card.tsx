@@ -41,7 +41,8 @@ const JobCard = () => {
     total: 0,
   });
 
-  type FilterMain = "location" | "salary" | "experience" | "industry";
+  // type FilterMain = "location" | "salary" | "level" | "industry";
+  type FilterMain = "location" | "salary" | "level";
 
   const [filters, setFilters] = useState<{
     main: FilterMain;
@@ -73,20 +74,21 @@ const JobCard = () => {
         { value: "above30", label: "Over 30 million" },
         { value: "thoathuan", label: "Agree" },
       ],
-      experience: [
+      level: [
         { value: "", label: "All" },
-        { value: "0", label: "No experience" },
-        { value: "1", label: "1 year" },
-        { value: "2", label: "2 years" },
-        { value: "3", label: "3 years" },
+        { value: "INTERN", label: "Intern" },
+        { value: "FRESHER", label: "Fresher" },
+        { value: "JUNIOR", label: "Junior" },
+        { value: "MIDDLE", label: "Middle" },
+        { value: "SENIOR", label: "Senior" },
       ],
-      industry: [
-        { value: "", label: "Tất cả" },
-        { value: "it", label: "Information technology" },
-        { value: "marketing", label: "Marketing" },
-        { value: "finance", label: "Finance" },
-        { value: "education", label: "Education" },
-      ],
+      // industry: [
+      //   { value: "", label: "All" },
+      //   { value: "it", label: "Information technology" },
+      //   { value: "marketing", label: "Marketing" },
+      //   { value: "finance", label: "Finance" },
+      //   { value: "education", label: "Education" },
+      // ],
     }),
     []
   );
@@ -215,8 +217,8 @@ const JobCard = () => {
               >
                 <Option value="location">Location</Option>
                 <Option value="salary">Salary</Option>
-                <Option value="experience">Experience</Option>
-                <Option value="industry">Industry</Option>
+                <Option value="level">Level</Option>
+                {/* <Option value="industry">Industry</Option> */}
               </Select>
             </div>
           </Col>

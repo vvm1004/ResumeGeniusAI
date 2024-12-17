@@ -177,21 +177,35 @@ export interface ISubscribers {
 }
 export interface IHrRegistration {
   _id?: string;
-  userId?: string;
-  company?: string;
+
+  company?: {
+    _id: string;
+    name: string;
+  };
+
   email?: string;
   fullName?: string;
   phone?: string;
   address?: string;
-  status?: string;
+  age?: number;
+  gender?: string;
+  status?: "pending" | "approved" | "rejected";
 
   updatedBy?: {
-    userId?: string;
+    _id?: string;
     email?: string;
   };
-  createdBy?: string;
+  createdBy?: {
+    _id?: string;
+    email?: string;
+  };
+  deletedBy?: {
+    _id?: string;
+    email?: string;
+  };
+
   isDeleted?: boolean;
-  deletedAt?: boolean | null;
+  deletedAt?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -41,11 +41,11 @@ function PersonalDetail() {
       try {
         // Convert the image to Base64
         const base64Image = await convertToBase64(file);
-        console.log("base64Image", base64Image)
+        console.log("base64Image", base64Image);
 
         // Compress and resize to target below 50KB
         const compressedImage = await resizeAndCompressImage(base64Image, 50);
-        console.log("compressedImage", compressedImage)
+        console.log("compressedImage", compressedImage);
         // Set the compressed image and update data
         // setSelectedImage(compressedImage);
         setData((prev) => ({

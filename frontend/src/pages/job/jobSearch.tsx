@@ -40,7 +40,7 @@ const JobSearch = (props: any) => {
     total: 0,
   });
 
-  const [selectedOption, setSelectedOption] = useState("ngay-dang");
+  const [selectedOption, setSelectedOption] = useState("");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -75,7 +75,7 @@ const JobSearch = (props: any) => {
     } finally {
       setLoading(false);
     }
-  }, [name, location, pagination.current, pagination.pageSize]);
+  }, [name, location, pagination.current, pagination.pageSize, selectedOption]);
 
   useEffect(() => {
     fetchJobs();
@@ -91,6 +91,7 @@ const JobSearch = (props: any) => {
 
   const handleChange = (e: any) => {
     setSelectedOption(e.target.value);
+    console.log("sdjkfsjkdfhkjsfhkjds", e.target.value);
     setPagination((prev) => ({ ...prev, current: 1 }));
   };
 
@@ -166,11 +167,7 @@ const JobSearch = (props: any) => {
         <Row className="flex justify-center items-center">
           <Col span={18} className="flex justify-between items-center">
             <div>
-              <h2 className="text-lg font-bold">
-                Recruitment {pagination.total} jobs{" "}
-                {trimQueryString(name?.toString() || "")} [Update{" "}
-                {dayjs().format("DD/MM/YYYY")}]{" "}
-              </h2>
+              {" "}
               <div>
                 <Breadcrumb className="text-md">
                   <Breadcrumb.Item>
@@ -196,6 +193,11 @@ const JobSearch = (props: any) => {
                   </Breadcrumb.Item>
                 </Breadcrumb>
               </div>
+              <h2 className="text-lg font-bold text-blue-600">
+                Recruitment {pagination.total} jobs{" "}
+                {trimQueryString(name?.toString() || "")} [Update{" "}
+                {dayjs().format("DD/MM/YYYY")}]{" "}
+              </h2>
             </div>
             <button className="flex justify-between items-center bg-white rounded-sm font-semibold p-2  hover:text-blue-700 hover:border hover:border-blue-700">
               <span className="mr-2">
@@ -205,16 +207,16 @@ const JobSearch = (props: any) => {
             </button>
           </Col>
         </Row>
-        <Row className="flex justify-center items-center mt-4">
+        {/* <Row className="flex justify-center items-center mt-4">
           <Col span={18} className="flex justify-between items-center">
             <h2 className="text-xl text-blue-600 font-bold">
               Suggest suitable jobs
             </h2>
-            {/* <Link to="job" className="underline">
+            <Link to="job" className="underline">
               View all
-            </Link> */}
+            </Link>
           </Col>
-        </Row>
+        </Row> */}
         <Row className="flex justify-center items-center mt-4">
           <Col span={18} className="flex items-center">
             <h2 className="mr-4 text-md font-semibold">
@@ -225,12 +227,15 @@ const JobSearch = (props: any) => {
               value={selectedOption}
               className="flex items-center"
             >
-              <Radio
+              {/* <Radio
                 value="AI"
                 className="flex items-center text-md mr-6 font-semibold"
               >
                 <span className="mr-1">Search by AI</span>
                 <InfoCircleOutlined className="text-blue-500" />
+              </Radio> */}
+              <Radio className="text-md font-semibold mr-6" value="">
+                Default
               </Radio>
               <Radio className="text-md font-semibold mr-6" value="ngay-dang">
                 Date posted
@@ -241,18 +246,15 @@ const JobSearch = (props: any) => {
               >
                 Update date
               </Radio>
-              <Radio
-                className="text-md font-semibold mr-6"
-                value="luong-cao-den-thap"
-              >
+              <Radio className="text-md font-semibold mr-6" value="salary">
                 Salary high to low
               </Radio>
-              <Radio
+              {/* <Radio
                 className="text-md font-semibold mr-6"
                 value="can-tuyen-gap"
               >
                 Urgent hiring
-              </Radio>
+              </Radio> */}
             </Radio.Group>
           </Col>
         </Row>
