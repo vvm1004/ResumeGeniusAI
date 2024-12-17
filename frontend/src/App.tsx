@@ -42,6 +42,7 @@ import AccountManagement from "./pages/Resume/account-management";
 import SpreadCV from "./pages/Resume/spread-cv";
 import HrRegister from "./pages/hr_register";
 import ThankYouPage from "./pages/hr_register/ThankYouPage";
+import SuggestTips from "./pages/suggestTips/suggestTips";
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
@@ -113,6 +114,8 @@ export default function App() {
         { path: "resumes/template", element: <SelectTemplate /> },
         { path: "hr_register", element: <HrRegister /> },
         { path: "thank-you-register", element: <ThankYouPage /> },
+        { path: "suggest-tips", element: <SuggestTips /> },
+
 
         // { path: "account-management", element: <AccountManagement /> },
       ],
