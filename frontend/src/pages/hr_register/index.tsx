@@ -33,7 +33,7 @@ const HrRegister = () => {
   const navigate = useNavigate(); // Hook to handle redirection
 
   const API_URL = import.meta.env.VITE_BACKEND_URL + "/api/v1/hr-registration/";
-
+  const token = localStorage.getItem("access_token");
   const user = useSelector((state: any) => state.account.user);
 
   const [loading, setLoading] = useState(false);
@@ -44,6 +44,7 @@ const HrRegister = () => {
     const res = await callFetchCompany(
       `current=1&pageSize=100&name=/${name}/i`
     );
+    console.log("resssL: ", companies)
     if (res && res.data) {
       const list = res.data.result;
       return list.map((item) => ({
@@ -62,32 +63,37 @@ const HrRegister = () => {
 
     // Prepare the data object to send to the API
     const registrationData = {
-      userId: user._id, // Assuming 'user' is coming from Redux state or context
-      company: values.company.label, // Extract company name from the selected option
       email: values.email,
       fullName: values.username,
       phone: values.phone,
       address: values.address,
-      createdBy: { _id: user._id, email: user.email }, // Using logged-in user's info for 'createdBy'
+      status: "pending",
+      age: values.age,
+      gender: values.gender,
+      company: {
+        _id: values.company.value,
+        name: values.company.label,
+      },
+
     };
 
-    console.log(registrationData); // For debugging
-
     try {
-      // Make the API call to create the HR registration
-      const response = await axios.post(API_URL, registrationData);
-      //console.log(response.data.data.success)
-      // Check if the registration is successful
+
+      const response = await axios.post(API_URL, registrationData, {
+        headers: {
+          Authorization: `Bearer ${token}`,  // Add the token to the Authorization header
+        },
+      });
+
       if (response.data.data.success) {
         notification.success({
           message: "Registration Successful!",
           description: "You have successfully registered as an HR.",
         });
 
-        // Redirect to the login page or dashboard (if needed)
-        // history.push('/login');  // Example if you're using react-router
+        // Redirect to a thank you page after successful registration
+        navigate("/thank-you-register"); // You can replace this with another route if needed
       } else {
-        //console.log(response)
         notification.error({
           message: "Registration Failed",
           description:
@@ -96,7 +102,6 @@ const HrRegister = () => {
         });
       }
     } catch (error) {
-      // Catch any API or network errors
       console.error("API Error:", error); // For debugging
       notification.error({
         message: "API Error",
@@ -104,11 +109,10 @@ const HrRegister = () => {
           "There was an error connecting to the server. Please try again later.",
       });
     } finally {
-      // Stop the loading spinner regardless of success or failure
-      setLoading(false);
-      navigate("/thank-you-register"); // Use navigate to redirect
+      setLoading(false); // Stop the loading spinner
     }
   };
+
 
   // Function to scroll to the Terms and Conditions section
   const scrollToTerms = () => {
@@ -260,6 +264,23 @@ const HrRegister = () => {
             >
               <Input prefix={<UserOutlined />} placeholder="Address" />
             </Form.Item>
+            <Form.Item
+              name="age"
+              rules={[{ required: true, message: "Please enter your age!" }]}
+            >
+              <Input
+                type="number"
+                placeholder="Age"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="gender"
+              rules={[{ required: true, message: "Please select your gender!" }]}
+            >
+              <Input placeholder="Gender" />
+            </Form.Item>
+
             {/* Email */}
             <Form.Item
               name="email"
@@ -308,8 +329,8 @@ const HrRegister = () => {
                     value
                       ? Promise.resolve()
                       : Promise.reject(
-                          "You must agree to the terms and conditions!"
-                        ),
+                        "You must agree to the terms and conditions!"
+                      ),
                 },
               ]}
             >
@@ -331,6 +352,7 @@ const HrRegister = () => {
                 Register
               </Button>
             </Form.Item>
+
           </Form>
         </Spin>
       </div>

@@ -320,7 +320,7 @@ function EmploymentHistory() {
   const handleTextChange = (text) => {
     if (isCheckSpell) return;
     console.log(text)
-    handleUpdateExperience(index, { description: text.replace(/<\/?p>/g, '') });
+    handleUpdateExperience(index, { description: cleanContent(text.replace(/<\/?[^>]+(>|$)/g, '')) });
 
   }
 

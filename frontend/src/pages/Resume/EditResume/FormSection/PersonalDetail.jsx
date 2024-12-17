@@ -24,56 +24,14 @@ const InputField = ({ label, name, type = "text", value, onChange }) => (
 function PersonalDetail() {
   const { data, setData, access_token } = useContext(DataContext);
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  // const [selectedImage, setSelectedImage] = useState(
-  //   data?.personalInformation?.image || null
-  // );
+ 
   const [uploading, setUploading] = useState(false);
 
-  // useEffect(() => {
-  //   if (data?.personalInformation?.image && !selectedImage) {
-  //     setSelectedImage(data.personalInformation.image);
-  //   }
-  // }, [data?.personalInformation?.image, selectedImage]);
 
   const handleAddMoreDetails = () => {
     setShowMoreDetails(!showMoreDetails);
   };
-  // const handleImageChange = async (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setUploading(true);
-  //     const formData = new FormData();
-  //     formData.append("fileUpload", file);
-
-  //     const headers = {
-  //       "Content-Type": "multipart/form-data",
-  //       folder_type: "image_personal_details",
-  //       Authorization: `Bearer ${access_token}`,
-  //     };
-
-  //     try {
-  //       const response = await axios.post(
-  //         "http://localhost:8000/api/v1/files/upload",
-  //         formData,
-  //         {
-  //           headers,
-  //         }
-  //       );
-
-  //       const imageUrl = response.data.data.fileName;
-
-  //       setSelectedImage(imageUrl);
-  //       setData((prev) => ({
-  //         ...prev,
-  //         personalInformation: { ...prev.personalInformation, image: imageUrl },
-  //       }));
-  //     } catch (error) {
-  //       console.error("Error uploading image:", error);
-  //     } finally {
-  //       setUploading(false);
-  //     }
-  //   }
-  // }
+  
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
 
@@ -208,19 +166,7 @@ function PersonalDetail() {
       <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-6">Personal details</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Job Title */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Job Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={data?.title}
-              onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
-            />
-          </div> */}
+         
           <InputField
             label="Job Title"
             name="title"
@@ -324,61 +270,7 @@ function PersonalDetail() {
             onChange={handleChange}
           />
 
-          {/* Name */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={data?.personalInformation?.name}
-              onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
-            />
-          </div> */}
-
-          {/* Email */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={data?.personalInformation?.email}
-              onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
-            />
-          </div> */}
-
-          {/* Address */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Address
-            </label>
-            <input
-              type="text"
-              name="address"
-              value={data?.personalInformation?.address}
-              onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
-            />
-          </div> */}
-
-          {/* Phone */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Phone
-            </label>
-            <input
-              type="text"
-              name="phone"
-              value={data?.personalInformation?.phone}
-              onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
-            />
-          </div> */}
+          
 
           {showMoreDetails && (
             <>
@@ -395,33 +287,7 @@ function PersonalDetail() {
                 onChange={handleChange}
               />
 
-              {/* Github */}
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Github
-                </label>
-                <input
-                  type="text"
-                  name="github"
-                  value={data?.personalInformation?.github}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
-                />
-              </div> */}
-
-              {/* Linkedin */}
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Linkedin
-                </label>
-                <input
-                  type="text"
-                  name="linkedin"
-                  value={data?.personalInformation?.linkedin}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
-                />
-              </div> */}
+             
             </>
           )}
 

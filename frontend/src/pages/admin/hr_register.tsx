@@ -1,296 +1,176 @@
-import DataTable from "@/components/client/data-table";
+import React, { useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { IHrRegistration } from "@/types/backend";
-import {
-  DeleteOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import DataTable from "@/components/client/data-table";
 import { ActionType, ProColumns } from "@ant-design/pro-components";
-import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
-import { useState, useRef } from "react";
+import { Button, Space, Tag, message, notification, Tooltip } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { callDeleteHrRegister, callUpdateHrRegister } from "@/config/api";
 import queryString from "query-string";
-import { fetchHr, fetchHrById } from "@/redux/slice/hrRegistrationSlide";
-import ModalHrRegistration from "@/components/admin/hr_registration/modal.registration";
+import { callUpdateHrRegister } from "@/config/api";
+import { fetchHr } from "@/redux/slice/hrRegistrationSlide";
 import Access from "@/components/share/access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
-import { content } from "html2canvas/dist/types/css/property-descriptors/content";
 
 const HrRegistrationPage = () => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
-
+  const [openModal, setOpenModal] = useState(false);
   const tableRef = useRef<ActionType>();
-  const isFetching = useAppSelector((state) => state.hrRegistration.isFetching);
-  const meta = useAppSelector((state) => state.hrRegistration.meta);
-  const hrRegistrations = useAppSelector(
-    (state) => state.hrRegistration.result
-  );
-  const singleHrRegistration = useAppSelector(
-    (state) => state.hrRegistration.singleHrRegistration
-  );
   const dispatch = useAppDispatch();
 
-  // const handleDeleteHrRegistration = async (_id: string | undefined) => {
-  //   if (_id) {
-  //     const res = await callDeleteHrRegister(_id);
-  //     if (res && res.data) {
-  //       message.success("Xóa HR Registration thành công");
-  //       reloadTable();
-  //     } else {
-  //       notification.error({
-  //         message: "Có lỗi xảy ra",
-  //         description: res.message,
-  //       });
-  //     }
-  //   }
-  // };
-  // console.log(hrRegistrations); // Kiểm tra xem dữ liệu có trường _id hay không
+  const {
+    isFetching,
+    meta,
+    result: hrRegistrations,
+  } = useAppSelector((state) => state.hrRegistration);
 
   const handleApproveReject = async (
-    action: string,
-    _id: string | undefined,
-    company: string | undefined,
-    email: string | undefined,
-    fullName: string | undefined,
-    phone: string | undefined,
-    address: string | undefined
+    action: "approved" | "rejected",
+    id: string | undefined,
+    record: any
   ) => {
-    if (_id) {
-      const updateStatus = {
-        company: company,
-        email: email,
-        fullName: fullName,
-        phone: phone,
-        address: address,
-        status: action === "approved" ? "approved" : "rejected",
-      };
+    if (!id) return;
 
-      try {
-        // Gọi API để cập nhật trạng thái HR Registration
-        const res = await callUpdateHrRegister(_id, updateStatus);
-        if (res.data) {
-          message.success(
-            `${
-              action === "approved" ? "Duyệt" : "Từ chối"
-            } HR Registration thành công`
-          );
-          reloadTable();
-        } else {
-          notification.error({
-            message: "Có lỗi xảy ra",
-            description: res?.message || "Không thể cập nhật trạng thái",
-          });
-        }
-      } catch (error) {
-        message.error("Có lỗi xảy ra khi cập nhật trạng thái.");
+    const updateStatus = {
+      ...record,
+      status: action,
+    };
+
+    try {
+      const res = await callUpdateHrRegister(id, updateStatus);
+      if (res?.data) {
+        message.success(
+          `${action === "approved" ? "Duyệt" : "Từ chối"} thành công!`
+        );
+        tableRef?.current?.reload();
+      } else {
+        notification.error({
+          message: "Lỗi cập nhật trạng thái",
+          description: res?.message || "Không thể cập nhật trạng thái.",
+        });
       }
+    } catch (error) {
+      message.error("Đã xảy ra lỗi khi cập nhật trạng thái.");
     }
   };
 
-  const reloadTable = () => {
-    tableRef?.current?.reload();
+  const buildQuery = (params: any, sort: any) => {
+    const query = { ...params };
+    if (query.company) query.company = `/${query.company}/i`;
+
+    let queryStr = queryString.stringify(query);
+    const sortField = sort?.company || sort?.createdAt || sort?.updatedAt;
+    const sortBy = sortField
+      ? `sort=${sortField === "ascend" ? "" : "-"}${sortField}`
+      : "sort=-updatedAt";
+
+    return `${queryStr}&${sortBy}`;
   };
 
-  const columns: ProColumns<IHrRegistration>[] = [
+  const columns: ProColumns<any>[] = [
     {
-      title: "Id",
+      title: "ID",
       dataIndex: "_id",
-      width: 250,
-      render: (text, record) => <span>{record._id}</span>,
+      width: 200,
       hideInSearch: true,
     },
     {
-      title: "Company",
+      title: "Công ty",
       dataIndex: "company",
-      sorter: true,
+      render: (_, record) => record.company?.name || "N/A",
     },
     {
       title: "Email",
       dataIndex: "email",
-      sorter: true,
     },
     {
-      title: "Full Name",
+      title: "Họ và Tên",
       dataIndex: "fullName",
-      sorter: true,
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
-      render(text, record) {
-        const status = record.status || "pending"; // Giả sử 'pending' là giá trị mặc định
-        let statusColor = "lime"; // Mặc định là màu lime (xanh lá) cho 'pending'
-
-        if (status === "approved") {
-          statusColor = "green";
-        } else if (status === "rejected") {
-          statusColor = "red";
-        }
-
-        return <Tag color={statusColor}>{status.toUpperCase()}</Tag>;
+      render: (_, record) => {
+        const statusColor =
+          record.status === "approved"
+            ? "green"
+            : record.status === "rejected"
+            ? "red"
+            : "lime";
+        return (
+          <Tag color={statusColor}>
+            {record.status?.toUpperCase() || "PENDING"}
+          </Tag>
+        );
       },
       hideInSearch: true,
     },
-
     {
-      title: "CreatedAt",
+      title: "Ngày tạo",
       dataIndex: "createdAt",
-      width: 200,
-      sorter: true,
-      render: (text, record) => (
-        <>{dayjs(record.createdAt).format("DD-MM-YYYY HH:mm:ss")}</>
-      ),
+      render: (_, record) =>
+        dayjs(record.createdAt).format("DD-MM-YYYY HH:mm:ss"),
       hideInSearch: true,
     },
-    // {
-    //   title: "UpdatedAt",
-    //   dataIndex: "updatedAt",
-    //   width: 200,
-    //   sorter: true,
-    //   render: (text, record) => (
-    //     <>{dayjs(record.updatedAt).format("DD-MM-YYYY HH:mm:ss")}</>
-    //   ),
-    //   hideInSearch: true,
-    // },
     {
-      title: "Actions",
-      hideInSearch: true,
-      width: 50,
-      render: (_value, entity) => (
+      title: "Hành động",
+      render: (_, record) => (
         <Space>
-          <div className="flex items-center align-middle">
-            <Access
-              permission={ALL_PERMISSIONS.HR_REGISTRATION.UPDATE}
-              hideChildren
-            >
-              <span
-                style={{ cursor: "pointer", margin: "0 10px" }}
-                onClick={() =>
-                  handleApproveReject(
-                    "approved",
-                    entity._id,
-                    entity.company,
-                    entity.email,
-                    entity.fullName,
-                    entity.phone,
-                    entity.address
-                  )
-                }
-              >
-                <CheckOutlined style={{ fontSize: 20, color: "#68f74f" }} />
-              </span>
-              <span
-                style={{ cursor: "pointer", margin: "0 10px" }}
-                onClick={() =>
-                  handleApproveReject(
-                    "rejected",
-                    entity._id,
-                    entity.company,
-                    entity.email,
-                    entity.fullName,
-                    entity.phone,
-                    entity.address
-                  )
-                }
-              >
-                <CloseOutlined style={{ fontSize: 20, color: "#eb4444" }} />
-              </span>
-            </Access>
-
-            {/* <Access
-              permission={ALL_PERMISSIONS.HR_REGISTRATION.DELETE}
-              hideChildren
-            >
-              <Popconfirm
-                placement="leftTop"
-                title={"Xác nhận xóa HR Registration"}
-                description={"Bạn có chắc chắn muốn xóa HR Registration này?"}
-                // onConfirm={() => handleDeleteHrRegistration(entity._id)}
-                okText="Xác nhận"
-                cancelText="Hủy"
-              >
-                <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                  <DeleteOutlined style={{ fontSize: 20, color: "#ff4d4f" }} />
-                </span>
-              </Popconfirm>
-            </Access> */}
-          </div>
+          <Tooltip title="Duyệt">
+            <CheckOutlined
+              style={{ fontSize: 18, color: "green", cursor: "pointer" }}
+              onClick={() =>
+                handleApproveReject("approved", record._id, record)
+              }
+            />
+          </Tooltip>
+          <Tooltip title="Từ chối">
+            <CloseOutlined
+              style={{ fontSize: 18, color: "red", cursor: "pointer" }}
+              onClick={() =>
+                handleApproveReject("rejected", record._id, record)
+              }
+            />
+          </Tooltip>
         </Space>
       ),
+      hideInSearch: true,
     },
   ];
-
-  const buildQuery = (params: any, sort: any, filter: any) => {
-    const clone = { ...params };
-    if (clone.company) clone.company = `/${clone.company}/i`;
-
-    let temp = queryString.stringify(clone);
-
-    let sortBy = "";
-    if (sort && sort.company) {
-      sortBy = sort.company === "ascend" ? "sort=company" : "sort=-company";
-    }
-    if (sort && sort.createdAt) {
-      sortBy =
-        sort.createdAt === "ascend" ? "sort=createdAt" : "sort=-createdAt";
-    }
-    if (sort && sort.updatedAt) {
-      sortBy =
-        sort.updatedAt === "ascend" ? "sort=updatedAt" : "sort=-updatedAt";
-    }
-
-    // Mặc định sort theo updatedAt
-    if (Object.keys(sortBy).length === 0) {
-      temp = `${temp}&sort=-updatedAt`;
-    } else {
-      temp = `${temp}&${sortBy}`;
-    }
-
-    return temp;
-  };
 
   return (
     <div>
       <Access permission={ALL_PERMISSIONS.HR_REGISTRATION.GET_PAGINATE}>
-        <DataTable<IHrRegistration>
+        <DataTable
           actionRef={tableRef}
-          headerTitle="Danh sách HR Registrations"
+          headerTitle="Danh sách đăng ký HR"
           rowKey="_id"
           loading={isFetching}
           columns={columns}
           dataSource={hrRegistrations}
-          request={async (params, sort, filter): Promise<any> => {
-            const query = buildQuery(params, sort, filter);
-            dispatch(fetchHr({ query }));
-            // setOpenModal(true);
+          request={async (params, sort, filter) => {
+            const query = buildQuery(params, sort);
+            await dispatch(fetchHr({ query })); // Gọi API và cập nhật Redux state
+
+            // Lấy dữ liệu từ Redux state
+            const { result: data, meta } = useAppSelector(
+              (state) => state.hrRegistration
+            );
+
+            return {
+              data: data || [],
+              success: true,
+              total: meta?.total || 0,
+            };
           }}
-          scroll={{ x: true }}
           pagination={{
             current: meta.current,
             pageSize: meta.pageSize,
-            showSizeChanger: true,
             total: meta.total,
-            showTotal: (total, range) => (
-              <div>
-                {range[0]}-{range[1]} trên {total} rows
-              </div>
-            ),
+            showSizeChanger: true,
+            showTotal: (total) => `Tổng cộng ${total} hàng`,
           }}
           rowSelection={false}
         />
       </Access>
-      {/* {selectedId && (
-        <ModalHrRegistration
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          selectedId={selectedId}
-          reloadTable={reloadTable}
-        />
-      )} */}
     </div>
   );
 };

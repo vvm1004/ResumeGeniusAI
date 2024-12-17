@@ -1,9 +1,9 @@
 
 export function cleanContent(text) {
     let cleanText = text.replace(/&lt;p&gt;/g, '').replace(/&lt;\/p&gt;/g, '');
-    console.log("cleanText: ", cleanText)
+    //  console.log("cleanText: ", cleanText)
     cleanText = text.replace(/<\/?p>|/gi, "");
-    console.log("cleanText1: ", cleanText)
+    // console.log("cleanText1: ", cleanText)
 
     const textEntities = {
         '&bull;': '•',
@@ -12,8 +12,13 @@ export function cleanContent(text) {
     for (const [key, value] of Object.entries(textEntities)) {
         cleanText = cleanText.replace(new RegExp(key, 'g'), value);
     }
-
-    console.log("cleanText2: ", cleanText)
+    cleanText.replace(/&middot;/g, '·')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+    //console.log("cleanText2: ", cleanText)
 
     return cleanText.trim();
 }
@@ -36,7 +41,7 @@ export function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 };
 export function applyCorrections(sentence, corrections) {
-    let highlightedSentence = sentence; 
+    let highlightedSentence = sentence;
     console.log("corrections:\n", corrections)
 
     corrections.forEach(([wrongWord, correctWord]) => {

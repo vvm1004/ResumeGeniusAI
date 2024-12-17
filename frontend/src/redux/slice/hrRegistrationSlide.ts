@@ -43,13 +43,33 @@ const initialState: IState = {
   result: [],
   singleHrRegistration: {
     _id: "",
-    userId: "",
-    company: "",
+    company: {
+      _id: "",
+      name: "",
+    },
     email: "",
     fullName: "",
     phone: "",
     address: "",
-    status: "",
+    age: 0,
+    gender: "",
+    status: "pending",
+    createdBy: {
+      _id: "",
+      email: "",
+    },
+    updatedBy: {
+      _id: "",
+      email: "",
+    },
+    deletedBy: {
+      _id: "",
+      email: "",
+    },
+    createdAt: "",
+    updatedAt: "",
+    isDeleted: false,
+    deletedAt: null,
   },
 };
 
@@ -60,18 +80,37 @@ export const hrRegistrationSlice = createSlice({
     resetSingleHr: (state) => {
       state.singleHrRegistration = {
         _id: "",
-        userId: "",
-        company: "",
+        company: {
+          _id: "",
+          name: "",
+        },
         email: "",
         fullName: "",
         phone: "",
         address: "",
-        status: "",
+        age: 0,
+        gender: "",
+        status: "pending",
+        createdBy: {
+          _id: "",
+          email: "",
+        },
+        updatedBy: {
+          _id: "",
+          email: "",
+        },
+        deletedBy: {
+          _id: "",
+          email: "",
+        },
+        createdAt: "",
+        updatedAt: "",
+        isDeleted: false,
+        deletedAt: null,
       };
     },
   },
   extraReducers: (builder) => {
-    // fetchHr
     builder
       .addCase(fetchHr.pending, (state) => {
         state.isFetching = true;
@@ -83,24 +122,13 @@ export const hrRegistrationSlice = createSlice({
           state.result = action.payload.data.result;
         }
       })
-      .addCase(fetchHr.rejected, (state, action) => {
+      .addCase(fetchHr.rejected, (state) => {
         state.isFetching = false;
       });
 
-    // fetchHrById
     builder
       .addCase(fetchHrById.pending, (state) => {
         state.isFetchSingle = true;
-        state.singleHrRegistration = {
-          _id: "",
-          userId: "",
-          company: "",
-          email: "",
-          fullName: "",
-          phone: "",
-          address: "",
-          status: "",
-        };
       })
       .addCase(fetchHrById.fulfilled, (state, action) => {
         if (action.payload?.data) {
@@ -108,7 +136,7 @@ export const hrRegistrationSlice = createSlice({
           state.singleHrRegistration = action.payload.data;
         }
       })
-      .addCase(fetchHrById.rejected, (state, action) => {
+      .addCase(fetchHrById.rejected, (state) => {
         state.isFetchSingle = false;
       });
   },

@@ -84,7 +84,7 @@ import './Modal.css';
 import { PDFDocument } from 'pdf-lib';
 import { compressPdf } from './utils.js'; // This would be incorrect if your file is lowercase
 
-const UploadResumeModal = ({ isOpen, onClose, handleFileChange, fileInputRef, isLoading = false, openLoading, closeLoading }) => {
+const UploadResumeModal = ({ isOpen, onClose, handleFileChange, fileInputRef, isLoading = false, openLoading, closeLoading, handleButtonClick }) => {
     const [isDragging, setIsDragging] = useState(false);
     const [file, setFile] = useState(null); // Lưu thông tin tệp
     const [fileName, setFileName] = useState('');
@@ -181,7 +181,7 @@ const UploadResumeModal = ({ isOpen, onClose, handleFileChange, fileInputRef, is
                     <button className="close-button" onClick={onClose}>
                         &times;
                     </button>
-                    <h2 className="modal-title">File Upload</h2>
+                    <h2 className="modal-title ">File Upload</h2>
                     <p className="modal-description">Please select a file to upload or drag it here.</p>
 
                     <div

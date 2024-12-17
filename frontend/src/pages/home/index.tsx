@@ -320,7 +320,7 @@ const Home: React.FC = () => {
           <div className="row justify-content-center">
             <div className="col-md-8">
               <h2 className="mb-4  text-start">
-                Try our AI to upgrade your Resume now!
+                The beautiful template
               </h2>
               <p className="mb-4 text-start">
                 Quickly upgrade and create the perfect fresh resume that
@@ -328,10 +328,10 @@ const Home: React.FC = () => {
               </p>
               <div className="d-flex justify-content-center">
                 <a
-                  onClick={openModal}
+                  href="/resumes/template"
                   className="inline-flex ms-4 justify-center items-center py-3 px-5 text-base font-medium text-center bg-purple text-white rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
                 >
-                  Upgrade my resume
+                  Select Template
                 </a>
                 <a className="inline-flex  ms-4 justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                   Resume Examples
@@ -361,91 +361,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
-      <section className="resume-template-section">
-        <div className="container py-5">
-          <div className="row">
-            <div className="template-example ">
-              {!showSlider && (
-                <>
-                  <div className="col-lg-6 tem-content">
-                    <div className="text-content">
-                      <h2>Beautiful ready-to-use resume templates</h2>
-                      <p>
-                        Win over employers and recruiters by using one of our
-                        25+ elegant, professionally-designed resume templates.
-                        Download to word or PDF.
-                      </p>
-                      <a
-                        href="/resumes/template"
-                        className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary hover:bg-pink-700 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
-                      >
-                        Select Template
-                      </a>
-                    </div>
-                  </div>
-                  <div className="col-lg-6 tem ">
-                    <button
-                      className="toggle-btn"
-                      onClick={() => setShowSlider(!showSlider)}
-                    >
-                      {showSlider ? ">>" : "<<"}
-                    </button>
-                    <div className="resume-slider template-imgs d-flex justify-content-between">
-                      {resumeImages.slice(0, 3).map((image, index) => (
-                        <div key={index} className="slider-item mx-2">
-                          <img
-                            src={image}
-                            alt={`Resume template ${index + 1}`}
-                            className="img-fluid"
-                            style={{
-                              borderRadius: "0px",
-                              width: "900px", // Đảm bảo hình ảnh co giãn theo chiều ngang
-                              height: "400px", // Giữ tỉ lệ ảnh đúng
-                              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                            }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-            <div className="col-lg-6 position-relative">
-              <button
-                className="toggle-btn"
-                onClick={() => setShowSlider(!showSlider)}
-              >
-                {showSlider ? ">>" : ""}
-              </button>
-
-              {showSlider && (
-                <div className="resume-slider">
-                  <Slider {...sliderSettings}>
-                    {resumeImages.map((image, index) => (
-                      <div key={index} className="slider-item ">
-                        <img
-                          src={image}
-                          alt={`Resume template ${index + 1}`}
-                          className="img-fluid template-image "
-                          style={{
-                            borderRadius: "0px",
-                            width: "300px", // Đảm bảo hình ảnh co giãn theo chiều ngang
-                            height: "500px", // Giữ tỉ lệ ảnh đúng
-                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </Slider>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
+    
       <section className="faq container mt-5">
         <h2 className="mb-4">Have a Question? Ask Us!</h2>
         <form className="question-form">
@@ -498,7 +414,11 @@ const Home: React.FC = () => {
         handleButtonClick={handleButtonClick}
         fileInputRef={fileInputRef}
         isLoading={isOpenLoading}
-        openLoading={OpenLoading}
+        openLoading={OpenLoading
+
+        }
+        closeLoading={CloseLoading}
+
       />
     </div>
   );

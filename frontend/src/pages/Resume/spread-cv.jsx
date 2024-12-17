@@ -58,9 +58,8 @@ const SpreadCV = () => {
       render: (value, record) => {
         return record?.typeUrl === "urlCV" ? (
           <a
-            href={`${import.meta.env.VITE_BACKEND_URL}/images/resume/${
-              record?.url
-            }`}
+            href={`${import.meta.env.VITE_BACKEND_URL}/images/resume/${record?.url
+              }`}
             target="_blank"
             rel="noopener noreferrer"
             style={{ cursor: "pointer", color: "blue" }}
@@ -82,7 +81,7 @@ const SpreadCV = () => {
   return (
     <>
       <div className="p-8">
-        <h2 className="mb-8 text-blue-600 text-3xl font-bold">Spread CV</h2>
+        <h2 className="mb-8 text-blue-600 text-3xl font-bold">Application Submitted</h2>
         <Table
           columns={columns}
           dataSource={listCV}
@@ -92,7 +91,7 @@ const SpreadCV = () => {
             showSizeChanger: false, // Hiển thị tùy chọn thay đổi số mục trên trang
             // pageSizeOptions: ["5", "10", "20"], // Các lựa chọn số mục trên trang
           }}
-          // virtual scroll={{ x: 2000, y: 500 }}
+        // virtual scroll={{ x: 2000, y: 500 }}
         />
       </div>
     </>

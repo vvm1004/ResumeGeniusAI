@@ -167,6 +167,10 @@ function Education() {
     handleUpdateEducation(index, { description: correctedText });
     setIsCheckSpell(0)
   };
+  const handleChange = (text) => {
+    handleUpdateEducation(index, { description: cleanContent(text.replace(/<\/?[^>]+(>|$)/g, '')) });
+
+  }
 
   const handleCancel = async () => {
     updateShowApplyCancelValueAtIndex(index, false)
@@ -350,20 +354,7 @@ function Education() {
                       />
                     </div>
 
-                    {/* City */}
-                    {/* <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    value={item.city}
-                    onChange={(e) =>
-                      handleUpdateEducation(index, { city: e.target.value })
-                    }
-                  />
-                </div> */}
+                    
                   </div>
                 )}
 
@@ -461,6 +452,7 @@ function Education() {
                           newValues[index] = content; // Cập nhật giá trị tương ứng
                           return newValues;
                         });
+                        handleChange(content)
                       }}
                     />
 

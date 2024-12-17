@@ -56,8 +56,8 @@ const DashboardResumes = () => {
               </li> */}
               <li
                 className={`flex text-sm items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "account-management"
-                    ? "rounded-md bg-blue-100 text-blue-600"
-                    : ""
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
                   }`}
                 onClick={() =>
                   handleMenuClick("account-management", "/account-management")
@@ -68,8 +68,8 @@ const DashboardResumes = () => {
               </li>
               <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "resumes"
-                    ? "rounded-md bg-blue-100 text-blue-600"
-                    : ""
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
                   }`}
                 onClick={() => handleMenuClick("resumes", "/resumes")}
               >
@@ -78,14 +78,14 @@ const DashboardResumes = () => {
               </li>
               <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${activeMenuItem === "spread-cv"
-                    ? "rounded-md bg-blue-100 text-blue-600"
-                    : ""
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
                   }`}
                 onClick={() => handleMenuClick("spread-cv", "/spread-cv")}
               >
-                <MdDashboard className="mr-4 text-xl" /> Spread CV
+                <MdDashboard className="mr-4 text-xl" /> Application Submitted
               </li>
-              <li
+              {/* <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
@@ -96,7 +96,7 @@ const DashboardResumes = () => {
               >
                 <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended
                 Jobs
-              </li>
+              </li> */}
               {/* <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard"
                     ? "rounded-md bg-blue-100 text-blue-600"
