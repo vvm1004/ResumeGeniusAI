@@ -13,9 +13,6 @@ const ClientJobPage = (props: any) => {
         <JobCard />
         <SuggestJobCard />
       </div>
-      {/* <div className="bg-gray-100">
-        <JobCard />
-      </div> */}
       <div className="w-full bg-gray-100">
         <CompanyList />
       </div>

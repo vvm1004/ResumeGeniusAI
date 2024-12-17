@@ -139,6 +139,23 @@ function FormSection() {
   //   }
   // };
   const handleSave = async () => {
+    if (!data?.title || data?.title.trim() === "") {
+      openNotification(
+        "error",
+        "Job Title cannot be empty! Please enter a title."
+      );
+      return;
+    }
+
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (
+      !data?.personalInformation?.email ||
+      !emailPattern.test(data?.personalInformation?.email)
+    ) {
+      openNotification("error", "Please enter a valid email address.");
+      return;
+    }
+
     Modal.confirm({
       title: "Do you want to save the changes?",
       onOk: async () => {

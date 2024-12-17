@@ -26,7 +26,7 @@ const ClientJobDetailPage = (props: any) => {
   const navigate = useNavigate();
   let location = useLocation();
   let params = new URLSearchParams(location.search);
-  const id = params?.get("id");
+  const id = params.get("id");
 
   useEffect(() => {
     const fetchJobDetail = async () => {
@@ -39,7 +39,6 @@ const ClientJobDetailPage = (props: any) => {
     const fetchCompanyDetail = async () => {
       if (jobDetail?.company?._id) {
         const res = await callFetchCompanyById(jobDetail.company._id);
-        // const res = await callFetchCompanyById("670bd5024c872eb686978a2f");
         setCompanyDetail(res.data || null);
       }
     };
@@ -50,7 +49,7 @@ const ClientJobDetailPage = (props: any) => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, jobDetail?.company?._id]);
 
   const renderSkeleton = () => {
     return (

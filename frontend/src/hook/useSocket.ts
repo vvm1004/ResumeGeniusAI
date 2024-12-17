@@ -6,7 +6,7 @@ const SOCKET_URL = import.meta.env.VITE_BACKEND_URL;  // Thay đổi URL theo c�
 export const useSocket = (userId: string) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [socketNotificationsData, setNotifications] = useState<string[]>([]);
-    console.log("userId", userId)
+    // console.log("userId", userId)
     useEffect(() => {
         // Tạo kết nối WebSocket
         const newSocket = io(SOCKET_URL, {
