@@ -164,31 +164,32 @@ export class JobsService {
   async findMatchingJobsByUserId(userId: string) {
     // Lấy danh sách resume từ userId
     const resumes = await this.resumeRegistrationModel.find({ userId });
-    if (!resumes || resumes.length === 0) {
-      throw new Error('No resumes found for this user');
+    
+    let matchingJobs = [];
+  
+    if (resumes && resumes.length > 0) {
+      // Tạo tập hợp tất cả kỹ năng và tiêu đề từ ResumeRegistration
+      const skillValues = new Set<string>();
+      const titles = new Set<string>();
+    
+      resumes.forEach((resume) => {
+        resume.resumeSkill.forEach((skill) => skillValues.add(skill.value));
+        titles.add(resume.resumeTitle);
+      });
+    
+      // Chuyển skills và titles thành regex để không phân biệt hoa thường
+      const skillRegexes = Array.from(skillValues).map((skill) => new RegExp(skill, 'i'));
+      const titleRegexes = Array.from(titles).map((title) => new RegExp(title, 'i'));
+    
+      // Lọc các job theo skills hoặc titles
+      matchingJobs = await this.jobModel.find({
+        $or: [
+          { skills: { $in: skillRegexes } }, // Lọc theo skills (không phân biệt hoa thường)
+          { name: { $in: titleRegexes } },  // Lọc theo tên job (không phân biệt hoa thường)
+        ],
+      }).limit(4); // Giới hạn tối đa 4 công việc matching
     }
-  
-    // Tạo tập hợp tất cả kỹ năng và tiêu đề từ ResumeRegistration
-    const skillValues = new Set<string>();
-    const titles = new Set<string>();
-  
-    resumes.forEach((resume) => {
-      resume.resumeSkill.forEach((skill) => skillValues.add(skill.value));
-      titles.add(resume.resumeTitle);
-    });
-  
-    // Chuyển skills và titles thành regex để không phân biệt hoa thường
-    const skillRegexes = Array.from(skillValues).map((skill) => new RegExp(skill, 'i'));
-    const titleRegexes = Array.from(titles).map((title) => new RegExp(title, 'i'));
-  
-    // Lọc các job theo skills hoặc titles
-    const matchingJobs = await this.jobModel.find({
-      $or: [
-        { skills: { $in: skillRegexes } }, // Lọc theo skills (không phân biệt hoa thường)
-        { name: { $in: titleRegexes } },  // Lọc theo tên job (không phân biệt hoa thường)
-      ],
-    }).limit(4); // Giới hạn tối đa 4 công việc matching
-  
+    
     const matchingJobCount = matchingJobs.length;
   
     // Nếu số lượng matchingJobs nhỏ hơn 4, bổ sung các job ngẫu nhiên
@@ -197,11 +198,19 @@ export class JobsService {
         { $match: { _id: { $nin: matchingJobs.map((job) => job._id) } } }, // Loại bỏ các job đã matching
         { $sample: { size: 4 - matchingJobCount } }, // Lấy thêm công việc ngẫu nhiên để tổng là 4
       ]);
-  
+    
       return [...matchingJobs, ...randomJobs]; // Ghép danh sách matching jobs và random jobs
+    }
+    
+    // Nếu không có resume nào, trả về các job ngẫu nhiên
+    if (resumes.length === 0) {
+      return await this.jobModel.aggregate([
+        { $sample: { size: 4 } }, // Lấy 4 công việc ngẫu nhiên
+      ]);
     }
   
     return matchingJobs; // Trả về danh sách matching nếu đủ 4 job
   }
+  
   
 }

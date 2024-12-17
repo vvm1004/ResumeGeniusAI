@@ -14,15 +14,10 @@ const SuggestJobCard = () => {
   const [jobs, setJobs] = useState<IJob[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const userId = useSelector((state: any) => state.account.user._id); // Lấy userId từ Redux
+  const userId = useSelector((state: any) => state.account.user?._id); // Redux hook
   const navigate = useNavigate();
 
-  // If there's no userId, don't render anything
-  if (!userId) {
-    return null; // Or you can return a message like <Empty description="No user ID found" />
-  }
-
-  // Hàm fetch dữ liệu job
+  // Fetch jobs function
   const fetchJobs = async () => {
     if (!userId) {
       message.error("User ID is missing!");
@@ -32,9 +27,9 @@ const SuggestJobCard = () => {
     setLoading(true);
     try {
       const res = await callFetchSuggestJob(`userId=${userId}`);
-      console.log(res)
+      console.log(res);
       if (res?.data) {
-        setJobs(res.data); // Set only the "result" array, not the whole response
+        setJobs(res.data);
       }
     } catch (error) {
       message.error("Error loading job data!");
@@ -43,15 +38,23 @@ const SuggestJobCard = () => {
     }
   };
 
+  // Always call useEffect, even if userId is null
   useEffect(() => {
-    fetchJobs(); // Gọi API khi component mount
+    if (userId) {
+      fetchJobs();
+    }
   }, [userId]);
 
-  // Hàm xử lý xem chi tiết job
+  // Handle job details navigation
   const viewJobDetails = (item: IJob) => {
     const slug = convertSlug(item.name);
     navigate(`/jobs/${slug}?id=${item._id}`);
   };
+
+  // Render UI based on loading and data states
+  if (!userId) {
+    return;
+  }
 
   return (
     <div
@@ -67,69 +70,67 @@ const SuggestJobCard = () => {
 
           {loading
             ? Array.from({ length: 4 }).map((_, index) => (
-              <Col span={24} md={8} key={index}>
-                <Card className="p-0 mb-4 shadow-sm">
-                  <Skeleton active />
-                </Card>
-              </Col>
-            ))
+                <Col span={24} md={8} key={index}>
+                  <Card className="p-0 mb-4 shadow-sm">
+                    <Skeleton active />
+                  </Card>
+                </Col>
+              ))
             : jobs?.map((item) => (
-              <Col span={24} md={8} key={item._id}>
-                <Card
-                  className="w-full job-card hover-effect"
-                  hoverable
-                  onClick={() => viewJobDetails(item)}
-                >
-                  <div className="flex justify-between">
-                    <div className="mr-4">
-                      <img
-                        className="w-16 h-auto"
-                        alt={`${import.meta.env.VITE_BACKEND_URL
-                          }/images/company/${item?.company?.name}`}
-                        src={`${import.meta.env.VITE_BACKEND_URL
-                          }/images/company/${item?.company?.logo}`}
-                      />
-                    </div>
+                <Col span={24} md={8} key={item._id}>
+                  <Card
+                    className="w-full job-card hover-effect"
+                    hoverable
+                    onClick={() => viewJobDetails(item)}
+                  >
+                    <div className="flex justify-between">
+                      <div className="mr-4">
+                        <img
+                          className="w-16 h-auto"
+                          alt={`${import.meta.env.VITE_BACKEND_URL}/images/company/${item?.company?.name}`}
+                          src={`${import.meta.env.VITE_BACKEND_URL}/images/company/${item?.company?.logo}`}
+                        />
+                      </div>
 
-                    <div className="flex-1 overflow-hidden">
-                      <div className="text-lg font-semibold truncate">
-                        {item.name}
-                      </div>
-                      <div className="text-md text-gray-500 font-semibold truncate">
-                        {item?.company?.name}
-                      </div>
-                      <div className="w-full flex mt-2 mb-2">
-                        <div className="w-1/2 flex items-center mr-2 overflow-hidden whitespace-nowrap">
-                          <IoLocationOutline
-                            style={{
-                              fontSize: 20,
-                              color: "blue",
-                              marginRight: "4px",
-                            }}
-                          />
-                          {item.location}
+                      <div className="flex-1 overflow-hidden">
+                        <div className="text-lg font-semibold truncate">
+                          {item.name}
                         </div>
+                        <div className="text-md text-gray-500 font-semibold truncate">
+                          {item?.company?.name}
+                        </div>
+                        <div className="w-full flex mt-2 mb-2">
+                          <div className="w-1/2 flex items-center mr-2 overflow-hidden whitespace-nowrap">
+                            <IoLocationOutline
+                              style={{
+                                fontSize: 20,
+                                color: "blue",
+                                marginRight: "4px",
+                              }}
+                            />
+                            {item.location}
+                          </div>
 
-                        <div className="w-1/2 flex items-center overflow-hidden whitespace-nowrap">
-                          <HiOutlineCurrencyDollar
-                            style={{
-                              fontSize: 20,
-                              color: "blue",
-                              marginRight: "4px",
-                            }}
-                          />
-                          {item.salary} vnđ
+                          <div className="w-1/2 flex items-center overflow-hidden whitespace-nowrap">
+                            <HiOutlineCurrencyDollar
+                              style={{
+                                fontSize: 20,
+                                color: "blue",
+                                marginRight: "4px",
+                              }}
+                            />
+                            {item.salary} vnđ
+                          </div>
                         </div>
+                        <CiHeart
+                          className="absolute right-2 bottom-2 hover:text-blue-600"
+                          size={25}
+                        />
                       </div>
-                      <CiHeart
-                        className="absolute right-2 bottom-2 hover:text-blue-600"
-                        size={25}
-                      />
                     </div>
-                  </div>
-                </Card>
-              </Col>
-            ))}
+                  </Card>
+                </Col>
+              ))}
 
           {!jobs?.length && !loading && (
             <div className={styles["empty"]}>
@@ -143,3 +144,4 @@ const SuggestJobCard = () => {
 };
 
 export default SuggestJobCard;
+
