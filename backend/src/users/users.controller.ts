@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } f
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { IUser } from './users.interface';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -45,8 +45,9 @@ export class UsersController {
   }
 
   @ResponseMessage("Update a User")
+  @SkipCheckPermission()
   @Patch()
-  update(@Body() updateUserDto: UpdateUserDto, @User() user: IUser) {
+  update(@Body() updateUserDto, @User() user: IUser) {
     return this.usersService.update(updateUserDto, user);
   }
 
