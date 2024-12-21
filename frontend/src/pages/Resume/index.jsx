@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import {
   MdDashboard,
@@ -6,10 +6,8 @@ import {
   MdSupervisorAccount,
 } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { IoIosMore } from "react-icons/io";
 import { useSelector } from "react-redux";
 import "./index.scss";
-import MyResumes from "./resumes";
 
 const DashboardResumes = () => {
   const user = useSelector((state) => state.account.user);
@@ -17,6 +15,14 @@ const DashboardResumes = () => {
   const [activeMenuItem, setActiveMenuItem] = useState("resumes");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const menuItem = currentPath.substring(currentPath.lastIndexOf("/") + 1);
+    if (menuItem) {
+      setActiveMenuItem(menuItem);
+    }
+  }, [location.pathname]);
 
   const handleMenuClick = (menuItem, path) => {
     setActiveMenuItem(menuItem);
@@ -43,7 +49,7 @@ const DashboardResumes = () => {
             </div>
           </div> */}
           <div className="">
-            <ul className="text-gray-600 font-medium">
+            <ul className="text-sm text-gray-600 font-medium">
               {/* <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100 hover:text-blue-600 ${
                   activeMenuItem === "dashboard"
@@ -85,18 +91,17 @@ const DashboardResumes = () => {
               >
                 <MdDashboard className="mr-4 text-xl" /> Application Submitted
               </li>
-              {/* <li
+              <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob"
                     ? "rounded-md bg-blue-100 text-blue-600"
                     : ""
                   }`}
                 onClick={() =>
-                  handleMenuClick("recommendedJob", "/recommendedJob")
+                  handleMenuClick("job-by-email", "/job-by-email")
                 }
               >
-                <MdOutlineFindInPage className="mr-4 text-xl" /> Recommended
-                Jobs
-              </li> */}
+                <MdOutlineFindInPage className="mr-4 text-xl" /> Receive job via email
+              </li>
               {/* <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard"
                     ? "rounded-md bg-blue-100 text-blue-600"

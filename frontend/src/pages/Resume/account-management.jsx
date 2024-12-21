@@ -8,6 +8,9 @@ import { callUpdateUser } from "@/config/api";
 
 const AccountManagement = () => {
   const userId = useSelector((state) => state.account.user._id);
+  const access_token = localStorage.getItem("access_token");
+
+  console.log("acceskdlfjksdjfl", access_token);
 
   const [data, setData] = useState([]);
   const [form] = Form.useForm();
@@ -39,6 +42,7 @@ const AccountManagement = () => {
   };
 
   const renderInformation = () => {
+    console.log("sldjfklsdjfks", data);
     return (
       <>
         <div className="font-bold text-gray-600" style={{ fontSize: "17px" }}>
@@ -59,6 +63,9 @@ const AccountManagement = () => {
           </div>
           <div className="mt-2">
             Address: <span className="ml-2 font-normal">{data.address}</span>
+          </div>
+          <div className="mt-2">
+            Company name: <span className="ml-2 font-normal">{data?.company?.name}</span>
           </div>
         </div>
       </>
@@ -90,9 +97,10 @@ const AccountManagement = () => {
 
     const handleFormSubmit = async (values) => {
       try {
-        console.log("valueeeee", values);
-        // const response = await callUpdateUser(values);
+        // console.log("valueeeeeddddddddddddđ", values);
+        const response = await callUpdateUser(values);
         openNotification("success", "User information updated successfully!");
+        await fetchData();
       } catch (error) {
         openNotification("error", "Error updating user information!");
       }
@@ -136,7 +144,7 @@ const AccountManagement = () => {
           name="age"
           rules={[
             { required: true, message: "Please enter your age" },
-            { type: "number", message: "Age must be a number" },
+            // { type: "number", message: "Age must be a number" },
           ]}
           labelCol={{ span: 3 }}
         >
@@ -175,7 +183,7 @@ const AccountManagement = () => {
 
   const renderChangePassword = () => {
     const handlePasswordChange = async (values) => {
-      const { currentPassword, newPassword, confirmPassword } = values;
+      const { oldPassword, newPassword, confirmPassword } = values;
 
       if (newPassword !== confirmPassword) {
         openNotification(
@@ -187,12 +195,15 @@ const AccountManagement = () => {
 
       try {
         console.log("valueeeeeee passs", values);
-        // const response = await axios.patch(
-        //   `${
-        //     import.meta.env.VITE_BACKEND_URL
-        //   }/api/v1/users/${userId}/change-password`,
-        //   { currentPassword, newPassword }
-        // );
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/change-password`,
+          values,
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          }
+        );
         openNotification("success", "Password changed successfully!");
         form.resetFields();
       } catch (error) {
@@ -209,7 +220,7 @@ const AccountManagement = () => {
       >
         <Form.Item
           label={<span className="font-bold">Current Password</span>}
-          name="currentPassword"
+          name="oldPassword"
           rules={[
             { required: true, message: "Please enter your current password" },
           ]}

@@ -43,6 +43,7 @@ import SpreadCV from "./pages/Resume/spread-cv";
 import HrRegister from "./pages/hr_register";
 import ThankYouPage from "./pages/hr_register/ThankYouPage";
 import SuggestTips from "./pages/suggestTips/suggestTips";
+import JobByEmail from "./pages/Resume/JobByEmail";
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
@@ -106,6 +107,7 @@ export default function App() {
             { path: "resumes", element: <MyResumes /> },
             { path: "account-management", element: <AccountManagement /> },
             { path: "spread-cv", element: <SpreadCV /> },
+            { path: "job-by-email", element: <JobByEmail /> },
           ],
         },
 

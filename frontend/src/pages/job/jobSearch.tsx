@@ -246,7 +246,7 @@ const JobSearch = (props: any) => {
               >
                 Update date
               </Radio>
-              <Radio className="text-md font-semibold mr-6" value="salary">
+              <Radio className="text-md font-semibold mr-6" value="-salary">
                 Salary high to low
               </Radio>
               {/* <Radio

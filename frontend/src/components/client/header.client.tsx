@@ -170,23 +170,24 @@ const Header = (props: any) => {
       label: (
         <label
           style={{ cursor: "pointer" }}
-          onClick={() => setOpenManageAccount(true)}
+          // onClick={() => setOpenManageAccount(true)}
+          onClick={() => {navigate("/account-management");}}
         >
-          Quản lý tài khoản
+          Account Management
         </label>
       ),
       key: "manage-account",
       icon: <ContactsOutlined />,
     },
     {
-      label: <Link to={"/admin"}>Trang Quản Trị</Link>,
+      label: <Link to={"/admin"}>Administration Page</Link>,
       key: "admin",
       icon: <DashOutlined />,
     },
     {
       label: (
         <label style={{ cursor: "pointer" }} onClick={() => handleLogout()}>
-          Đăng xuất
+          Log out
         </label>
       ),
       key: "logout",
