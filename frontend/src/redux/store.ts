@@ -7,6 +7,7 @@ import resumeReducer from "./slice/resumeSlide";
 import permissionReducer from "./slice/permissionSlide";
 import roleReducer from "./slice/roleSlide";
 import adminJobReducer from "./slice/jobSlideAdmin";
+import adminResumeReducer from "./slice/resumeSlideAdmin";
 import HrRegisterReducer from "./slice/hrRegistrationSlide";
 
 export const store = configureStore({
@@ -20,6 +21,7 @@ export const store = configureStore({
     role: roleReducer,
     adminJob: adminJobReducer,
     hrRegistration: HrRegisterReducer,
+    adminResume: adminResumeReducer,
   },
 });
 

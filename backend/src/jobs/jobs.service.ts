@@ -44,15 +44,15 @@ export class JobsService {
       delete filter.salary;
 
       if (salaryFilter === "below10") {
-        filter.salary = { $lt: 10000000 }; // Lương dưới 10 triệu
+        filter.salary = { $lt: 10000000 }; 
       } else if (salaryFilter === "10-15") {
-        filter.salary = { $gte: 10000000, $lte: 15000000 }; // Lương từ 10 triệu đến 15 triệu
+        filter.salary = { $gte: 10000000, $lte: 15000000 }; 
       } else if (salaryFilter === "15-20") {
-        filter.salary = { $gte: 15000000, $lte: 20000000 }; // Lương từ 15 triệu đến 20 triệu
+        filter.salary = { $gte: 15000000, $lte: 20000000 }; 
       } else if (salaryFilter === "20-30") {
-        filter.salary = { $gte: 20000000, $lte: 30000000 }; // Lương từ 20 triệu đến 30 triệu
+        filter.salary = { $gte: 20000000, $lte: 30000000 }; 
       } else if (salaryFilter === "above30") {
-        filter.salary = { $gt: 30000000 }; // Lương trên 30 triệu
+        filter.salary = { $gt: 30000000 }; 
       }
     }
 
@@ -86,8 +86,8 @@ export class JobsService {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-    if (user.company && user.company.name) {
-      filter['company.name'] = user.company.name
+    if (user.company && user.company._id) {
+      filter['company._id'] = user.company._id
     }
 
     let offset = (currentPage - 1) * (limit);

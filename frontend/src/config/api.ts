@@ -229,7 +229,11 @@ export const callFetchResume = (query: string) => {
     `/api/v1/resumes?${query}`
   );
 };
-
+export const callFetchResumeWithAdmin = (query: string) => {
+  return axios.get<IBackendRes<IModelPaginate<IResume>>>(
+    `/api/v1/resumes/admin?${query}`
+  );
+};
 export const callFetchResumeById = (id: string) => {
   return axios.get<IBackendRes<IResume>>(`/api/v1/resumes/${id}`);
 };

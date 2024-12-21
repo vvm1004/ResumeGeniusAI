@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ResumeService } from './resume.service';
 import { CreateResumeDto, CreateUserCvDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -33,6 +33,16 @@ export class ResumeController {
     @Query() qs: string
   ) {
     return this.resumeService.findAll(+currentPage, +limit, qs);
+  }
+  @Get('admin')
+  @ResponseMessage('Fetch List Resume with admin page')
+  findAllWithAdminPage(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string,
+    @User() user: IUser
+  ) {
+    return this.resumeService.findAllWithAdminPage(+currentPage, +limit, qs, user);
   }
 
   @Public()

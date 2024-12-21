@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import { callDeleteResume } from "@/config/api";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
-import { fetchResume } from "@/redux/slice/resumeSlide";
+import { fetchAdminResume } from "@/redux/slice/resumeSlideAdmin"
 import ViewDetailResume from "@/components/admin/resume/view.resume";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 import Access from "@/components/share/access";
@@ -17,9 +17,9 @@ import Access from "@/components/share/access";
 const ResumePage = () => {
     const tableRef = useRef<ActionType>();
 
-    const isFetching = useAppSelector(state => state.resume.isFetching);
-    const meta = useAppSelector(state => state.resume.meta);
-    const resumes = useAppSelector(state => state.resume.result);
+    const isFetching = useAppSelector(state => state.adminResume.isFetching);
+    const meta = useAppSelector(state => state.adminResume.meta);
+    const resumes = useAppSelector(state => state.adminResume.result);
     const dispatch = useAppDispatch();
 
     const [dataInit, setDataInit] = useState<IResume | null>(null);
@@ -84,11 +84,26 @@ const ResumePage = () => {
         {
             title: 'Job',
             dataIndex: ["jobId", "name"],
-            hideInSearch: true,
+            // hideInSearch: true,
         },
         {
             title: 'Company',
             dataIndex: ["companyId", "name"],
+            hideInSearch: true,
+        },
+        {
+            title: 'CV',
+            dataIndex: 'url', // Tên trường trong dữ liệu từ API
+            render: (text, record) => {
+                const cvUrl = record.url ? `http://localhost:8000/images/resume/${record.url}` : null;
+                return cvUrl ? (
+                    <a href={cvUrl} target="_blank" rel="noopener noreferrer">
+                        View CV
+                    </a>
+                ) : (
+                    <Tag color="red">No CV</Tag>
+                );
+            },
             hideInSearch: true,
         },
 
@@ -116,45 +131,34 @@ const ResumePage = () => {
             },
             hideInSearch: true,
         },
-        // {
+        {
 
-        //     title: 'Actions',
-        //     hideInSearch: true,
-        //     width: 50,
-        //     render: (_value, entity, _index, _action) => (
-        //         <Space>
-        //             <EditOutlined
-        //                 style={{
-        //                     fontSize: 20,
-        //                     color: '#ffa500',
-        //                 }}
-        //                 type=""
-        //                 onClick={() => {
-        //                     navigate(`/admin/job/upsert?id=${entity._id}`)
-        //                 }}
-        //             />
+            title: 'Actions',
+            hideInSearch: true,
+            width: 50,
+            render: (_value, entity, _index, _action) => (
+                <Space>
+                    <Popconfirm
+                        placement="leftTop"
+                        title={"Xác nhận xóa resume"}
+                        description={"Bạn có chắc chắn muốn xóa resume này ?"}
+                        onConfirm={() => handleDeleteResume(entity._id)}
+                        okText="Xác nhận"
+                        cancelText="Hủy"
+                    >
+                        <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                            <DeleteOutlined
+                                style={{
+                                    fontSize: 20,
+                                    color: '#ff4d4f',
+                                }}
+                            />
+                        </span>
+                    </Popconfirm>
+                </Space>
+            ),
 
-        //             <Popconfirm
-        //                 placement="leftTop"
-        //                 title={"Xác nhận xóa resume"}
-        //                 description={"Bạn có chắc chắn muốn xóa resume này ?"}
-        //                 onConfirm={() => handleDeleteResume(entity._id)}
-        //                 okText="Xác nhận"
-        //                 cancelText="Hủy"
-        //             >
-        //                 <span style={{ cursor: "pointer", margin: "0 10px" }}>
-        //                     <DeleteOutlined
-        //                         style={{
-        //                             fontSize: 20,
-        //                             color: '#ff4d4f',
-        //                         }}
-        //                     />
-        //                 </span>
-        //             </Popconfirm>
-        //         </Space>
-        //     ),
-
-        // },
+        },
     ];
 
     const buildQuery = (params: any, sort: any, filter: any) => {
@@ -204,7 +208,7 @@ const ResumePage = () => {
                     dataSource={resumes}
                     request={async (params, sort, filter): Promise<any> => {
                         const query = buildQuery(params, sort, filter);
-                        dispatch(fetchResume({ query }))
+                        dispatch(fetchAdminResume({ query }))
                     }}
                     scroll={{ x: true }}
                     pagination={
