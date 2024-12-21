@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Render, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Render, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
@@ -8,6 +8,7 @@ import { IUser } from 'src/users/users.interface';
 import { RolesService } from 'src/roles/roles.service';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @ApiTags('auth')
 @Controller("auth")
@@ -54,5 +55,9 @@ export class AuthController {
   handleLogout(@Res({ passthrough: true }) response: Response, @User() user: IUser) {
     return this.authService.logout(response, user);
   }
-
+  @ResponseMessage("Change Password")
+  @Patch('change-password') 
+  async changePassword(@User() user: IUser, @Body() changePasswordDto: ChangePasswordDto) {
+    return this.authService.changePassword(user, changePasswordDto);
+  }
 }

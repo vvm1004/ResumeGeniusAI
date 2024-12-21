@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -167,5 +167,25 @@ export class UsersService {
     } catch (error) {
       throw new Error('Failed to count User: ' + error.message);
     }
+  }
+  async findById(userId: string){
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+  async updatePassword(userId: string, hashedPassword: string){
+    return this.userModel
+      .findByIdAndUpdate(
+        userId,
+        {
+          password: hashedPassword
+        },
+        {
+          new: true
+        }
+      )
+      .exec()
   }
 }

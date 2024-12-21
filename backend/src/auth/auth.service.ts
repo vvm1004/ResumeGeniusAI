@@ -7,6 +7,9 @@ import { ConfigService } from '@nestjs/config';
 import ms from 'ms'
 import { Response } from 'express';
 import { RolesService } from 'src/roles/roles.service';
+import * as bcrypt from 'bcrypt';
+import { ChangePasswordDto } from './dto/change-password.dto';
+
 @Injectable()
 export class AuthService {
 
@@ -39,7 +42,11 @@ export class AuthService {
 
 
   async login(user: IUser, response: Response) {
-    const { _id, name, email, role, permissions, company } = user;
+    const { _id, name, email, role, permissions, company, isDeleted } = user;
+
+    if (isDeleted) {
+        throw new BadRequestException("User has been deleted or deactivated.");
+    }
     const payload = {
       sub: "token login",
       iss: "from server",
@@ -141,5 +148,26 @@ export class AuthService {
     response.clearCookie("refresh_token")
     return "ok";
   }
+  async changePassword(user: IUser, changePasswordDto: ChangePasswordDto){
+    const { oldPassword, newPassword } = changePasswordDto;
+
+    const foundUser = await this.usersService.findById(user._id)
+    
+    if (!foundUser) {
+      throw new BadRequestException('User not found');
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, foundUser.password);
+    if (!isMatch) {
+      throw new BadRequestException('Old password is incorrect');
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.usersService.updatePassword(user._id, hashedNewPassword);
+
+    return { message: 'Password updated successfully' };
+  }
+
 }
 

@@ -19,4 +19,5 @@ export interface IUser {
         module: string;
     }[];
     company: ICompany; 
+    isDeleted?: boolean
 }
