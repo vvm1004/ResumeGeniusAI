@@ -148,8 +148,8 @@ const ClientJobDetailPage = (props: any) => {
     );
   };
 
-  const handleClick = (name: string, id: string) => {
-    navigate(`/company/${name}?id=${id}`);
+  const handleClick = (id: string) => {
+    navigate(`/company/${id}`);
   };
 
   return (
@@ -357,7 +357,7 @@ const ClientJobDetailPage = (props: any) => {
                         {companyDetail?.address ? companyDetail?.address : ""}
                       </span>
                     </Col>
-                    <Col className="flex justify-center items-center text-blue-600 text-md font-bold hover:underline" onClick={() => handleClick(companyDetail?.name || "", companyDetail?._id || "")}>
+                    <Col className="flex justify-center items-center text-blue-600 text-md font-bold hover:underline" onClick={() => handleClick(companyDetail?._id || "")}>
                       View company page{" "}
                       <BsBoxArrowInUpRight className="ml-2" size={18} />
                     </Col>

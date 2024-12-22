@@ -62,7 +62,7 @@ const CompanyCard = (props: IProps) => {
   const handleViewDetailJob = (item: ICompany) => {
     if (item.name) {
       const slug = convertSlug(item.name);
-      navigate(`/company/${slug}?id=${item._id}`);
+      navigate(`/company/${item._id}`);
     }
   };
 

@@ -51,9 +51,9 @@ const CompanyList = () => {
 
   console.log("dataCompany", company);
 
-  const handleClick = (name: any, id: any) => {
+  const handleClick = ( id: any) => {
     return () => {
-      navigate(`/company/${name}?id=${id}`);
+      navigate(`/company/${id}`);
     };
   };
 
@@ -69,7 +69,7 @@ const CompanyList = () => {
         <div className="company-items-wrapper">
           <div
             className="company-item"
-            onClick={handleClick(comp.name, comp._id)}
+            onClick={handleClick(comp._id)}
           >
             <img
               className="company-logo"
