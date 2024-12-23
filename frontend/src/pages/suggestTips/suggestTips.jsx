@@ -93,7 +93,7 @@ const SuggestTips = () => {
 
     return (
         <div className="suggestPage">
-            <h1>Bonus Videos for Career Tips</h1>
+            <h1 className="tip-title">Bonus Videos for Career Tips</h1>
 
             <h3>Resume Writing Tips</h3>
             <div className="video-row">

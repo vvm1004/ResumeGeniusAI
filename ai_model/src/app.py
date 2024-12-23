@@ -658,7 +658,6 @@ def generate_summary():
     
     return jsonify({"summary": summary})
 
-
 @app.route('/generate_employment_history', methods=['POST'])
 def generate_employment_history():
     data = request.json

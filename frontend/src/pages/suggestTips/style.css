@@ -6,12 +6,14 @@
     margin: 0 auto;
 }
 
-h1 {
+h1 .tip-title {
     color: #08eb10;
     text-align: center;
     font-size: 1rem;
     margin-bottom: 40px;
 }
+
+
 
 h3 {
     color: #333;
