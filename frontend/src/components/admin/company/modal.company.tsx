@@ -60,18 +60,18 @@ const ModalCompany = (props: IProps) => {
     const submitCompany = async (valuesForm: ICompanyForm) => {
         const { name, address, linkUrl, minScale, maxScale } = valuesForm;
 
-        if (dataLogo.length === 0) {
+        if (dataLogo.length === 0 && !dataInit?.logo) {
             message.error('Vui lòng upload ảnh Logo')
             return;
         }
-        if (dataImage.length === 0) {
+        if (dataImage.length === 0 && !dataInit?.image) {
             message.error('Vui lòng upload ảnh Công Ty')
             return;
         }
 
         if (dataInit?._id) {
             //update
-            const res = await callUpdateCompany(dataInit._id, name, address, value, dataLogo[0].name, dataImage[0].name, linkUrl, minScale, maxScale);
+            const res = await callUpdateCompany(dataInit._id, name, address, value,  dataLogo.length > 0 ? dataLogo[0].name : dataInit.logo, dataImage.length > 0 ? dataImage[0].name : dataInit.image, linkUrl, minScale, maxScale);
             if (res.data) {
                 message.success("Cập nhật company thành công");
                 handleReset();
@@ -300,7 +300,7 @@ const ModalCompany = (props: IProps) => {
                                         required: true,
                                         message: 'Vui lòng không bỏ trống',
                                         validator: () => {
-                                            if (dataLogo.length > 0) return Promise.resolve();
+                                            if (dataLogo.length > 0 || (dataInit && dataInit.logo)) return Promise.resolve();
                                             else return Promise.reject(false);
                                         }
                                     }]}
@@ -349,7 +349,7 @@ const ModalCompany = (props: IProps) => {
                                         required: true,
                                         message: 'Vui lòng không bỏ trống',
                                         validator: () => {
-                                            if (dataImage.length > 0) return Promise.resolve();
+                                            if (dataImage.length > 0 || (dataInit && dataInit.image)) return Promise.resolve();
                                             else return Promise.reject(false);
                                         }
                                     }]}

@@ -1,16 +1,15 @@
-import { Card, Form, Input, Select, Tabs } from "antd";
+import { Button, Card, Form, Input, Select, Tabs, Upload } from "antd";
 import { useSelector } from "react-redux";
 import "./index.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { notification } from "antd";
 import { callUpdateUser } from "@/config/api";
+import { UploadOutlined } from "@ant-design/icons";
 
 const AccountManagement = () => {
   const userId = useSelector((state) => state.account.user._id);
   const access_token = localStorage.getItem("access_token");
-
-  console.log("acceskdlfjksdjfl", access_token);
 
   const [data, setData] = useState([]);
   const [form] = Form.useForm();
@@ -42,30 +41,55 @@ const AccountManagement = () => {
   };
 
   const renderInformation = () => {
-    console.log("sldjfklsdjfks", data);
+    // console.log("sldjfklsdjfks", data);
     return (
       <>
-        <div className="font-bold text-gray-600" style={{ fontSize: "17px" }}>
-          <div>
-            ID: <span className="ml-2 font-normal">{data._id}</span>
+        <div className="flex">
+          <div
+            className="w-2/3 font-bold text-gray-600"
+            style={{ fontSize: "17px" }}
+          >
+            <div>
+              ID: <span className="ml-2 font-normal">{data._id}</span>
+            </div>
+            <div className="mt-2">
+              User name: <span className="ml-2 font-normal">{data.name}</span>
+            </div>
+            <div className="mt-2">
+              Email: <span className="ml-2 font-normal">{data.email}</span>
+            </div>
+            <div className="mt-2">
+              Age: <span className="ml-2 font-normal">{data.age}</span>
+            </div>
+            <div className="mt-2">
+              Gender: <span className="ml-2 font-normal">{data.gender}</span>
+            </div>
+            <div className="mt-2">
+              Address: <span className="ml-2 font-normal">{data.address}</span>
+            </div>
+            <div className="mt-2">
+              Company name:{" "}
+              <span className="ml-2 font-normal">{data?.company?.name}</span>
+            </div>
           </div>
-          <div className="mt-2">
-            User name: <span className="ml-2 font-normal">{data.name}</span>
-          </div>
-          <div className="mt-2">
-            Email: <span className="ml-2 font-normal">{data.email}</span>
-          </div>
-          <div className="mt-2">
-            Age: <span className="ml-2 font-normal">{data.age}</span>
-          </div>
-          <div className="mt-2">
-            Gender: <span className="ml-2 font-normal">{data.gender}</span>
-          </div>
-          <div className="mt-2">
-            Address: <span className="ml-2 font-normal">{data.address}</span>
-          </div>
-          <div className="mt-2">
-            Company name: <span className="ml-2 font-normal">{data?.company?.name}</span>
+          <div className="w-1/3">
+            <div
+              className="mb-2 font-bold text-gray-600"
+              style={{ fontSize: "17px" }}
+            >
+              Avatar:{" "}
+            </div>
+            <img
+              className="rounded-sm w-32 h-auto border"
+              src={
+                data?.avatar
+                  ? data?.avatar
+                  : `${
+                      import.meta.env.VITE_BACKEND_URL
+                    }/images/avatar_user/avatar-default.jpg`
+              }
+              alt="Avatar"
+            />
           </div>
         </div>
       </>
@@ -95,9 +119,92 @@ const AccountManagement = () => {
       });
     }
 
+    const handleImageChange = async (file) => {
+      if (file && file.type.startsWith("image/")) {
+        try {
+          const base64Image = await convertToBase64(file);
+
+          const compressedImage = await resizeAndCompressImage(base64Image, 50);
+
+          form.setFieldsValue({ avatar: compressedImage });
+
+          setData((prev) => ({
+            ...prev,
+            avatar: compressedImage,
+          }));
+        } catch (error) {
+          console.error("Error processing image:", error);
+        }
+      } else {
+        console.error("File is not an image or no file selected.");
+      }
+    };
+
+    // Convert image file to Base64 string
+    const convertToBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    };
+
+    // Resize and compress the image
+    const resizeAndCompressImage = (
+      base64Image,
+      maxSizeKB = 50, // Set to 50 KB target size
+      maxWidth = 400, // Slightly reduce dimensions for better compression
+      maxHeight = 400
+    ) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = base64Image;
+
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          let width = img.width;
+          let height = img.height;
+
+          // Scale down if larger than max dimensions
+          if (width > maxWidth || height > maxHeight) {
+            const scaleFactor = Math.min(maxWidth / width, maxHeight / height);
+            width = width * scaleFactor;
+            height = height * scaleFactor;
+          }
+
+          // Set canvas size and draw image
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Compression function
+          const tryCompress = (quality) => {
+            const compressedImage = canvas.toDataURL("image/jpeg", quality);
+            const imageSizeInKB = (compressedImage.length * 3) / 4 / 1024;
+
+            if (imageSizeInKB <= maxSizeKB) {
+              resolve(compressedImage); // Image is within target size
+            } else if (quality > 0.1) {
+              tryCompress(quality - 0.1); // Reduce quality if needed
+            } else {
+              resolve(compressedImage); // Return lowest quality if necessary
+            }
+          };
+
+          // Start compression with an initial quality of 0.7 for faster results
+          tryCompress(0.7);
+        };
+
+        img.onerror = reject;
+      });
+    };
+
     const handleFormSubmit = async (values) => {
       try {
-        // console.log("valueeeeeddddddddddddđ", values);
+        // console.log("Submitted values", values);
         const response = await callUpdateUser(values);
         openNotification("success", "User information updated successfully!");
         await fetchData();
@@ -113,32 +220,72 @@ const AccountManagement = () => {
         layout="horizontal"
         onFinish={handleFormSubmit}
       >
-        <Form.Item
-          label={<span className="font-bold">ID</span>}
-          name="_id"
-          rules={[{ required: true }]}
-          labelCol={{ span: 3 }}
-          wrapperCol={{ span: 10 }}
-        >
-          <Input className="bg-gray-100" readOnly />
-        </Form.Item>
-        <Form.Item
-          label={<span className="font-bold">Name</span>}
-          name="name"
-          rules={[{ required: true, message: "Please enter your name" }]}
-          labelCol={{ span: 3 }}
-        >
-          <Input placeholder="Enter your name" />
-        </Form.Item>
-        <Form.Item
-          label={<span className="font-bold">Email</span>}
-          name="email"
-          rules={[{ required: true }]}
-          labelCol={{ span: 3 }}
-          wrapperCol={{ span: 10 }}
-        >
-          <Input className="bg-gray-100" readOnly />
-        </Form.Item>
+        <div className="flex items-center">
+          <div className="w-2/3">
+            <Form.Item
+              label={<span className="font-bold">ID</span>}
+              name="_id"
+              rules={[{ required: true }]}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 18 }}
+            >
+              <Input className="bg-gray-100" readOnly />
+            </Form.Item>
+            <Form.Item
+              label={<span className="font-bold">Name</span>}
+              name="name"
+              rules={[{ required: true, message: "Please enter your name" }]}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 18 }}
+            >
+              <Input placeholder="Enter your name" />
+            </Form.Item>
+            <Form.Item
+              label={<span className="font-bold">Email</span>}
+              name="email"
+              rules={[{ required: true }]}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 18 }}
+            >
+              <Input className="bg-gray-100" readOnly />
+            </Form.Item>
+          </div>
+          <div className="w-1/3">
+            <Form.Item
+              label={<span className="font-bold">Avatar</span>}
+              name="avatar"
+              rules={[{ required: true, message: "Please upload an avatar!" }]}
+              // labelCol={{ span: 3 }}
+              // wrapperCol={{ span: 10 }}
+              labelAlign="top"
+            >
+              <img
+                className="mb-2 rounded-sm w-32 h-auto border"
+                src={
+                  data?.avatar
+                    ? data?.avatar
+                    : `${
+                        import.meta.env.VITE_BACKEND_URL
+                      }/images/avatar_user/avatar-default.jpg`
+                }
+                alt="Avatar"
+              />
+              <Upload
+                name="avatar"
+                listType="picture"
+                maxCount={1}
+                accept="image/*"
+                beforeUpload={(file) => {
+                  handleImageChange(file);
+                  return false;
+                }}
+                showUploadList={false}
+              >
+                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+              </Upload>
+            </Form.Item>
+          </div>
+        </div>
         <Form.Item
           label={<span className="font-bold">Age</span>}
           name="age"
@@ -194,7 +341,7 @@ const AccountManagement = () => {
       }
 
       try {
-        console.log("valueeeeeee passs", values);
+        // console.log("valueeeeeee passs", values);
         const response = await axios.patch(
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/change-password`,
           values,

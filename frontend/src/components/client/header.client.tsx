@@ -18,14 +18,28 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { callLogout } from "@/config/api";
 import { setLogoutAction } from "@/redux/slice/accountSlide";
 import ManageAccount from "./modal/manage.account";
-import { ConfigProvider, Menu, Dropdown, Space, Avatar, Drawer, Badge, Modal } from "antd";
+import {
+  ConfigProvider,
+  Menu,
+  Dropdown,
+  Space,
+  Avatar,
+  Drawer,
+  Badge,
+  Modal,
+} from "antd";
 import { BellOutlined } from "@ant-design/icons";
-import "./header.css"
-import { useSocket } from '../../hook/useSocket';  // Đảm bảo bạn đã tạo đúng đường dẫn
+import "./header.css";
+import { useSocket } from "../../hook/useSocket"; // Đảm bảo bạn đã tạo đúng đường dẫn
 import { useSelector } from "react-redux";
-import { getUnreadNotifications, markNotificationAsRead } from "./handleContent";
-import Logo from '../../assets/LogoIcon-removebg-preview.png';
+import {
+  getUnreadNotifications,
+  markNotificationAsRead,
+} from "./handleContent";
+import Logo from "../../assets/LogoIcon-removebg-preview.png";
 import { HomeIcon } from "lucide-react";
+import axios from "axios";
+import { IUser } from "@/types/backend";
 
 const items: MenuProps["items"] = [
   {
@@ -76,12 +90,11 @@ interface Notification {
   _id: string;
 
   message: string;
-  contentId: string;  // ID của content liên quan (có thể là job, application, ... tùy theo yêu cầu)
+  contentId: string; // ID của content liên quan (có thể là job, application, ... tùy theo yêu cầu)
   receiverId: string; // ID người nhận
-  senderId: string;   // ID người gửi
+  senderId: string; // ID người gửi
   timestamp: Date;
   isRead?: boolean;
-
 }
 const Header = (props: any) => {
   const [current, setCurrent] = useState("home");
@@ -96,8 +109,9 @@ const Header = (props: any) => {
   const [userId, setUserId] = useState("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsData, setNotificationsData] = useState([]);
-  useEffect(() => {
+  const [data, setData] = useState<IUser>();
 
+  useEffect(() => {
     const loadNotifications = async () => {
       const unreadNotifications = await getUnreadNotifications(userId);
 
@@ -105,12 +119,23 @@ const Header = (props: any) => {
     };
 
     if (userId != "") loadNotifications();
-
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/${userId}`
+      );
+      setData(response.data.data);
+    } catch (error) {
+      console.log("Error fetching data: ", error);
+    }
+  };
 
   useEffect(() => {
     if (user && user._id) {
       setUserId(user._id);
+      fetchData();
     }
   }, [user]);
 
@@ -141,7 +166,7 @@ const Header = (props: any) => {
       // Gọi API để đánh dấu notification là đã đọc trong DB
       await markNotificationAsRead(id);
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      console.error("Error marking notification as read:", error);
     }
   };
   const navigate = useNavigate();
@@ -165,13 +190,15 @@ const Header = (props: any) => {
     }
   };
 
-  const itemsDropdown: MenuProps['items'] = [
+  const itemsDropdown: MenuProps["items"] = [
     {
       label: (
         <label
           style={{ cursor: "pointer" }}
           // onClick={() => setOpenManageAccount(true)}
-          onClick={() => {navigate("/account-management");}}
+          onClick={() => {
+            navigate("/account-management");
+          }}
         >
           Account Management
         </label>
@@ -197,7 +224,6 @@ const Header = (props: any) => {
 
   const itemsMobiles = [...items, ...itemsDropdown];
 
-
   return (
     <>
       <div className={styles["header-section"]}>
@@ -213,54 +239,57 @@ const Header = (props: any) => {
                   },
                 }}
               >
-                <div className="logoContent" >
+                <div className="logoContent">
                   <img className="logo" src={Logo} alt="Logo" />
                   {isAuthenticated === true && user.role.name == "USER" && (
                     <Link className="hr_register" to="/hr_register">
                       Register Become Human Resource ?
                     </Link>
                   )}
-
                 </div>
 
                 <Menu
                   onClick={onClick}
-                  className="flex-1"  // Loại bỏ margin-left trong className
-                  style={{ marginLeft: '5%' }}  // Sử dụng style trực tiếp để canh lệch trái
+                  className="flex-1" // Loại bỏ margin-left trong className
+                  style={{ marginLeft: "5%" }} // Sử dụng style trực tiếp để canh lệch trái
                   selectedKeys={[current]}
                   mode="horizontal"
                   items={items}
                 />
-
               </ConfigProvider>
 
               <Dropdown
                 overlay={
-                  <div className="notification-dropdown" style={{ padding: '10px' }}>
+                  <div
+                    className="notification-dropdown"
+                    style={{ padding: "10px" }}
+                  >
                     {notifications.length > 0 ? (
                       <ul>
                         {notifications.map((notification) => (
                           <li
                             key={notification._id}
-                            className={'notification-item'}
+                            className={"notification-item"}
                             style={{
-                              padding: '5px 0',
-                              cursor: 'pointer',
-                              position: 'relative', // Ensures that the "Read" link is positioned relative to the li
-                              minHeight: '20px', // Optional: To ensure each notification has enough height
+                              padding: "5px 0",
+                              cursor: "pointer",
+                              position: "relative", // Ensures that the "Read" link is positioned relative to the li
+                              minHeight: "20px", // Optional: To ensure each notification has enough height
                             }}
                           >
                             <br />
                             <span
-                              onClick={() => toggleNotificationRead(notification._id)}
+                              onClick={() =>
+                                toggleNotificationRead(notification._id)
+                              }
                               style={{
-                                color: 'blue',
-                                textDecoration: 'underline',
-                                position: 'absolute', // Absolute positioning within the parent li
-                                top: '5px', // Distance from the top of the li
-                                right: '10px', // Distance from the right side of the li
-                                fontSize: '12px', // Smaller font size
-                                cursor: 'pointer',
+                                color: "blue",
+                                textDecoration: "underline",
+                                position: "absolute", // Absolute positioning within the parent li
+                                top: "5px", // Distance from the top of the li
+                                right: "10px", // Distance from the right side of the li
+                                fontSize: "12px", // Smaller font size
+                                cursor: "pointer",
                               }}
                             >
                               Read
@@ -276,20 +305,16 @@ const Header = (props: any) => {
                   </div>
                 }
               >
-
                 <Badge count={notifications.length} dot>
                   <BellOutlined
                     style={{
                       fontSize: 24,
-                      color: '#fff',
-                      cursor: 'pointer',
-                      paddingRight: '0px',
-
+                      color: "#fff",
+                      cursor: "pointer",
+                      paddingRight: "0px",
                     }}
                   />
                 </Badge>
-
-
               </Dropdown>
 
               <div style={{ paddingLeft: "20px" }}></div>
@@ -300,26 +325,36 @@ const Header = (props: any) => {
                 ) : (
                   <Dropdown
                     menu={{ items: itemsDropdown }}
-                  //   trigger={["click"]}
+                    //   trigger={["click"]}
                   >
                     <Space style={{ cursor: "pointer" }}>
                       <span>Welcome {user?.name}</span>
-                      <Avatar>
+                      {/* <Avatar>
                         {user?.name?.substring(0, 2)?.toUpperCase()}{" "}
-                      </Avatar>
+                      </Avatar> */}
+                      <Avatar
+                        src={
+                          data?.avatar
+                            ? data?.avatar
+                            : `${
+                                import.meta.env.VITE_BACKEND_URL
+                              }/images/avatar_user/avatar-default.jpg`
+                        }
+                        alt="Avatar"
+                      ></Avatar>
                     </Space>
                   </Dropdown>
                 )}
               </div>
             </div>
-          </div >
+          </div>
         ) : (
           <div className={styles["header-mobile"]}>
             <span>Your APP</span>
             <MenuFoldOutlined onClick={() => setOpenMobileMenu(true)} />
           </div>
         )}
-      </div >
+      </div>
       <Drawer
         title="Chức năng"
         placement="right"
