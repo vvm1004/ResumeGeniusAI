@@ -85,7 +85,9 @@ function ViewResume() {
       <div className=" md:mx-70 lg:mx-36  flex justify-center items-center">
         <div style={{ minWidth: "800px" }}>
           <div id="print-area">
-            <ResumePreview />
+            <div className="h-[100vh]">
+              <ResumePreview />
+            </div>
           </div>
         </div>
       </div>

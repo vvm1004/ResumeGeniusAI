@@ -174,10 +174,10 @@ function EditResume() {
               </div>
 
               <div
-                className="flex justify-center items-center"
-                style={{ height: "95%" }}
+                className="justify-center"
+                // style={{ height: "95%" }}
               >
-                <div style={{ height: "90%", width: "70%", overflowY: "auto" }}>
+                <div className="h-[120vh] transform scale-[0.7] overflow-auto -translate-y-20 border-2 rounded-xl">
                   <ResumePreview />
                 </div>
               </div>

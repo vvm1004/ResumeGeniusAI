@@ -71,7 +71,7 @@ const EditorPage = () => {
             <IoIosArrowBack className="mr-2" />
             <span>Back to Editor</span>
           </button>
-          <div className="grid grid-cols-5 gap-3 items-center">
+          <button className="grid grid-cols-5 gap-3 items-center">
             {colors.map((color, index) => (
               <div
                 key={index}
@@ -94,7 +94,7 @@ const EditorPage = () => {
                 style={{ backgroundColor: customColor }}
               />
             </div>
-          </div>
+          </button>
           <div>
             <button
               onClick={saveCustomColor}
@@ -110,8 +110,8 @@ const EditorPage = () => {
             <Sidebar />
           </div>
 
-          <div className="flex justify-center w-3/4 p-4 overflow-auto">
-            <div style={{ height: "90%", width: "70%" }}>
+          <div className="flex justify-center w-3/4 p-4 -translate-y-28">
+            <div className="h-[120vh] w-[800px] transform scale-[0.7] overflow-auto  border-2 rounded-xl">
               <ResumePreview />
             </div>
           </div>
