@@ -259,8 +259,8 @@ const HrRegister = () => {
       </div>
 
       {/* Registration Form */}
-      <div className="form-container">
-        <h3 className="title">Register to Become an HR</h3>
+      <div className="form-container mb-4 rounded-md">
+        <h3 className="title p-2 rounded-md">Register to Become an HR</h3>
         <Spin spinning={loading} tip="Registering...">
           <Form
             name="hr_register"

@@ -11,6 +11,9 @@ import UploadResumeModal from "./Upload/UploadResumeModal";
 import LookingJobModal from "./Modal/LookingJobModal";
 import { notification } from "antd";
 import { Modal as AntModal } from "antd";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { DataContext } from "@/context/DataContext";
+import ResumePreview from "./EditResume/ResumePreview";
 
 const MyResumes = () => {
   const user = useSelector((state) => state.account.user);
@@ -44,7 +47,7 @@ const MyResumes = () => {
         {
           params: {
             title: `/${searchQuery}/i`,
-            "personalInformation.name": `/${searchQuery}/i`,
+            // "personalInformation.name": `/${searchQuery}/i`,
             sort: sortOption,
           },
           headers: {
@@ -357,82 +360,45 @@ const MyResumes = () => {
             </button>
           </div>
         </div>
-        {/* <form class="max-w-md mx-auto">
-          <label
-            for="default-search"
-            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-          >
-            Search
-          </label>
 
-          <div class="relative">
-            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg
-                class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
+        {/* Form Search */}
+        <div class="mb-4 flex items-center">
+          <div className="w-1/5">
+            <select
+              className="bg-gray-100"
+              onChange={handleSortChange}
+              value={sortOption}
+            >
+              <option value="">Default</option>
+              <option value="createdAt">Lastest</option>
+              <option value="-createdAt">Oldest</option>
+              <option value="-updatedAt">Updatest</option>
+            </select>
+          </div>
+
+          <div class="w-1/2 flex items-center">
             <input
               type="search"
-              id="default-search"
-              class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              id="default-input-search"
+              class="w-full p-2 mr-4 rounded-md border focus:border-none"
               placeholder="Search with name or title"
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                handleSearch();
+              }}
             />
             <button
               type="button"
-              class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              class="text-white bg-blue-600 hover:bg-blue-700 font-semibold rounded-lg text-sm px-4 py-2"
               onClick={handleSearch}
             >
               Search
             </button>
           </div>
-        </form> */}
-        <div class="flex rounded-md border-2 border-blue-500 overflow-hidden max-w-md mx-auto font-[sans-serif]">
-          <input
-            type="email"
-            placeholder="Search Something..."
-            class="w-full outline-none bg-white text-gray-600 text-sm px-4 py-3"
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button
-            type="button"
-            class="flex items-center justify-center bg-[#007bff] px-5"
-            onClick={handleSearch}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 192.904 192.904"
-              width="16px"
-              class="fill-white"
-            >
-              <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z"></path>
-            </svg>
-          </button>
         </div>
-        <select
-          className="bg-gray-100"
-          onChange={handleSortChange}
-          value={sortOption}
-        >
-          <option value="">Default</option>
-          <option value="createdAt">Lastest</option>
-          <option value="-createdAt">Oldest</option>
-          <option value="-updatedAt">Updatest</option>
-        </select>
+
         {isOpenLoading ? (
-          <div className="flex justify-center items-center h-full">
+          <div className="absolute top-1/2 left-1/2">
             <div className="loader"></div>
           </div>
         ) : (
@@ -499,13 +465,27 @@ const MyResumes = () => {
                     </div>
 
                     <div className="mt-4">
-                      <button className="text-600 font-medium flex items-center hover:text-blue-600">
+                      {/* <button className="text-600 font-medium flex items-center hover:text-blue-600">
                         Tailor to job listing
                         <span className="ml-2 bg-gray-200 text-xs px-2 py-1 rounded-full">
                           NEW
                         </span>
+                      </button> */}
+                      <button
+                        className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600"
+                        onClick={() =>
+                          window.open(`/resumes/view/${resume._id}`, "_blank")
+                        }
+                      >
+                        <IoDocumentTextOutline className="mr-2 text-xl" />
+                        View resume details
                       </button>
-                      <button className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600">
+                      <button
+                        className="flex items-center block mt-2 text-600 font-medium hover:text-blue-600"
+                        onClick={() =>
+                          window.open(`/resumes/view/${resume._id}`, "_blank")
+                        }
+                      >
                         <FaRegFilePdf className="mr-2 text-xl" />
                         Download PDF
                       </button>

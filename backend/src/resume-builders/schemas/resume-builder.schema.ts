@@ -53,6 +53,7 @@ export class ResumeBuilder {
       position: String,
       date: String,
       description: String,
+      city: String,
       responsibilities: [String],
     },
   ])
@@ -65,6 +66,7 @@ export class ResumeBuilder {
       institution: String,
       gpa: String,
       date: String,
+      description: String,
     },
   ])
   education: Array<any>;
