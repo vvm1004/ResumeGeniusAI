@@ -311,7 +311,7 @@ const ResumePreview = () => {
     }
   };
 
-  return <>{renderTemplate()}</>;
+  return <div className="h-full">{renderTemplate()}</div>;
 };
 
 export default ResumePreview;

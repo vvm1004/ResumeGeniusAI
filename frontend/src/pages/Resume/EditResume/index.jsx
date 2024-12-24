@@ -60,6 +60,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiFillAppstore } from "react-icons/ai";
+import { IoIosMore } from "react-icons/io";
 
 function EditResume() {
   const { id } = useParams();
@@ -150,10 +151,10 @@ function EditResume() {
               style={{ height: "100vh" }}
             >
               <div
-                className="flex items-center justify-between bg-gray-200 p-4 w-full"
+                className="flex items-center justify-between p-4 w-full"
                 style={{ height: "5%" }}
               >
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <AiFillAppstore className="text-3xl mr-2" />
                   <button
                     onClick={toggleTemplateSelection}
@@ -170,6 +171,22 @@ function EditResume() {
                   >
                     View
                   </button>
+                </div> */}
+                <div className="w-full h-full flex justify-center items-center cursor-pointer text-white p-2">
+                  <div
+                    className="flex justify-center items-center"
+                    onClick={toggleTemplateSelection}
+                  >
+                    <AiFillAppstore className="text-2xl mr-2" />
+                    Select Template
+                  </div>
+                  <span className="ml-2 mr-2">|</span>
+                  <button
+                    className="bg-blue-500 rounded-sm p-2 font-semibold mr-1"
+                    onClick={handleView}
+                  >
+                    View Resume
+                  </button>
                 </div>
               </div>
 
@@ -177,7 +194,7 @@ function EditResume() {
                 className="justify-center"
                 // style={{ height: "95%" }}
               >
-                <div className="h-[120vh] transform scale-[0.7] overflow-auto -translate-y-20 border-2 rounded-xl">
+                <div className="h-[120vh] transform scale-[0.7] overflow-auto -translate-y-[115px] border-2 rounded-xl">
                   <ResumePreview />
                 </div>
               </div>

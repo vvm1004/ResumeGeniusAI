@@ -15,6 +15,7 @@
     display: block;
     position: relative;
     min-width: auto;
+    min-height: 100vh;
   }
   @page {
     size: auto;

@@ -53,24 +53,25 @@ export class HrRegistrationService {
   // Lấy tất cả đăng ký HR với phân trang và filter
   async getAllRegistrations(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
     const offset = (currentPage - 1) * limit;
     const defaultLimit = limit || 10;
-
     // Tính tổng số bản ghi và phân trang
     const totalItems = await this.hrRegistrationModel.countDocuments(filter);
     const totalPages = Math.ceil(totalItems / defaultLimit);
-    console.log('\ntotalPages', totalPages, '\t', totalItems);
-    console.log('\nfilter', filter);
+    // console.log('\ntotalPages', totalPages, '\t', totalItems);
+    // console.log('\nfilter', filter);
 
     const result = await this.hrRegistrationModel
-      .find()
+      .find(filter)
       .skip(offset)
       .limit(defaultLimit)
       .sort(sort as any)
       .populate(population)
       .exec();
 
-    console.log('\nresult: ', result);
+    // console.log('\nresult: ', result);
     return {
       meta: {
         current: currentPage,

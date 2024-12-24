@@ -52,8 +52,8 @@ function ViewResume() {
 
   return (
     <DataContext.Provider value={{ data, setData, id, access_token }}>
-      <div>
-        <div id="no-print">
+      <div className="min-h-screen">
+        <div id="no-print" className="h-[20vh]">
           <div className="my-10 mx-10 md:mx-20 lg:mx-80">
             <h2 className="text-center text-2xl font-medium">
               Congrats! Your Ultimate AI generated Resume is ready!
@@ -64,7 +64,7 @@ function ViewResume() {
             </p>
             <div className="flex justify-between px-44 my-10 ">
               <button
-                className="bg-[#9676E1] text-white px-4 py-2 rounded hover:bg-green-700"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
                 onClick={HandleDownload}
               >
                 Download
@@ -78,20 +78,17 @@ function ViewResume() {
                 }}
                 onClick={() => console.log("Shared successfully!")}
               >
-                <button className="bg-[#9676E1] text-white px-4 py-2 rounded hover:bg-green-700">
+                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
                   Share
                 </button>
               </RWebShare>
             </div>
           </div>
         </div>
-
-        <div className=" md:mx-70 lg:mx-36  flex justify-center items-center">
-          <div style={{ minWidth: "800px" }}>
-            <div id="print-area">
-              <div className="min-h-[100vh]">
-                <ResumePreview />
-              </div>
+        <div className="md:mx-70 lg:mx-36 flex justify-center items-center tranform scale-75">
+          <div id="print-area" className="w-[50%]">
+            <div className="h-[118.5vh] overflow-auto">
+              <ResumePreview />
             </div>
           </div>
         </div>
