@@ -10,19 +10,7 @@ import os
 genai.configure(api_key="AIzaSyBCvwMA6XriY5K6x2JHdd9DuoiN0ag5Lz8")
 # Configure logging
 # Đường dẫn cụ thể
-log_dir = "E:\\Certificate\\Logs"
-log_file = os.path.join(log_dir, "resume_log.json")
 
-# Tạo thư mục nếu chưa tồn tại
-os.makedirs(log_dir, exist_ok=True)
-
-# Cấu hình logging
-logging.basicConfig(
-    filename=log_file,
-    filemode='w',
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
 
 # Function to parse resume and return JSON data
 def parse_resume(pdf_path):
@@ -97,7 +85,6 @@ def parse_resume(pdf_path):
         try:
             resume_json = json.loads(response_text)
            # print(resume_json)
-            logging.info(json.dumps(resume_json, indent=4))
 
             return resume_json
         except json.JSONDecodeError as e:

@@ -95,7 +95,7 @@ const SuggestTips = () => {
         <div className="suggestPage">
             <h1 className="tip-title">Bonus Videos for Career Tips</h1>
 
-            <h3>Resume Writing Tips</h3>
+            <h3 className="tip-title2">Resume Writing Tips</h3>
             <div className="video-row">
                 <div className="random-video">
                     <RandomVideo
@@ -120,7 +120,7 @@ const SuggestTips = () => {
                 </div>
             </div>
 
-            <h3>Interview Tips</h3>
+            <h3 className="tip-title2">Interview Tips</h3>
             <div className="video-row">
                 <div className="random-video">
                     <RandomVideo
@@ -147,7 +147,7 @@ const SuggestTips = () => {
 
             {/* Hiển thị các khóa học dưới dạng bảng */}
             <div className="course-section">
-                <h3>Recommended Courses</h3>
+                <h3 className="tip-title2">Recommended Courses</h3>
 
                 <div className="course-category">
                     <h4>Data Science & Machine Learning</h4>
@@ -163,7 +163,7 @@ const SuggestTips = () => {
                 </div>
 
                 <div className="course-category">
-                    <h4>Web Development</h4>
+                    <h4 className="tip-title3">Web Development</h4>
                     <table className="course-table">
                         <tbody>
                             {web_course.map((course, index) => (
