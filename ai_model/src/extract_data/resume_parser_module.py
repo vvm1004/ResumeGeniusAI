@@ -10,19 +10,7 @@ import os
 genai.configure(api_key="AIzaSyBCvwMA6XriY5K6x2JHdd9DuoiN0ag5Lz8")
 # Configure logging
 # Đường dẫn cụ thể
-log_dir = "E:\\Certificate\\Logs"
-log_file = os.path.join(log_dir, "resume_log.json")
 
-# Tạo thư mục nếu chưa tồn tại
-os.makedirs(log_dir, exist_ok=True)
-
-# Cấu hình logging
-logging.basicConfig(
-    filename=log_file,
-    filemode='w',
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
 
 # Function to parse resume and return JSON data
 def parse_resume(pdf_path):
@@ -51,41 +39,121 @@ def parse_resume(pdf_path):
     response = chat_session.send_message(
        #resume_text1 + " THERE IS A data I read from a resume, PLEASE return this as a JSON object with fields: job_title, executive_profile, skills, summary, etc and all data in this resume "
         resume_text1 + """
-                HERE IS A data I read from a resume, Please return the extracted resume data as a JSON object with the following example structure:
-                {
-                "Personal Information": {
-                    "Name": { "$type": "string", "value": "<Name>" },
-                    "Email": { "$type": "string", "value": "<Email>" },
-                    "Address": { "$type": "string", "value": "<Address>" },
-                    "Phone": { "$type": "string", "value": "<Phone>" },
-                    "Github": { "$type": "string", "value": "<Github>" },
-                    "Linkedin": { "$type": "string", "value": "<Linkedin>" },
-                    "Social link": { "$type": "string", "value": "<Social link>" },
-                    "Image": "<Base64 encoded image>"
-                },
-                "Skills": [
-                    { "Title": { "$type": "string", "value": "<Category>" }, "Value": { "$type": "string", "value": "<Skills>" } }
-                ],
-                "Projects": [
-                    {
-                    "Title": { "$type": "string", "value": "<Project Title>" },
-                    "Description": { "$type": "string", "value": "<Description>" },
-                    "Tool": { "$type": "string", "value": "<Tools>" }
-                    }
-                ],
-                "Experience": [...],
-                "Education": [...],
-                "Certifications": [...],
-                "Languages": [...],
-                "Interests": [...],
-                "References": [...],
-                "Summary": { "$type": "string", "value": "<Summary>" },
-                "Accomplishments": [...],
-                "CustomFields": [...],
-                "Activities": [...],
-                 "Job Title":,
-
+               HERE IS A data I read from a resume. Please analyze the data and return it as a JSON object with the following structure:
+    {
+        "Personal Information": {
+            "Name": { "$type": "string", "value": "<Full Name>" },
+            "Email": { "$type": "string", "value": "<Email Address>" },
+            "Address": { "$type": "string", "value": "<Home Address or Location>" },
+            "Phone": { "$type": "string", "value": "<Phone Number>" },
+            "Github": { "$type": "string", "value": "<GitHub Link>" },
+            "Linkedin": { "$type": "string", "value": "<LinkedIn Profile>" },
+            "Social link": { "$type": "string", "value": "<Social Media or Portfolio Link>" },
+            "Image": { "$type": "string", "value": "<Base64 encoded image if available>" }
+        },
+        "Skills": [
+            {
+                "Title": { "$type": "string", "value": "<Category or Type of Skills>" },
+                "Value": { "$type": "string", "value": "<List of skills separated by commas>" }
+            }
+        ],
+        "Projects": [
+            {
+                "Title": { "$type": "string", "value": "<Project Name>" },
+                "Description": { "$type": "string", "value": "<Detailed Description>" },
+                "Features": { "$type": "string", "value": "<Key Features or Highlights>" },
+                "Technologies": { "$type": "string", "value": "<Tools or Technologies Used>" },
+                "Github link": { "$type": "string", "value": "<GitHub or Source Code Link>" },
+                "Demo": { "$type": "string", "value": "<Demo or Live Link>" },
+                "Date": { "$type": "string", "value": "<Timeline or Completion Date>" },
+                "Tool": { "$type": "string", "value": "<Additional Tools Used>" }
+            }
+        ],
+        "Experience": [
+            {
+                "Title": { "$type": "string", "value": "<Job Title>" },
+                "Company": { "$type": "string", "value": "<Company Name>" },
+                "Position": { "$type": "string", "value": "<Position Held>" },
+                "Date": { "$type": "string", "value": "<Start and End Dates>" },
+                "Description": { "$type": "string", "value": "<Job Description or Overview>" },
+                "Responsibilities": {
+                    "$type": "array",
+                    "items": [
+                        { "$type": "string", "value": "<Responsibility>" }
+                    ]
                 }
+            }
+        ],
+        "Education": [
+            {
+                "Degree": { "$type": "string", "value": "<Degree or Certification>" },
+                "Major": { "$type": "string", "value": "<Field of Study>" },
+                "Institution": { "$type": "string", "value": "<University or School>" },
+                "GPA": { "$type": "string", "value": "<Grade or GPA>" },
+                "Date": { "$type": "string", "value": "<Graduation Date>" }
+            }
+        ],
+        "Certifications": [
+            {
+                "Name": { "$type": "string", "value": "<Certification Name>" },
+                "Details": { "$type": "string", "value": "<Details or Description>" },
+                "Year": { "$type": "string", "value": "<Year Obtained>" },
+                "Link": { "$type": "string", "value": "<Related Link>" }
+            }
+        ],
+        "Languages": [
+            {
+                "Title": { "$type": "string", "value": "<Language>" },
+                "Level": { "$type": "string", "value": "<Proficiency Level>" }
+            }
+        ],
+        "Interests": [
+            {
+                "Title": { "$type": "string", "value": "<Interest or Hobby>" },
+                "Description": { "$type": "string", "value": "<Description or Details>" }
+            }
+        ],
+        "References": [
+            {
+                "Name": { "$type": "string", "value": "<Reference Name>" },
+                "Position": { "$type": "string", "value": "<Reference Position>" },
+                "Organization": { "$type": "string", "value": "<Reference Organization>" },
+                "Contact": { "$type": "string", "value": "<Reference Contact Information>" }
+            }
+        ],
+        "Summary": { "$type": "string", "value": "<Professional Summary or Career Objective>" },
+        "Accomplishments": [
+            {
+                "Title": { "$type": "string", "value": "<Accomplishment Title>" },
+                "Issuer": { "$type": "string", "value": "<Issuer or Organization>" },
+                "Date": { "$type": "string", "value": "<Date Achieved>" },
+                "Description": { "$type": "string", "value": "<Description of Accomplishment>" }
+            }
+        ],
+        "Activities": [
+            {
+                "Title": { "$type": "string", "value": "<Activity Name>" },
+                "Organization": { "$type": "string", "value": "<Organization>" },
+                "Date": { "$type": "string", "value": "<Date of Activity>" },
+                "Description": { "$type": "string", "value": "<Description or Details>" },
+                "Role": { "$type": "string", "value": "<Role>" },
+                "Achievements": {
+                    "$type": "array",
+                    "items": [
+                        { "$type": "string", "value": "<Achievement>" }
+                    ]
+                }
+            }
+        ],
+        "CustomFields": [
+            {
+                "Title": { "$type": "string", "value": "<Field Name>" },
+                "Value": { "$type": "string", "value": "<Field Value>" },
+                "Date": { "$type": "string", "value": "<Relevant Date>" }
+            }
+        ],
+        "Job Title": { "$type": "string", "value": "<Extracted Job Title>" }
+    }
                 """
     )
 
@@ -97,7 +165,6 @@ def parse_resume(pdf_path):
         try:
             resume_json = json.loads(response_text)
            # print(resume_json)
-            logging.info(json.dumps(resume_json, indent=4))
 
             return resume_json
         except json.JSONDecodeError as e:

@@ -15,8 +15,9 @@ import { MailService } from 'src/mail/mail.service';
       { name: HrRegistration.name, schema: HrRegistrationSchema },
     ]),
     UsersModule, // Đảm bảo chỉ khai báo một lần
+
   ],
   controllers: [HrRegistrationController],
   providers: [HrRegistrationService, MailService],
 })
-export class HrRegistrationModule {}
+export class HrRegistrationModule { }

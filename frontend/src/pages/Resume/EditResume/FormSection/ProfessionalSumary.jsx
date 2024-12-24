@@ -250,7 +250,21 @@ function ProfessionalSummary() {
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm font-medium text-gray-700"></label>
             <div>
-              <button
+              {showApplyCancel != true ? (<>
+                <button
+                  className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  onClick={genSummary}
+                >
+                  Generate with AI
+                </button>
+                <GenerateSummaryModal
+                  isOpen={summaryModalOpen}
+                  onClose={() => setSunnaryModalOpen(false)}
+                  data={genSummaryData}
+                  onSelect={handleSummarySelect}
+                  position={buttonPosition}
+                /></>) : null}
+              {/* <button
                 className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                 onClick={genSummary}
               >
@@ -262,7 +276,7 @@ function ProfessionalSummary() {
                 data={genSummaryData}
                 onSelect={handleSummarySelect}
                 position={buttonPosition}
-              />
+              /> */}
               {showApplyCancel && isCheckSpell == 1 ? (
                 <>
                   <button
