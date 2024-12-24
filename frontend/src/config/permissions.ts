@@ -85,11 +85,7 @@ export const ALL_PERMISSIONS = {
       apiPath: "/api/v1/hr-registration/admin",
       module: "HR_REGISTRATION",
     },
-    CREATE: {
-      method: "POST",
-      apiPath: "/api/v1/hr-registration",
-      module: "HR_REGISTRATION",
-    },
+
     UPDATE: {
       method: "PATCH",
       apiPath: "/api/v1/hr-registration/:id",

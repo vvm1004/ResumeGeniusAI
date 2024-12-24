@@ -65,8 +65,8 @@ const GenerateSummaryModal = ({ isOpen, onClose, data, onSelect, position }) => 
                             className="summary-item"
                         >
                             <strong>Level: {title}</strong>
-                            <p><strong>Name:</strong> {text.name || 'N/A'}</p>
-                            <p><strong>Summary:</strong> {text.summary || 'No summary available'}</p>
+                            {/* <p><strong>Name:</strong> {text.name || 'N/A'}</p> */}
+                            <p><strong>Summary:</strong> {text.summary ? text.summary : text || 'No summary available'}</p>
                         </li>
                     ))}
                 </ul>

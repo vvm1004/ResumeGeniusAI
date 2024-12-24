@@ -54,10 +54,10 @@ const initialState: IState = {
     age: 0,
     gender: "",
     status: "pending",
-    createdBy: {
-      _id: "",
-      email: "",
-    },
+    // createdBy: {
+    //   _id: "",
+    //   email: "",
+    // },
     updatedBy: {
       _id: "",
       email: "",
@@ -91,10 +91,10 @@ export const hrRegistrationSlice = createSlice({
         age: 0,
         gender: "",
         status: "pending",
-        createdBy: {
-          _id: "",
-          email: "",
-        },
+        // createdBy: {
+        //   _id: "",
+        //   email: "",
+        // },
         updatedBy: {
           _id: "",
           email: "",
