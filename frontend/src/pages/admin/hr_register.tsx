@@ -93,8 +93,8 @@ const HrRegistrationPage = () => {
           record.status === "approved"
             ? "green"
             : record.status === "rejected"
-            ? "red"
-            : "lime";
+              ? "red"
+              : "lime";
         return (
           <Tag color={statusColor}>
             {record.status?.toUpperCase() || "PENDING"}

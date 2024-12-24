@@ -183,5 +183,35 @@ export class MailController {
       console.error(`Failed to send email to ${resumeRegistration.email}`, error);
     }
   }
+  @Post('send-hr-account')
+  @Public()
+  async sendHrAccountEmail(
+    @Param('email') recipientEmail: string,
+    @Param('account') accountDetails: { email: string; password: string; fullName: string },
+  ) {
+    // Tạo nội dung email
+    const emailContent = {
+      to: recipientEmail,
+      from: '"HR Registration" <support@example.com>',
+      subject: `Your HR Account Information`,
+      template: 'hr-account-email', // Đảm bảo bạn có template phù hợp
+      context: {
+        fullName: accountDetails.fullName,
+        email: accountDetails.email,
+        password: accountDetails.password,
+      },
+    };
+
+    // Gửi email
+    try {
+      await this.mailerService.sendMail(emailContent);
+      console.log(`HR account email sent to ${recipientEmail}`);
+      return { message: 'HR account email sent successfully' };
+    } catch (error) {
+      console.error(`Failed to send HR account email to ${recipientEmail}`, error);
+      throw new Error(`Failed to send email: ${error.message}`);
+    }
+  }
+
 
 }

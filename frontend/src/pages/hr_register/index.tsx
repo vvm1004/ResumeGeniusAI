@@ -58,10 +58,60 @@ const HrRegister = () => {
   const termsRef = useRef<HTMLDivElement | null>(null);
 
   // Handle form submission
-  const onFinish = async (values: any) => {
-    setLoading(true); // Show loading spinner
+  // const onFinish = async (values: any) => {
+  //   setLoading(true); // Show loading spinner
 
-    // Prepare the data object to send to the API
+  //   // Prepare the data object to send to the API
+  //   const registrationData = {
+  //     email: values.email,
+  //     fullName: values.username,
+  //     phone: values.phone,
+  //     address: values.address,
+  //     status: "pending",
+  //     age: values.age,
+  //     gender: values.gender,
+  //     company: {
+  //       _id: values.company.value,
+  //       name: values.company.label,
+  //     },
+
+  //   };
+
+  //   try {
+
+  //     const response = await axios.post(API_URL, registrationData);
+
+  //     if (response.data.data.success) {
+  //       notification.success({
+  //         message: "Registration Successful!",
+  //         description: "You have successfully registered as an HR.",
+  //       });
+
+  //       // Redirect to a thank you page after successful registration
+  //       navigate("/thank-you-register"); // You can replace this with another route if needed
+  //     } else {
+  //       notification.error({
+  //         message: "Registration Failed",
+  //         description:
+  //           response.data.message ||
+  //           "Something went wrong during registration.",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("API Error:", error); // For debugging
+  //     notification.error({
+  //       message: "API Error",
+  //       description:
+  //         "There was an error connecting to the server. Please try again later.",
+  //     });
+  //   } finally {
+  //     setLoading(false); // Stop the loading spinner
+  //   }
+  // };
+
+  // Xử lý khi form được gửi
+  const onFinish = async (values: any) => {
+    setLoading(true);
     const registrationData = {
       email: values.email,
       fullName: values.username,
@@ -74,46 +124,26 @@ const HrRegister = () => {
         _id: values.company.value,
         name: values.company.label,
       },
-
     };
 
     try {
-
-      const response = await axios.post(API_URL, registrationData, {
-        headers: {
-          Authorization: `Bearer ${token}`,  // Add the token to the Authorization header
-        },
+      const response = await axios.post(API_URL, registrationData);
+      notification.success({
+        message: "Registration Successful!",
+        description: "You have successfully registered as an HR.",
       });
-
-      if (response.data.data.success) {
-        notification.success({
-          message: "Registration Successful!",
-          description: "You have successfully registered as an HR.",
-        });
-
-        // Redirect to a thank you page after successful registration
-        navigate("/thank-you-register"); // You can replace this with another route if needed
-      } else {
-        notification.error({
-          message: "Registration Failed",
-          description:
-            response.data.message ||
-            "Something went wrong during registration.",
-        });
-      }
-    } catch (error) {
-      console.error("API Error:", error); // For debugging
+      navigate("/thank-you-register");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to register HR.";
       notification.error({
-        message: "API Error",
-        description:
-          "There was an error connecting to the server. Please try again later.",
+        message: "Registration Failed",
+        description: errorMessage,
       });
     } finally {
-      setLoading(false); // Stop the loading spinner
+      setLoading(false);
     }
   };
-
-
   // Function to scroll to the Terms and Conditions section
   const scrollToTerms = () => {
     if (termsRef.current) {
