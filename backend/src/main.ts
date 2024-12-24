@@ -9,6 +9,7 @@ import { TransformInterceptor } from './core/transform.interceptor';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
 
 
 async function bootstrap() {
@@ -75,6 +76,10 @@ async function bootstrap() {
     }
   }
   );
+  // Tăng giới hạn payload lên 50MB
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 
   await app.listen(configService.get<string>('PORT'));
 }

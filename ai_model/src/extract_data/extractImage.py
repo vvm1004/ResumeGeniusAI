@@ -67,7 +67,7 @@ def is_simple_color_image(image_bytes):
     mask = cv2.inRange(hsv, lower_hue, upper_hue)
     
     color_ratio = cv2.countNonZero(mask) / (image.shape[0] * image.shape[1])
-    print("color_ratio", color_ratio)
+   # print("color_ratio", color_ratio)
     os.remove(temp_image_path)  
     return color_ratio > 0.1
 

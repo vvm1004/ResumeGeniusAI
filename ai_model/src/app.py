@@ -70,7 +70,8 @@ def process_resume():
             results[field] = improved_value
 
     avatarImg=extract_images_from_pdf(pdf_path)
-    print("\n\navatarImg\n",avatarImg)
+    print("\n\results\n",results)
+
     results2 = {
         "title": job_title,
         "Personal Information": {
@@ -84,7 +85,7 @@ def process_resume():
             "Github": {"$type": "string", "value": results.get("Github", "")},
             "Linkedin": {"$type": "string", "value": results.get("Linkedin", "")},
             "Social link": {"$type": "string", "value": results.get("Social link","")},
-            "Image":avatarImg
+            "Image":{"$type": "string", "value": avatarImg}
         },
         "Job Title": job_title,
         "Summary": {"$type": "string", "value": next((results.get(key) for key in ["Summary", "Objective","Career_goals","Professional Summary","Professional_overview"] if results.get(key)), "")} ,
@@ -101,7 +102,7 @@ def process_resume():
         "CustomFields": []
     }
     
-    personal_info_keys = ["Personal Information", "Personal Info", "Contact Information","Personal_info","Personal information"]
+    personal_info_keys = ["Personal Information", "executive_profile","Executive_profile","Personal Info", "Contact Information","Personal_info","Personal information"]
     for key in personal_info_keys:
         if key in results:
             if not results2["Personal Information"]["Name"]["value"]:
@@ -553,7 +554,7 @@ def process_resume():
             custom_field_item = {
                 "Title": {"$type": "string", "value": key},
                 "Value": {"$type": "string", "value": ""},
-                "Date": {"$type": "string", "value": ""},           
+                "Date": {"$type": "string", "value": ""},
             }
 
             if isinstance(value, str):
@@ -562,23 +563,26 @@ def process_resume():
             elif isinstance(value, list):
                 for item in value:
                     if isinstance(item, dict):
-                        custom_field_item["Value"]["value"] = item.get("Value", "")
-                        custom_field_item["Date"]["value"] = item.get("Date", "")
-                       
+                        custom_field_item["Value"]["value"] = item.get("Value", custom_field_item["Value"]["value"])
+                        custom_field_item["Date"]["value"] = item.get("Date", custom_field_item["Date"]["value"])
                     else:
                         custom_field_item["Value"]["value"] += str(item) + ", "
 
             elif isinstance(value, dict):
-                custom_field_item["Value"]["value"] = value.get("Value", "")
-                custom_field_item["Date"]["value"] = value.get("Date", "")
-               
-            
-            custom_field_item["Value"]["value"] = custom_field_item["Value"]["value"].rstrip(", ")
+                custom_field_item["Value"]["value"] = value.get("Value", custom_field_item["Value"]["value"])
+                custom_field_item["Date"]["value"] = value.get("Date", custom_field_item["Date"]["value"])
+
+            # Kiểm tra và xử lý `rstrip`
+            if custom_field_item["Value"]["value"]:
+                custom_field_item["Value"]["value"] = custom_field_item["Value"]["value"].rstrip(", ")
 
             results2["CustomFields"].append(custom_field_item)
 
 
-    print("\n\n\nresults2: \n\n",results2)
+
+    #print("\n\n\nresults2: \n\n",results2["Personal Information"])
+    print("\n\n\ndone: \n\n")
+
     return jsonify({
         'data': results2,
         

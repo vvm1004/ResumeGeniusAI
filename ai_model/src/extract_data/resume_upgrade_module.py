@@ -59,18 +59,33 @@ def normalize_keys(data):
         return data
 def get_job_position(data):
     # Ensure that data is not None and is a dictionary
-    if data is None:
+    if data is None or not isinstance(data, dict):
         return ""
 
-    possible_keys = ['Job_Position', 'Job_Title', 'Job','job_title','job_position','job','Job_title','Job_position', 'Title','Jobtitle','JobTitle']
+    print("\n\nget_job_position\n\n", data, "\n\n")
 
+    # Các key có thể chứa thông tin về vị trí công việc
+    possible_keys = [
+        'Job_Position', 'Job_Title', 'Job Title', 'Job title', 'Job', 
+        'job_title', 'job_position', 'job', 'Job_title', 'Job_position', 
+        'Title', 'Jobtitle', 'JobTitle'
+    ]
+
+    # Lặp qua các key có thể có
     for key in possible_keys:
         if key in data:
-            job_position = data[key]
-            return str(job_position)
+            value = data[key]
+            # Kiểm tra kiểu dữ liệu của giá trị
+            if isinstance(value, dict) and 'Value' in value:
+                # Nếu là đối tượng có trường "Value"
+                return str(value['Value'])
+            elif isinstance(value, str):
+                # Nếu là chuỗi
+                return value
 
     # Trường hợp không tìm thấy key nào phù hợp
     return ""
+
 
 def process_data(data):
     new_data = {}
@@ -98,13 +113,16 @@ def handleData(path):
     resume_data = parse_resume(path)
     print ("\n\n\n\n\n\t\t---------------------------------------\n\n\n\n")
 
-    print(resume_data)
+   # print(resume_data)
     resume_data1=normalize_keys(resume_data)
     print ("\n\n\n\n\n\t\t---------------------------------------\n\n\n\n")
 
-    print(resume_data1)
+    #print(resume_data1)
     # esdata=process_data(resume_data1)
     jobName= get_job_position(resume_data1)
+    print ("\n\n\n\n\n\t\t------------------jobName: \t",jobName,"\t---------------------\n\n\n\n")
+
+    
     return jobName, resume_data1
 # if __name__ == "__main__":
     

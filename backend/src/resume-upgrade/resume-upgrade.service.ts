@@ -36,17 +36,25 @@ export class ResumeUpgradeService {
 
         await fsPromises.mkdir(uploadDir, { recursive: true });
 
+        // try {
+        //     await fsPromises.access(filePath);
+        //     await fsPromises.unlink(filePath);
+        //     console.log(`Tệp cũ ${file.originalname} đã bị xóa.`);
+        // } catch (error) {
+        //     if (error.code !== 'ENOENT') {
+        //         throw error;
+        //     }
+        // }
+        // const writeStream = createWriteStream(filePath);
+        // writeStream.write(file.buffer);
         try {
-            await fsPromises.access(filePath);
-            await fsPromises.unlink(filePath);
-            console.log(`Tệp cũ ${file.originalname} đã bị xóa.`);
+            // Ghi file trực tiếp, tự động ghi đè nếu file đã tồn tại
+            await fsPromises.writeFile(filePath, file.buffer);
+            console.log(`File ${file.originalname} đã được ghi đè thành công.`);
         } catch (error) {
-            if (error.code !== 'ENOENT') {
-                throw error;
-            }
+            console.error('Lỗi khi ghi file:', error);
+            throw error;
         }
-        const writeStream = createWriteStream(filePath);
-        writeStream.write(file.buffer);
 
         const formattedPath = filePath.replace(/\\/g, '\\\\');
 
