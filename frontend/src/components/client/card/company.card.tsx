@@ -1,7 +1,16 @@
 import { callFetchCompany } from "@/config/api";
 import { convertSlug } from "@/config/utils";
 import { ICompany } from "@/types/backend";
-import { Card, Col, Divider, Empty, Pagination, Row, Spin } from "antd";
+import {
+  Card,
+  Col,
+  Divider,
+  Empty,
+  Pagination,
+  Row,
+  Skeleton,
+  Spin,
+} from "antd";
 import { useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import { Link, useNavigate } from "react-router-dom";
@@ -66,77 +75,130 @@ const CompanyCard = (props: IProps) => {
     }
   };
 
+  const renderSkeleton = () => {
+    const skeletonArray = Array.from({ length: 4 });
+
+    return skeletonArray.map((_, index) => (
+      <Col span={24} md={6} key={index}>
+        <Card className="border-2" style={{ height: 350 }}>
+          <Skeleton.Avatar
+            active
+            shape="square"
+            size="large"
+            style={{ width: "100%", height: 200 }}
+          />
+          <Divider />
+          <Skeleton title={false} paragraph={{ rows: 2 }} active />
+        </Card>
+      </Col>
+    ));
+  };
+
   return (
     <div className={`${styles["company-section"]}`}>
       <div className={styles["company-content"]}>
-        <Spin spinning={isLoading} tip="Loading...">
-          <Row gutter={[20, 20]}>
-            <Col span={24}>
-              <div
-                className={
-                  isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]
-                }
+        <Row gutter={[20, 20]}>
+          <Col span={24}>
+            <div
+              className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}
+            >
+              <span
+                className={`${styles["title"]} text-2xl font-bold text-blue-600`}
               >
-                <span
-                  className={`${styles["title"]} text-2xl font-bold text-blue-600`}
-                >
-                  Top Employer
-                </span>
-                {!showPagination && <Link to="company">View all</Link>}
-              </div>
-            </Col>
+                Top Employer
+              </span>
+              {!showPagination && <Link to="company">View all</Link>}
+            </div>
+          </Col>
 
-            {displayCompany?.map((item) => {
-              return (
-                <Col span={24} md={6} key={item._id}>
-                  <Card
-                    className="border-2"
-                    onClick={() => handleViewDetailJob(item)}
-                    style={{ height: 350 }}
-                    hoverable
-                    cover={
-                      <div className={styles["card-customize"]}>
-                        <img
-                          alt="example"
-                          src={`${
-                            import.meta.env.VITE_BACKEND_URL
-                          }/images/company/${item?.logo}`}
-                        />
-                      </div>
-                    }
-                  >
-                    <Divider />
-                    <h3 style={{ textAlign: "center" }}>{item.name}</h3>
-                  </Card>
-                </Col>
-              );
-            })}
+          {isLoading
+            ? renderSkeleton()
+            : displayCompany?.map((item) => {
+                return (
+                  <Col span={24} md={6} key={item._id}>
+                    <Card
+                      className="border-2"
+                      onClick={() => handleViewDetailJob(item)}
+                      style={{ height: 350 }}
+                      hoverable
+                      cover={
+                        <div className={styles["card-customize"]}>
+                          <img
+                            alt="example"
+                            src={`${
+                              import.meta.env.VITE_BACKEND_URL
+                            }/images/company/${item?.logo}`}
+                          />
+                        </div>
+                      }
+                    >
+                      <Divider />
+                      <h3
+                        className="font-bold text-lg"
+                        style={{ textAlign: "center" }}
+                      >
+                        {item.name}
+                      </h3>
+                    </Card>
+                  </Col>
+                );
+              })}
 
-            {(!displayCompany ||
-              (displayCompany && displayCompany.length === 0)) &&
-              !isLoading && (
-                <div className={styles["empty"]}>
-                  <Empty description="Không có dữ liệu" />
-                </div>
-              )}
-          </Row>
-          {showPagination && (
-            <>
-              <div style={{ marginTop: 30 }}></div>
-              <Row style={{ display: "flex", justifyContent: "center" }}>
-                <Pagination
-                  current={current}
-                  total={total}
-                  pageSize={pageSize}
-                  responsive
-                  onChange={(p: number, s: number) =>
-                    handleOnchangePage({ current: p, pageSize: s })
+          {/* {displayCompany?.map((item) => {
+            return (
+              <Col span={24} md={6} key={item._id}>
+                <Card
+                  className="border-2"
+                  onClick={() => handleViewDetailJob(item)}
+                  style={{ height: 350 }}
+                  hoverable
+                  cover={
+                    <div className={styles["card-customize"]}>
+                      <img
+                        alt="example"
+                        src={`${
+                          import.meta.env.VITE_BACKEND_URL
+                        }/images/company/${item?.logo}`}
+                      />
+                    </div>
                   }
-                />
-              </Row>
-            </>
-          )}
-        </Spin>
+                >
+                  <Divider />
+                  <h3
+                    className="font-bold text-lg"
+                    style={{ textAlign: "center" }}
+                  >
+                    {item.name}
+                  </h3>
+                </Card>
+              </Col>
+            );
+          })} */}
+
+          {(!displayCompany ||
+            (displayCompany && displayCompany.length === 0)) &&
+            !isLoading && (
+              <div className={styles["empty"]}>
+                <Empty description="No data available!" />
+              </div>
+            )}
+        </Row>
+        {showPagination && (
+          <>
+            <div style={{ marginTop: 30 }}></div>
+            <Row style={{ display: "flex", justifyContent: "center" }}>
+              <Pagination
+                current={current}
+                total={total}
+                pageSize={pageSize}
+                responsive
+                onChange={(p: number, s: number) =>
+                  handleOnchangePage({ current: p, pageSize: s })
+                }
+              />
+            </Row>
+          </>
+        )}
       </div>
     </div>
   );
