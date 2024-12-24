@@ -7,6 +7,7 @@ import {
   HrRegistrationSchema,
 } from './schemas/hr-registration.schema';
 import { UsersModule } from 'src/users/users.module';
+import { MailService } from 'src/mail/mail.service';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule, // Đảm bảo chỉ khai báo một lần
   ],
   controllers: [HrRegistrationController],
-  providers: [HrRegistrationService],
+  providers: [HrRegistrationService, MailService],
 })
 export class HrRegistrationModule {}

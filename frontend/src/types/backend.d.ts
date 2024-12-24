@@ -196,10 +196,7 @@ export interface IHrRegistration {
     _id?: string;
     email?: string;
   };
-  createdBy?: {
-    _id?: string;
-    email?: string;
-  };
+
   deletedBy?: {
     _id?: string;
     email?: string;

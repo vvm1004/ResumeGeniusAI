@@ -11,6 +11,8 @@ import {
   HrRegistrationDocument,
 } from './schemas/hr-registration.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { MailerService } from '@nestjs-modules/mailer';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class HrRegistrationService {
@@ -18,9 +20,9 @@ export class HrRegistrationService {
     @InjectModel(HrRegistration.name)
     private readonly hrRegistrationModel: SoftDeleteModel<HrRegistrationDocument>,
     private readonly usersService: UsersService,
+    private readonly mailerService: MailService,
   ) {}
 
-  // Tạo mới đăng ký HR
   async create(createHrRegisDto: CreateHrRegisDto, user: IUser) {
     const { email } = createHrRegisDto;
 
@@ -36,10 +38,11 @@ export class HrRegistrationService {
     const newHrRegis = await this.hrRegistrationModel.create({
       ...createHrRegisDto,
       createdBy: {
-        _id: user._id,
-        email: user.email,
+        _id: null,
+        email: null,
       },
     });
+    console.log(newHrRegis);
 
     return {
       success: true,
@@ -47,7 +50,6 @@ export class HrRegistrationService {
       data: newHrRegis,
     };
   }
-
   // Lấy tất cả đăng ký HR với phân trang và filter
   async getAllRegistrations(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
@@ -57,15 +59,18 @@ export class HrRegistrationService {
     // Tính tổng số bản ghi và phân trang
     const totalItems = await this.hrRegistrationModel.countDocuments(filter);
     const totalPages = Math.ceil(totalItems / defaultLimit);
+    console.log('\ntotalPages', totalPages, '\t', totalItems);
+    console.log('\nfilter', filter);
 
     const result = await this.hrRegistrationModel
-      .find(filter)
+      .find()
       .skip(offset)
       .limit(defaultLimit)
       .sort(sort as any)
       .populate(population)
       .exec();
 
+    console.log('\nresult: ', result);
     return {
       meta: {
         current: currentPage,
@@ -89,6 +94,17 @@ export class HrRegistrationService {
     }
 
     return registration;
+  }
+  private generateRandomString(length: number): string {
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length),
+      );
+    }
+    return result;
   }
 
   // Cập nhật đăng ký HR
@@ -128,11 +144,12 @@ export class HrRegistrationService {
 
       // Tạo tài khoản mới cho HR
       const roleid = '670f7904f261c5eb15016692';
+      const pass = this.generateRandomString(6);
       const newUser = await this.usersService.create(
         {
           name: updateHrRegisDto.fullName,
           email: updateHrRegisDto.email,
-          password: '123456',
+          password: pass,
           age: updateHrRegisDto.age,
           gender: updateHrRegisDto.gender,
           address: updateHrRegisDto.address,
@@ -141,6 +158,13 @@ export class HrRegistrationService {
         },
         user,
       );
+      // Gửi email thông tin tài khoản HR
+      await this.mailerService.sendHrAccountEmail(updateHrRegisDto.email, {
+        email: updateHrRegisDto.email,
+        password: pass,
+        fullName: newUser.name,
+      });
+
       return {
         updateResult,
         newUser,

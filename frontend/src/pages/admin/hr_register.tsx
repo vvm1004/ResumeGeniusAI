@@ -12,7 +12,6 @@ import Access from "@/components/share/access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 
 const HrRegistrationPage = () => {
-  const [openModal, setOpenModal] = useState(false);
   const tableRef = useRef<ActionType>();
   const dispatch = useAppDispatch();
 
@@ -21,7 +20,7 @@ const HrRegistrationPage = () => {
     meta,
     result: hrRegistrations,
   } = useAppSelector((state) => state.hrRegistration);
-
+  console.log(hrRegistrations);
   const handleApproveReject = async (
     action: "approved" | "rejected",
     id: string | undefined,
@@ -54,10 +53,8 @@ const HrRegistrationPage = () => {
 
   const buildQuery = (params: any, sort: any) => {
     const query = { ...params };
-    if (query.company) query.company = `/${query.company}/i`;
-
     let queryStr = queryString.stringify(query);
-    const sortField = sort?.company || sort?.createdAt || sort?.updatedAt;
+    const sortField = sort?.createdAt || sort?.updatedAt;
     const sortBy = sortField
       ? `sort=${sortField === "ascend" ? "" : "-"}${sortField}`
       : "sort=-updatedAt";
@@ -73,17 +70,28 @@ const HrRegistrationPage = () => {
       hideInSearch: true,
     },
     {
-      title: "Công ty",
-      dataIndex: "company",
-      render: (_, record) => record.company?.name || "N/A",
-    },
-    {
       title: "Email",
       dataIndex: "email",
     },
     {
       title: "Họ và Tên",
       dataIndex: "fullName",
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "phone",
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "address",
+    },
+    {
+      title: "Tuổi",
+      dataIndex: "age",
+    },
+    {
+      title: "Giới tính",
+      dataIndex: "gender",
     },
     {
       title: "Trạng thái",
@@ -150,19 +158,14 @@ const HrRegistrationPage = () => {
             const query = buildQuery(params, sort);
             await dispatch(fetchHr({ query })); // Gọi API và cập nhật Redux state
 
-            // Lấy dữ liệu từ Redux state
-            const { result: data, meta } = useAppSelector(
-              (state) => state.hrRegistration
-            );
-
             return {
-              data: data || [],
+              data: hrRegistrations || [], // Dữ liệu từ Redux
               success: true,
               total: meta?.total || 0,
             };
           }}
           pagination={{
-            current: meta.current,
+            current: meta.current || 1, // Gán giá trị mặc định nếu current là null
             pageSize: meta.pageSize,
             total: meta.total,
             showSizeChanger: true,

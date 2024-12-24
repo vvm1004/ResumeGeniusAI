@@ -1,8 +1,10 @@
-
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateResumeBuilderDto } from './dto/create-resume-builder.dto';
 import { UpdateResumeBuilderDto } from './dto/update-resume-builder.dto';
-import { ResumeBuilder, ResumeBuilderDocument } from './schemas/resume-builder.schema';
+import {
+  ResumeBuilder,
+  ResumeBuilderDocument,
+} from './schemas/resume-builder.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import mongoose from 'mongoose';
@@ -11,16 +13,18 @@ import aqp from 'api-query-params';
 
 @Injectable()
 export class ResumeBuildersService {
-  constructor(@InjectModel(ResumeBuilder.name) private resumeBuidlerModel: SoftDeleteModel<ResumeBuilderDocument>) { }
-
+  constructor(
+    @InjectModel(ResumeBuilder.name)
+    private resumeBuidlerModel: SoftDeleteModel<ResumeBuilderDocument>,
+  ) {}
 
   async create(createResumeBuilderDto, user: IUser) {
     let newResumeBuilder = await this.resumeBuidlerModel.create({
       ...createResumeBuilderDto,
       createdBy: {
         _id: user._id,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
     return newResumeBuilder;
   }
@@ -32,29 +36,34 @@ export class ResumeBuildersService {
         ...updateResumeBuilderDto,
         updatedBy: {
           _id: user._id,
-          email: user.email
-        }
-      }
+          email: user.email,
+        },
+      },
     );
     return updated;
   }
 
   async remove(id: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new BadRequestException (`Not found resumeBuilder`);
+      throw new BadRequestException(`Not found resumeBuilder`);
     }
     await this.resumeBuidlerModel.updateOne(
       { _id: id },
       {
         deletedBy: {
           _id: user._id,
-          email: user.email
-        }
-      }
+          email: user.email,
+        },
+      },
     );
     return this.resumeBuidlerModel.softDelete({ _id: id });
   }
-  async findByUserId(userId: string, currentPage: number, limit: number, qs: string) {
+  async findByUserId(
+    userId: string,
+    currentPage: number,
+    limit: number,
+    qs: string,
+  ) {
     const { filter, sort, projection, population } = aqp(qs);
 
     // Remove pagination parameters from filter
@@ -68,7 +77,8 @@ export class ResumeBuildersService {
     const totalItems = await this.resumeBuidlerModel.countDocuments(filter); // Use countDocuments for accuracy
     const totalPages = Math.ceil(totalItems / limit);
 
-    const result = await this.resumeBuidlerModel.find(filter)
+    const result = await this.resumeBuidlerModel
+      .find(filter)
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
@@ -88,44 +98,43 @@ export class ResumeBuildersService {
     };
   }
 
-
-
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
 
-    let offset = (currentPage - 1) * (limit);
+    let offset = (currentPage - 1) * limit;
     let defaultLimit = limit ? limit : 10;
 
-    const totalItems = (await this.resumeBuidlerModel.find(filter)).length
+    const totalItems = (await this.resumeBuidlerModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
-    const result = await this.resumeBuidlerModel.find(filter)
+    const result = await this.resumeBuidlerModel
+      .find(filter)
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
       .populate(population)
       .select(projection as any)
-      .exec()
+      .exec();
 
     return {
       meta: {
         current: currentPage, //trang hien tai
-        pageSize: limit,  //so luong ban ghi da lay
+        pageSize: limit, //so luong ban ghi da lay
         pages: totalPages, //tong so trang voi dieu kien query
-        total: totalItems //tong so phan tu (so ban ghi)
+        total: totalItems, //tong so phan tu (so ban ghi)
       },
-      result //kết quả query
-    }
-
+      result, //kết quả query
+    };
   }
 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id))
-      throw new BadRequestException("Not found resumeBuilder with id: " + id)
-    return this.resumeBuidlerModel.findById(id)
-      .populate('template', 'name preview')
+      throw new BadRequestException('Not found resumeBuilder with id: ' + id);
+    return this.resumeBuidlerModel
+      .findById(id)
+      .populate('template', 'name preview');
   }
   async getResumeCountByDate(startDate: string, endDate: string) {
     const pipeline = [
@@ -146,14 +155,13 @@ export class ResumeBuildersService {
       },
       {
         $sort: {
-          '_id.year': 1,  // Sort by year in ascending order
+          '_id.year': 1, // Sort by year in ascending order
           '_id.month': 1, // Sort by month in ascending order
-          '_id.day': 1,   // Sort by day in ascending order
-        } as Record<string, 1 | -1>,  // Explicitly cast to Record<string, 1 | -1>
+          '_id.day': 1, // Sort by day in ascending order
+        } as Record<string, 1 | -1>, // Explicitly cast to Record<string, 1 | -1>
       },
     ];
 
     return await this.resumeBuidlerModel.aggregate(pipeline);
   }
-
 }

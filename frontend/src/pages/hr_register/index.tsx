@@ -33,7 +33,6 @@ const HrRegister = () => {
   const navigate = useNavigate(); // Hook to handle redirection
 
   const API_URL = import.meta.env.VITE_BACKEND_URL + "/api/v1/hr-registration/";
-  const token = localStorage.getItem("access_token");
   const user = useSelector((state: any) => state.account.user);
 
   const [loading, setLoading] = useState(false);
@@ -44,7 +43,7 @@ const HrRegister = () => {
     const res = await callFetchCompany(
       `current=1&pageSize=100&name=/${name}/i`
     );
-    console.log("resssL: ", companies)
+    console.log("resssL: ", companies);
     if (res && res.data) {
       const list = res.data.result;
       return list.map((item) => ({
@@ -70,20 +69,11 @@ const HrRegister = () => {
       status: "pending",
       age: values.age,
       gender: values.gender,
-      company: {
-        _id: values.company.value,
-        name: values.company.label,
-      },
-
+      company: values.company.value,
     };
 
     try {
-
-      const response = await axios.post(API_URL, registrationData, {
-        headers: {
-          Authorization: `Bearer ${token}`,  // Add the token to the Authorization header
-        },
-      });
+      const response = await axios.post(API_URL, registrationData);
 
       if (response.data.data.success) {
         notification.success({
@@ -112,7 +102,6 @@ const HrRegister = () => {
       setLoading(false); // Stop the loading spinner
     }
   };
-
 
   // Function to scroll to the Terms and Conditions section
   const scrollToTerms = () => {
@@ -268,15 +257,14 @@ const HrRegister = () => {
               name="age"
               rules={[{ required: true, message: "Please enter your age!" }]}
             >
-              <Input
-                type="number"
-                placeholder="Age"
-              />
+              <Input type="number" placeholder="Age" />
             </Form.Item>
 
             <Form.Item
               name="gender"
-              rules={[{ required: true, message: "Please select your gender!" }]}
+              rules={[
+                { required: true, message: "Please select your gender!" },
+              ]}
             >
               <Input placeholder="Gender" />
             </Form.Item>
@@ -329,8 +317,8 @@ const HrRegister = () => {
                     value
                       ? Promise.resolve()
                       : Promise.reject(
-                        "You must agree to the terms and conditions!"
-                      ),
+                          "You must agree to the terms and conditions!"
+                        ),
                 },
               ]}
             >
@@ -352,7 +340,6 @@ const HrRegister = () => {
                 Register
               </Button>
             </Form.Item>
-
           </Form>
         </Spin>
       </div>

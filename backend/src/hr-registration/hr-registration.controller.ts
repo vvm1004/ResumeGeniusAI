@@ -20,15 +20,17 @@ import { IUser } from 'src/users/users.interface';
 @ApiTags('hr-registration')
 @Controller('hr-registration')
 export class HrRegistrationController {
-  constructor(private readonly hrRegistrationService: HrRegistrationService) { }
+  constructor(private readonly hrRegistrationService: HrRegistrationService) {}
 
   // Tạo mới đăng ký HR
+  @Public()
+  @SkipCheckPermission()
   @Post()
   async createRegistration(
     @Body() createHrRegisDto: CreateHrRegisDto,
     @User() user: IUser,
   ) {
-    console.log(createHrRegisDto, "\n\n", user)
+    console.log(createHrRegisDto, '\n\n', user, '\n');
     return this.hrRegistrationService.create(createHrRegisDto, user);
   }
 
@@ -40,7 +42,7 @@ export class HrRegistrationController {
     @Query() qs: string, // Dùng AQP để xử lý các tham số tìm kiếm, lọc, v.v.
   ) {
     const queryParams = aqp(qs); // Xử lý các tham số truy vấn
-
+    console.log('getAllRegistrations', currentPage, '\t', limit);
     // Truyền phân trang và các tham số lọc/sắp xếp vào service
     return this.hrRegistrationService.getAllRegistrations(
       +currentPage,
