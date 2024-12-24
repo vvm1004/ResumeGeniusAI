@@ -487,21 +487,22 @@ function EmploymentHistory() {
                         Description
                       </label>
                       <div>
-                        <button
-                          className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                          onClick={(e) => genSummary(index, e)}
-                        >
-                          Generate with AI
-                        </button>
+                        {showApplyCancel[index] != true ? (<>
+                          <button
+                            className="ml-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            onClick={(e) => genSummary(index, e)}
+                          >
+                            Generate with AI
+                          </button>
 
-                        <GenerateWorkingHisModal
-                          isOpen={summaryModalOpen && openModalIndex === index}
-                          onClose={() => { setSunnaryModalOpen(false); setOpenModalIndex(null); }}
-                          data={genSummaryData}
-                          onSelect={handleSummarySelect}
-                          position={buttonPosition}
-                          index={index}
-                        />
+                          <GenerateWorkingHisModal
+                            isOpen={summaryModalOpen && openModalIndex === index}
+                            onClose={() => { setSunnaryModalOpen(false); setOpenModalIndex(null); }}
+                            data={genSummaryData}
+                            onSelect={handleSummarySelect}
+                            position={buttonPosition}
+                            index={index}
+                          /></>) : null}
 
 
                         {showApplyCancel[index] && isCheckSpell == 1 ? (

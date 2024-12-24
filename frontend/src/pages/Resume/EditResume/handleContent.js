@@ -1,5 +1,5 @@
 
-const API_URL = import.meta.env.VITE_BACKEND_URL+'/api/v1/resume-upgrade/';
+const API_URL = import.meta.env.VITE_BACKEND_URL + '/api/v1/resume-upgrade/';
 
 export const spellCheckText = async (text) => {
     try {
@@ -63,7 +63,8 @@ export const generateSummary = async (curdata) => {
         }
 
         const responseData = await response.json();
-        // console.log("responseData", responseData)
+        console.log("\n\nresponseData", responseData.data.data, "\n\n")
+
         return responseData.data.data;
 
     } catch (error) {

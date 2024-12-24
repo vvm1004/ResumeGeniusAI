@@ -40,8 +40,7 @@ def genSumary(promot):
 def generate_resume_summary(name, job_title, achievements=None, skills=None, activities=None, 
                              hobbies=None, education=None, languages=None, employment_history=None):
     summary_lines = []
-    summary_lines.append(f"Based on the following information, create 9 impactful resume for levels:  Intern, Freasher, Junior, Mid-level, Senior, Lead, Architect, Manager, CTO level :\n")
-
+    summary_lines.append(f"Based on the following information, create 9 impactful resumes for levels: Intern, Fresher, Junior, Mid-level, Senior, Lead, Architect, Manager, CTO level:\n")
 
     summary_lines.append(f"Job Title: {job_title}")
     # if name:
@@ -57,13 +56,14 @@ def generate_resume_summary(name, job_title, achievements=None, skills=None, act
     if education:
         summary_lines.append("Education: " + ", ".join(education))
     if languages:
-        summary_lines.append("Languages: " + ", ".join(languages))
+        # Xử lý danh sách languages
+        language_list = [lang["Title"] if isinstance(lang, dict) and "Title" in lang else str(lang) for lang in languages]
+        summary_lines.append("Languages: " + ", ".join(language_list))
     if employment_history:
         summary_lines.append("Employment History: " + ", ".join(employment_history))
     
-    summary_lines.append(f"The summary should clearly highlight the candidate's data in their field. Ensure that it captures the attention of potential employers.  just return with level name in key and the corresponding summary")
+    summary_lines.append(f"The summary should clearly highlight the candidate's data in their field. Ensure that it captures the attention of potential employers. Just return with level name in key and the corresponding summary.")
     return genSumary("\n".join(summary_lines))
-
 
 
 
