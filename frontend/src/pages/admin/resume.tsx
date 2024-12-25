@@ -25,6 +25,8 @@ const ResumePage = () => {
     const [dataInit, setDataInit] = useState<IResume | null>(null);
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
 
+    const navigate = useNavigate();
+
     const handleDeleteResume = async (_id: string | undefined) => {
         if (_id) {
             const res = await callDeleteResume(_id);
@@ -51,16 +53,12 @@ const ResumePage = () => {
             width: 250,
             render: (text, record, index, action) => {
                 return (
-                    <a href="#" onClick={() => {
-                        setOpenViewDetail(true);
-                        setDataInit(record);
-                    }}>
-                        {record._id}
-                    </a>
-                )
+                    <>{record._id}</>
+                );
             },
             hideInSearch: true,
         },
+
         {
             title: 'Trạng Thái',
             dataIndex: 'status',
@@ -92,19 +90,28 @@ const ResumePage = () => {
             hideInSearch: true,
         },
         {
-            title: 'CV',
-            dataIndex: 'url', // Tên trường trong dữ liệu từ API
-            render: (text, record) => {
-                const cvUrl = record.url ? `http://localhost:8000/images/resume/${record.url}` : null;
-                return cvUrl ? (
-                    <a href={cvUrl} target="_blank" rel="noopener noreferrer">
+            title: "CV",
+            dataIndex: "",
+            render: (value, record) => {
+                return record?.typeUrl === "urlCV" ? (
+                    <a
+                        href={`${import.meta.env.VITE_BACKEND_URL}/images/resume/${record?.url
+                            }`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ cursor: "pointer", color: "blue" }}
+                    >
                         View CV
                     </a>
                 ) : (
-                    <Tag color="red">No CV</Tag>
+                    <a
+                        onClick={() => navigate(`/resumes/view/${record?.url}`)}
+                        style={{ cursor: "pointer", color: "blue" }}
+                    >
+                        View CV
+                    </a>
                 );
             },
-            hideInSearch: true,
         },
 
         {
@@ -132,33 +139,60 @@ const ResumePage = () => {
             hideInSearch: true,
         },
         {
-
             title: 'Actions',
             hideInSearch: true,
-            width: 50,
+            width: 100, // Điều chỉnh độ rộng của cột nếu cần
             render: (_value, entity, _index, _action) => (
                 <Space>
-                    <Popconfirm
-                        placement="leftTop"
-                        title={"Xác nhận xóa resume"}
-                        description={"Bạn có chắc chắn muốn xóa resume này ?"}
-                        onConfirm={() => handleDeleteResume(entity._id)}
-                        okText="Xác nhận"
-                        cancelText="Hủy"
+                    {/* Nút Chỉnh Sửa */}
+                    <Access
+                        permission={ALL_PERMISSIONS.RESUMES.UPDATE} // Kiểm tra quyền chỉnh sửa resume
+                        hideChildren
                     >
-                        <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                            <DeleteOutlined
+                        <span
+                            style={{ cursor: "pointer", margin: "0 10px" }}
+                            onClick={() => {
+                                setOpenViewDetail(true); // Mở modal chỉnh sửa
+                                setDataInit(entity); // Đưa dữ liệu của resume vào modal
+                            }}
+                        >
+                            <EditOutlined
                                 style={{
                                     fontSize: 20,
-                                    color: '#ff4d4f',
+                                    color: '#ffa500', // Màu sắc của nút chỉnh sửa
                                 }}
                             />
                         </span>
-                    </Popconfirm>
+                    </Access>
+
+                    {/* Nút Xóa */}
+                    <Access
+                        permission={ALL_PERMISSIONS.RESUMES.DELETE} // Kiểm tra quyền xóa resume
+                        hideChildren
+                    >
+                        <Popconfirm
+                            placement="leftTop"
+                            title={"Xác nhận xóa resume"}
+                            description={"Bạn có chắc chắn muốn xóa resume này?"}
+                            onConfirm={() => handleDeleteResume(entity._id)} // Xử lý xóa resume
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                        >
+                            <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                                <DeleteOutlined
+                                    style={{
+                                        fontSize: 20,
+                                        color: '#ff4d4f', // Màu sắc của nút xóa
+                                    }}
+                                />
+                            </span>
+                        </Popconfirm>
+                    </Access>
                 </Space>
             ),
+        }
 
-        },
+
     ];
 
     const buildQuery = (params: any, sort: any, filter: any) => {

@@ -1049,7 +1049,7 @@ export const INIT_JOB =
             "REACT NATIVE"
         ],
         "company": {
-            "_id": "648719bdc7573fac797f8418",
+            "_id": "670bd5024c872eb686978a2f",
             "name": "Tiktok",
             "logo": "tiktok-1686575523674.jpg"
         },
