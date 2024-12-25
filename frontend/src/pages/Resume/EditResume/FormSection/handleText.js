@@ -57,6 +57,33 @@ export function applyCorrections(sentence, corrections) {
 
     return highlightedSentence;
 };
+// export function applyCorrections(sentence, corrections) {
+//     let highlightedSentence = sentence;
+
+//     corrections.forEach(([wrongWord, correctWord]) => {
+//         // Regex khớp từ và dấu câu (.,!?; hoặc xuống dòng)
+//         const wrongWordRegex = new RegExp(
+//             `\\b${escapeRegExp(wrongWord)}([.,;!?\\s]*)\\b`,
+//             'gi' // 'g' để thay thế tất cả, 'i' không phân biệt hoa thường
+//         );
+//         const wrongSpan = `<span style="background-color: rgb(224, 62, 45);" >${escapeHtml(wrongWord)}</span>`;
+//         const correctSpan = `<span style="background-color: rgb(45, 194, 107);" >${escapeHtml(correctWord)}</span>`;
+
+//         // Thay thế từ sai, bảo toàn dấu câu hoặc xuống dòng
+//         highlightedSentence = highlightedSentence.replace(
+//             wrongWordRegex,
+//             (match, punctuation) => `${wrongSpan} ${correctSpan}${punctuation}`
+//         );
+//     });
+
+//     return highlightedSentence;
+// }
+// export function highlightCorrectionsWithFormatting(text, corrections) {
+//     // Chia từng dòng nếu có xuống dòng
+//     const lines = text.split('\n');
+//     const highlightedLines = lines.map(line => applyCorrections(line, corrections));
+//     return highlightedLines.join('\n'); // Ghép lại, giữ nguyên dấu xuống dòng
+// }
 export function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };

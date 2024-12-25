@@ -109,6 +109,7 @@ export class ResumeUpgradeService {
 
             const errors = response.data.corrections;
             const correctedSentence = response.data.corrected_sentence;
+            
             return {
                 corrected_sentence: correctedSentence,
                 corrections: errors,

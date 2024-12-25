@@ -152,8 +152,10 @@ function EmploymentHistory() {
         corr[0],
         corr[1],
       ]);
+      console.log("corrections:\t", corrections)
       const highlightedText = applyCorrections(contentText, corrections);
 
+      console.log("highlightedText:\t", highlightedText)
 
       setEditorValues((prev) => {
         const newValues = [...prev];
