@@ -89,7 +89,7 @@ const items: MenuProps["items"] = [
   {
     label: <Link to={"/saved-jobs"}>Saved Jobs</Link>,
     key: "/saved-jobs",
-    icon: <MdContactPage  size={16} />,
+    icon: <MdContactPage size={16} />,
   },
 ];
 interface Notification {
@@ -247,7 +247,7 @@ const Header = (props: any) => {
               >
                 <div className="logoContent">
                   <img className="logo" src={Logo} alt="Logo" />
-                  {isAuthenticated === true && user.role.name == "USER" && (
+                  {user.role.name != "HR" && user.role.name != "ADMIN" && (
                     <Link className="hr_register" to="/hr_register">
                       Register Become Human Resource ?
                     </Link>
@@ -331,7 +331,7 @@ const Header = (props: any) => {
                 ) : (
                   <Dropdown
                     menu={{ items: itemsDropdown }}
-                    //   trigger={["click"]}
+                  //   trigger={["click"]}
                   >
                     <Space style={{ cursor: "pointer" }}>
                       <span>Welcome {user?.name}</span>
@@ -342,9 +342,8 @@ const Header = (props: any) => {
                         src={
                           data?.avatar
                             ? data?.avatar
-                            : `${
-                                import.meta.env.VITE_BACKEND_URL
-                              }/images/avatar_user/avatar-default.jpg`
+                            : `${import.meta.env.VITE_BACKEND_URL
+                            }/images/avatar_user/avatar-default.jpg`
                         }
                         alt="Avatar"
                       ></Avatar>
