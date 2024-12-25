@@ -18,7 +18,7 @@ const JobByEmail = (props: any) => {
     };
     init();
   }, []);
-
+ 
   const onFinish = async (values: any) => {
     const { skills } = values;
     const res = await callUpdateSubscriber({

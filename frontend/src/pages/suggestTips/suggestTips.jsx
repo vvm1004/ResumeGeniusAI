@@ -71,6 +71,8 @@ const SuggestTips = () => {
         ['Adobe XD for Beginners [Free]', 'https://youtu.be/WEljsc2jorI'],
         ['Adobe XD in Simple Way', 'https://learnux.io/course/adobe-xd']
     ];
+    const resumeUsedIndexes = []; // Track used indexes for Resume Writing Tips
+    const interviewUsedIndexes = []; // Track used indexes for Interview Tips
 
     useEffect(() => {
         // Set videos from JSON to state
@@ -100,22 +102,25 @@ const SuggestTips = () => {
                 <div className="random-video">
                     <RandomVideo
                         title="Resume Writing Tips💡"
-                        videoList={resumeVideos.slice(0, 3)}  // Chỉ hiển thị 3 video đầu tiên
+                        videoList={resumeVideos}
                         subTitle="✅"
+                        usedIndexes={resumeUsedIndexes} // Pass used indexes
                     />
                 </div>
                 <div className="random-video">
                     <RandomVideo
                         title="Resume Writing Tips💡"
-                        videoList={resumeVideos.slice(0, 3)}  // Chỉ hiển thị 3 video đầu tiên
+                        videoList={resumeVideos}
                         subTitle="✅"
+                        usedIndexes={resumeUsedIndexes} // Pass used indexes
                     />
                 </div>
                 <div className="random-video">
                     <RandomVideo
                         title="Resume Writing Tips💡"
-                        videoList={resumeVideos.slice(0, 3)}  // Chỉ hiển thị 3 video đầu tiên
+                        videoList={resumeVideos}
                         subTitle="✅"
+                        usedIndexes={resumeUsedIndexes} // Pass used indexes
                     />
                 </div>
             </div>
@@ -125,22 +130,25 @@ const SuggestTips = () => {
                 <div className="random-video">
                     <RandomVideo
                         title="Interview Tips💡"
-                        videoList={interviewVideos.slice(0, 3)}  // Chỉ hiển thị 3 video đầu tiên
+                        videoList={interviewVideos}
                         subTitle="✅"
+                        usedIndexes={interviewUsedIndexes} // Pass used indexes
                     />
                 </div>
                 <div className="random-video">
                     <RandomVideo
-                        title="Interview Tips👨‍💼💡"
-                        videoList={interviewVideos.slice(0, 3)}  // Chỉ hiển thị 3 video đầu tiên
+                        title="Interview Tips💡"
+                        videoList={interviewVideos}
                         subTitle="✅"
+                        usedIndexes={interviewUsedIndexes} // Pass used indexes
                     />
                 </div>
                 <div className="random-video">
                     <RandomVideo
-                        title="Interview Tips👨‍💼💡"
-                        videoList={interviewVideos.slice(0, 3)}  // Chỉ hiển thị 3 video đầu tiên
+                        title="Interview Tips💡"
+                        videoList={interviewVideos}
                         subTitle="✅"
+                        usedIndexes={interviewUsedIndexes} // Pass used indexes
                     />
                 </div>
             </div>

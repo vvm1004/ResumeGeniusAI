@@ -45,6 +45,7 @@ import ThankYouPage from "./pages/hr_register/ThankYouPage";
 import SuggestTips from "./pages/suggestTips/suggestTips";
 import JobByEmail from "./pages/Resume/JobByEmail";
 import SavedJobs from "./pages/job/savedJobs";
+import Saved_Jobs from "./pages/Resume/saved_job";
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
@@ -109,6 +110,7 @@ export default function App() {
             { path: "account-management", element: <AccountManagement /> },
             { path: "spread-cv", element: <SpreadCV /> },
             { path: "job-by-email", element: <JobByEmail /> },
+            { path: "save-job", element: <Saved_Jobs /> },
           ],
         },
 

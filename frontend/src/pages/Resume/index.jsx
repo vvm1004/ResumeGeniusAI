@@ -3,11 +3,13 @@ import { Outlet, useNavigate } from "react-router-dom";
 import {
   MdDashboard,
   MdOutlineFindInPage,
+  MdSave,
   MdSupervisorAccount,
 } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import "./index.scss";
+import { MSquareIcon } from "lucide-react";
 
 const DashboardResumes = () => {
   const user = useSelector((state) => state.account.user);
@@ -93,14 +95,25 @@ const DashboardResumes = () => {
               </li>
               <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob"
-                    ? "rounded-md bg-blue-100 text-blue-600"
-                    : ""
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
                   }`}
                 onClick={() =>
                   handleMenuClick("job-by-email", "/job-by-email")
                 }
               >
                 <MdOutlineFindInPage className="mr-4 text-xl" /> Receive job via email
+              </li>
+              <li
+                className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "recommendedJob"
+                  ? "rounded-md bg-blue-100 text-blue-600"
+                  : ""
+                  }`}
+                onClick={() =>
+                  handleMenuClick("saved-job", "/save-job")
+                }
+              >
+                <MdSave className="mr-4 text-xl" /> Saved Job
               </li>
               {/* <li
                 className={`flex items-center p-2 text-left w-full hover:rounded-md cursor-pointer hover:bg-blue-100  hover:text-blue-600 ${activeMenuItem === "dashboard"

@@ -40,7 +40,7 @@ import Logo from "../../assets/LogoIcon-removebg-preview.png";
 import { HomeIcon } from "lucide-react";
 import axios from "axios";
 import { IUser } from "@/types/backend";
-import { MdContactPage } from "react-icons/md";
+import { MdContactPage, MdSailing, MdTableBar } from "react-icons/md";
 
 const items: MenuProps["items"] = [
   {
@@ -87,9 +87,9 @@ const items: MenuProps["items"] = [
     // ],
   },
   {
-    label: <Link to={"/saved-jobs"}>Saved Jobs</Link>,
-    key: "/saved-jobs",
-    icon: <MdContactPage size={16} />,
+    label: <Link to={"/suggest-tips"}>Tips</Link>,
+    key: "/suggest-tips",
+    icon: <MdSailing size={16} />,
   },
 ];
 interface Notification {
