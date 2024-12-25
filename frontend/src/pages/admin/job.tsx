@@ -73,6 +73,16 @@ const JobPage = () => {
         {
             title: 'Level',
             dataIndex: 'level',
+            render: (text, entity) => {
+                // Kiểm tra nếu level là mảng và hiển thị các giá trị trong mảng
+                if (Array.isArray(entity.level)) {
+                    return entity.level.map(level => (
+                        <Tag key={level}>{level}</Tag>
+                    ));
+                }
+                return <span>{entity.level}</span>;
+            },
+            // Nếu muốn tìm kiếm trong cột level, có thể dùng ProFormSelect
             renderFormItem: (item, props, form) => (
                 <ProFormSelect
                     showSearch
@@ -89,6 +99,7 @@ const JobPage = () => {
                 />
             ),
         },
+        
         {
             title: 'Trạng thái',
             dataIndex: 'isActive',

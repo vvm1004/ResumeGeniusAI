@@ -202,7 +202,8 @@ const ViewUpsertJob = (props: any) => {
                                     placeholder="Please select a skill"
                                     rules={[{ required: true, message: 'Vui lòng chọn kỹ năng!' }]}
                                     allowClear
-                                    mode="multiple"
+                                    // mode="multiple"
+                                    mode="tags"
                                     fieldProps={{
                                         showArrow: false
                                     }}
@@ -250,6 +251,7 @@ const ViewUpsertJob = (props: any) => {
                                         MIDDLE: 'MIDDLE',
                                         SENIOR: 'SENIOR',
                                     }}
+                                     mode="tags"
                                     placeholder="Please select a level"
                                     rules={[{ required: true, message: 'Vui lòng chọn level!' }]}
                                 />
