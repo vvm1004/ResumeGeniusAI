@@ -4,7 +4,6 @@ import { callFetchHrRegister, callFetchHrRegisterById } from "@/config/api";
 
 interface IState {
   isFetching: boolean;
-  isFetchSingle: boolean;
   meta: {
     current: number;
     pageSize: number;
@@ -12,6 +11,7 @@ interface IState {
     total: number;
   };
   result: IHrRegistration[];
+  isFetchSingle: boolean;
   singleHrRegistration: IHrRegistration;
 }
 
@@ -32,8 +32,8 @@ export const fetchHrById = createAsyncThunk(
 );
 
 const initialState: IState = {
-  isFetching: false,
-  isFetchSingle: false,
+  isFetching: true,
+  isFetchSingle: true,
   meta: {
     current: 1,
     pageSize: 10,
@@ -77,7 +77,7 @@ export const hrRegistrationSlice = createSlice({
   name: "hrRegistration",
   initialState,
   reducers: {
-    resetSingleHr: (state) => {
+    resetSingleHr: (state, action) => {
       state.singleHrRegistration = {
         _id: "",
         company: {
@@ -111,34 +111,121 @@ export const hrRegistrationSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchHr.pending, (state) => {
-        state.isFetching = true;
-      })
-      .addCase(fetchHr.fulfilled, (state, action) => {
-        if (action.payload?.data) {
-          state.isFetching = false;
-          state.meta = action.payload.data.meta;
-          state.result = action.payload.data.result;
-        }
-      })
-      .addCase(fetchHr.rejected, (state) => {
+    builder.addCase(fetchHr.pending, (state, action) => {
+      state.isFetching = true;
+    });
+    builder.addCase(fetchHr.fulfilled, (state, action) => {
+      if (action.payload?.data) {
         state.isFetching = false;
-      });
+        state.meta = action.payload.data.meta;
+        state.result = action.payload.data.result;
+      }
+    });
+    builder.addCase(fetchHr.rejected, (state) => {
+      state.isFetching = false;
+    });
 
-    builder
-      .addCase(fetchHrById.pending, (state) => {
-        state.isFetchSingle = true;
-      })
-      .addCase(fetchHrById.fulfilled, (state, action) => {
-        if (action.payload?.data) {
-          state.isFetchSingle = false;
-          state.singleHrRegistration = action.payload.data;
-        }
-      })
-      .addCase(fetchHrById.rejected, (state) => {
+    builder.addCase(fetchHrById.pending, (state, action) => {
+      state.isFetchSingle = true;
+      state.singleHrRegistration = {
+        _id: "",
+        company: {
+          _id: "",
+          name: "",
+        },
+        email: "",
+        fullName: "",
+        phone: "",
+        address: "",
+        age: 0,
+        gender: "",
+        status: "pending",
+        createdBy: {
+          _id: "",
+          email: "",
+        },
+        updatedBy: {
+          _id: "",
+          email: "",
+        },
+        deletedBy: {
+          _id: "",
+          email: "",
+        },
+        createdAt: "",
+        updatedAt: "",
+        isDeleted: false,
+        deletedAt: null,
+      };
+    });
+    builder.addCase(fetchHrById.fulfilled, (state, action) => {
+      if (action.payload?.data) {
         state.isFetchSingle = false;
-      });
+        state.singleHrRegistration = {
+          _id: "",
+          company: {
+            _id: "",
+            name: "",
+          },
+          email: "",
+          fullName: "",
+          phone: "",
+          address: "",
+          age: 0,
+          gender: "",
+          status: "pending",
+          createdBy: {
+            _id: "",
+            email: "",
+          },
+          updatedBy: {
+            _id: "",
+            email: "",
+          },
+          deletedBy: {
+            _id: "",
+            email: "",
+          },
+          createdAt: "",
+          updatedAt: "",
+          isDeleted: false,
+          deletedAt: null,
+        };
+      }
+    });
+    builder.addCase(fetchHrById.rejected, (state) => {
+      state.isFetchSingle = false;
+      state.singleHrRegistration = {
+        _id: "",
+        company: {
+          _id: "",
+          name: "",
+        },
+        email: "",
+        fullName: "",
+        phone: "",
+        address: "",
+        age: 0,
+        gender: "",
+        status: "pending",
+        createdBy: {
+          _id: "",
+          email: "",
+        },
+        updatedBy: {
+          _id: "",
+          email: "",
+        },
+        deletedBy: {
+          _id: "",
+          email: "",
+        },
+        createdAt: "",
+        updatedAt: "",
+        isDeleted: false,
+        deletedAt: null,
+      };
+    });
   },
 });
 

@@ -40,17 +40,18 @@ import Logo from "../../assets/LogoIcon-removebg-preview.png";
 import { HomeIcon } from "lucide-react";
 import axios from "axios";
 import { IUser } from "@/types/backend";
+import { MdContactPage } from "react-icons/md";
 
 const items: MenuProps["items"] = [
   {
     label: <Link to={"/"}>Home Page</Link>,
     key: "/",
-    icon: <HomeIcon />,
+    icon: <HomeIcon size={16} />,
   },
   {
     label: <Link to={"/jobsAll"}>Find Jobs</Link>,
-    key: "/jobSearch",
-    icon: <CodeOutlined />,
+    key: "/jobsAll",
+    icon: <CodeOutlined size={16} />,
   },
   // {
   //   label: <Link to={"/job"}>Job Application</Link>,
@@ -60,12 +61,12 @@ const items: MenuProps["items"] = [
   {
     label: <Link to={"/company"}>Top IT Companies</Link>,
     key: "/company",
-    icon: <RiseOutlined />,
+    icon: <RiseOutlined size={16} />,
   },
   {
     label: <Link to={"/resumes"}>My Resumes</Link>,
     key: "/resumes",
-    icon: <ContactsOutlined />,
+    icon: <ContactsOutlined size={16} />,
     // children: [
     //   {
     //     label: <Link to={"/resumes/create"}>Create Resume</Link>,
@@ -84,6 +85,11 @@ const items: MenuProps["items"] = [
     //     key: "/resumes/templates",
     //   },
     // ],
+  },
+  {
+    label: <Link to={"/saved-jobs"}>Saved Jobs</Link>,
+    key: "/saved-jobs",
+    icon: <MdContactPage  size={16} />,
   },
 ];
 interface Notification {
@@ -137,7 +143,7 @@ const Header = (props: any) => {
       setUserId(user._id);
       fetchData();
     }
-  }, [user]);
+  }, [user, user._id]);
 
   const { socket, socketNotificationsData } = useSocket(userId); // Kết nối WebSocket
 

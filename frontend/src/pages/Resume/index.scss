@@ -40,3 +40,12 @@
     justify-content: center; /* Horizontally center label */
   }
 }
+
+#default-input-search:focus {
+  border: 1px solid gray!important;
+}
+
+#default-input-search:focus {
+  border: none;         /* Loại bỏ border khi focus */
+  outline: none;        /* Loại bỏ outline mặc định khi focus */
+}

@@ -1,8 +1,14 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ICompany, IJob } from "@/types/backend";
-import { callFetchCompanyById, callFetchJobById } from "@/config/api";
-import { Breadcrumb, Col, Row, Skeleton } from "antd";
+import {
+  callDeleteSavedJob,
+  callFetchCompanyById,
+  callFetchJobById,
+  callFetchSavedJobs,
+  callSaveJob,
+} from "@/config/api";
+import { Breadcrumb, Col, notification, Row, Skeleton } from "antd";
 import { getLocationName } from "@/config/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -11,10 +17,17 @@ import SearchClient from "@/components/client/search.client";
 import { Link } from "react-router-dom";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { IoLocationSharp } from "react-icons/io5";
-import { FaAddressBook, FaRegBell, FaRegClock, FaUser } from "react-icons/fa";
+import {
+  FaAddressBook,
+  FaHeart,
+  FaRegBell,
+  FaRegClock,
+  FaUser,
+} from "react-icons/fa";
 import { IoIosSend, IoMdHeartEmpty } from "react-icons/io";
 import { BsBoxArrowInUpRight } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 dayjs.extend(relativeTime);
 
 const ClientJobDetailPage = (props: any) => {
@@ -22,11 +35,74 @@ const ClientJobDetailPage = (props: any) => {
   const [companyDetail, setCompanyDetail] = useState<ICompany | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isJobSaved, setIsJobSaved] = useState<boolean>(false);
 
   const navigate = useNavigate();
   let location = useLocation();
   let params = new URLSearchParams(location.search);
   const id = params.get("id");
+  const userId = useSelector((state: any) => state.account.user?._id);
+
+  useEffect(() => {
+    const checkIfJobIsSaved = async () => {
+      if (userId && id) {
+        try {
+          const response = await callFetchSavedJobs(userId);
+          const savedJobs = response.data;
+          // console.log("fsefddđsdfgsd", savedJobs);
+          const isSaved = savedJobs.some((job: any) => job.jobId._id === id);
+          // console.log("isSaved", isSaved);
+          setIsJobSaved(isSaved);
+        } catch (error) {
+          console.error("Error fetching saved jobs:", error);
+        }
+      }
+    };
+
+    checkIfJobIsSaved();
+  }, [userId, id, isJobSaved]);
+
+  const handleSaveJob = async () => {
+    if (isJobSaved) {
+      try {
+        await callDeleteSavedJob(id || "", userId);
+        setIsJobSaved(false);
+        // notification.warning({
+        //   message: "Job Removed",
+        //   description:
+        //     "The job has been successfully removed from your saved list.",
+        //   placement: "topRight",
+        // });
+      } catch (error) {
+        console.error("Error deleting saved job:", error);
+        notification.error({
+          message: "Failed to Remove Job",
+          description:
+            "An error occurred while removing the job. Please try again.",
+          placement: "topRight",
+        });
+      }
+    } else {
+      try {
+        await callSaveJob(id || "", userId);
+        setIsJobSaved(true);
+        notification.success({
+          message: "Job Saved",
+          description:
+            "The job has been successfully added to your saved list.",
+          placement: "topRight",
+        });
+      } catch (error) {
+        console.error("Error saving job:", error);
+        notification.error({
+          message: "Failed to Save Job",
+          description:
+            "An error occurred while saving the job. Please try again.",
+          placement: "topRight",
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchJobDetail = async () => {
@@ -276,9 +352,15 @@ const ClientJobDetailPage = (props: any) => {
                       <Col
                         span={5}
                         className="mt-4 p-2 text-lg rounded-sm font-semibold flex justify-center items-center cursor-pointer border-1 border-blue-400 text-blue-600 hover:border-blue-600"
+                        onClick={() => handleSaveJob()}
                       >
-                        <IoMdHeartEmpty className="mr-2" size={20} />
-                        Save news
+                        {isJobSaved ? (
+                          <FaHeart className="mr-2" size={20} />
+                        ) : (
+                          <IoMdHeartEmpty className="mr-2" size={20} />
+                        )}
+
+                        {isJobSaved ? "Job Saved" : "Save Job"}
                       </Col>
                     </Row>
                     <Row
@@ -357,7 +439,10 @@ const ClientJobDetailPage = (props: any) => {
                         {companyDetail?.address ? companyDetail?.address : ""}
                       </span>
                     </Col>
-                    <Col className="flex justify-center items-center text-blue-600 text-md font-bold hover:underline" onClick={() => handleClick(companyDetail?._id || "")}>
+                    <Col
+                      className="flex justify-center items-center text-blue-600 text-md font-bold hover:underline"
+                      onClick={() => handleClick(companyDetail?._id || "")}
+                    >
                       View company page{" "}
                       <BsBoxArrowInUpRight className="ml-2" size={18} />
                     </Col>

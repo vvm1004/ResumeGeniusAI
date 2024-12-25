@@ -197,6 +197,35 @@ export const callNumberOfJobs = () => {
 export const callFetchJobById = (id: string) => {
   return axios.get<IBackendRes<IJob>>(`/api/v1/jobs/${id}`);
 };
+/**
+ * 
+Module Save new
+ */
+export const callSaveJob = async (jobId: string, userId: string) => {
+  return axios.post(`api/v1/saved-jobs/${jobId}`, { userId });
+};
+
+export const callFetchSavedJobs = async (userId: string) => {
+  try {
+    const response = await axios.get(`api/v1/saved-jobs/${userId}`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching saved jobs:", error);
+    throw error;
+  }
+};
+
+export const callDeleteSavedJob = async (jobId: string, userId: string) => {
+  try {
+    const response = await axios.delete(`api/v1/saved-jobs/${jobId}`, {
+      data: { userId },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error deleting saved job:", error);
+    throw error;
+  }
+};
 
 /**
  * 

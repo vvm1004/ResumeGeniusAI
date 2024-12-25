@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  img {
+    display: initial;
+  }
+}
 @media print {
   #no-print {
     display: none;
@@ -9,8 +14,8 @@
   #print-area {
     display: block;
     position: relative;
-    min-height: auto;
     min-width: auto;
+    min-height: 100vh;
   }
   @page {
     size: auto;

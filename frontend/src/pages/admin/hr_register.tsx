@@ -12,15 +12,14 @@ import Access from "@/components/share/access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 
 const HrRegistrationPage = () => {
-  const [openModal, setOpenModal] = useState(false);
   const tableRef = useRef<ActionType>();
   const dispatch = useAppDispatch();
 
-  const {
-    isFetching,
-    meta,
-    result: hrRegistrations,
-  } = useAppSelector((state) => state.hrRegistration);
+  const isFetching = useAppSelector((state) => state.hrRegistration.isFetching);
+  const meta = useAppSelector((state) => state.hrRegistration.meta);
+  const hrRegistrations = useAppSelector(
+    (state) => state.hrRegistration.result
+  );
 
   const handleApproveReject = async (
     action: "approved" | "rejected",
@@ -38,63 +37,88 @@ const HrRegistrationPage = () => {
       const res = await callUpdateHrRegister(id, updateStatus);
       if (res?.data) {
         message.success(
-          `${action === "approved" ? "Duyệt" : "Từ chối"} thành công!`
+          `${action === "approved" ? "Approved" : "Rejected"} successfully!`
         );
         tableRef?.current?.reload();
       } else {
         notification.error({
-          message: "Lỗi cập nhật trạng thái",
-          description: res?.message || "Không thể cập nhật trạng thái.",
+          message: "Error updating status",
+          description: res?.message || "Unable to update status.",
         });
       }
     } catch (error) {
-      message.error("Đã xảy ra lỗi khi cập nhật trạng thái.");
+      message.error("An error occurred while updating the status.");
     }
   };
 
-  const buildQuery = (params: any, sort: any) => {
-    const query = { ...params };
-    if (query.company) query.company = `/${query.company}/i`;
+  const buildQuery = (params: any, sort: any, filter: any) => {
+    const clone = { ...params };
+    if (clone.name) clone.name = `/${clone.name}/i`;
 
-    let queryStr = queryString.stringify(query);
-    const sortField = sort?.company || sort?.createdAt || sort?.updatedAt;
-    const sortBy = sortField
-      ? `sort=${sortField === "ascend" ? "" : "-"}${sortField}`
-      : "sort=-updatedAt";
+    let temp = queryString.stringify(clone);
 
-    return `${queryStr}&${sortBy}`;
+    let sortBy = "";
+    if (sort && sort.name) {
+      sortBy = sort.name === "ascend" ? "sort=name" : "sort=-name";
+    }
+    if (sort && sort.createdAt) {
+      sortBy =
+        sort.createdAt === "ascend" ? "sort=createdAt" : "sort=-createdAt";
+    }
+    if (sort && sort.updatedAt) {
+      sortBy =
+        sort.updatedAt === "ascend" ? "sort=updatedAt" : "sort=-updatedAt";
+    }
+
+    // Default sort by updatedAt
+    if (Object.keys(sortBy).length === 0) {
+      temp = `${temp}&sort=-updatedAt`;
+    } else {
+      temp = `${temp}&${sortBy}`;
+    }
+
+    return temp;
+  };
+
+  const reloadTable = () => {
+    tableRef?.current?.reload();
   };
 
   const columns: ProColumns<any>[] = [
-    {
-      title: "ID",
-      dataIndex: "_id",
-      width: 200,
-      hideInSearch: true,
-    },
-    {
-      title: "Công ty",
-      dataIndex: "company",
-      render: (_, record) => record.company?.name || "N/A",
-    },
     {
       title: "Email",
       dataIndex: "email",
     },
     {
-      title: "Họ và Tên",
+      title: "Full Name",
       dataIndex: "fullName",
     },
     {
-      title: "Trạng thái",
+      title: "Phone Number",
+      dataIndex: "phone",
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+    },
+    {
+      title: "Age",
+      dataIndex: "age",
+    },
+    {
+      title: "Gender",
+      dataIndex: "gender",
+    },
+    {
+      title: "Status",
       dataIndex: "status",
       render: (_, record) => {
         const statusColor =
           record.status === "approved"
             ? "green"
             : record.status === "rejected"
-              ? "red"
-              : "lime";
+            ? "red"
+            : "lime";
         return (
           <Tag color={statusColor}>
             {record.status?.toUpperCase() || "PENDING"}
@@ -104,17 +128,24 @@ const HrRegistrationPage = () => {
       hideInSearch: true,
     },
     {
-      title: "Ngày tạo",
+      title: "Company",
+      dataIndex: "company",
+      render: (_, record) => {
+        return record.company?.name || "N/A"; // Display company name or "N/A"
+      },
+    },
+    {
+      title: "Created At",
       dataIndex: "createdAt",
       render: (_, record) =>
         dayjs(record.createdAt).format("DD-MM-YYYY HH:mm:ss"),
       hideInSearch: true,
     },
     {
-      title: "Hành động",
+      title: "Actions",
       render: (_, record) => (
         <Space>
-          <Tooltip title="Duyệt">
+          <Tooltip title="Approve">
             <CheckOutlined
               style={{ fontSize: 18, color: "green", cursor: "pointer" }}
               onClick={() =>
@@ -122,7 +153,7 @@ const HrRegistrationPage = () => {
               }
             />
           </Tooltip>
-          <Tooltip title="Từ chối">
+          <Tooltip title="Reject">
             <CloseOutlined
               style={{ fontSize: 18, color: "red", cursor: "pointer" }}
               onClick={() =>
@@ -141,32 +172,28 @@ const HrRegistrationPage = () => {
       <Access permission={ALL_PERMISSIONS.HR_REGISTRATION.GET_PAGINATE}>
         <DataTable
           actionRef={tableRef}
-          headerTitle="Danh sách đăng ký HR"
+          headerTitle="HR Registration List"
           rowKey="_id"
           loading={isFetching}
           columns={columns}
           dataSource={hrRegistrations}
-          request={async (params, sort, filter) => {
-            const query = buildQuery(params, sort);
-            await dispatch(fetchHr({ query })); // Gọi API và cập nhật Redux state
-
-            // Lấy dữ liệu từ Redux state
-            const { result: data, meta } = useAppSelector(
-              (state) => state.hrRegistration
-            );
-
-            return {
-              data: data || [],
-              success: true,
-              total: meta?.total || 0,
-            };
+          request={async (params, sort, filter): Promise<any> => {
+            const query = buildQuery(params, sort, filter);
+            dispatch(fetchHr({ query })); // Call API and update Redux state
           }}
+          scroll={{ x: true }}
           pagination={{
             current: meta.current,
             pageSize: meta.pageSize,
-            total: meta.total,
             showSizeChanger: true,
-            showTotal: (total) => `Tổng cộng ${total} hàng`,
+            total: meta.total,
+            showTotal: (total, range) => {
+              return (
+                <div>
+                  {range[0]}-{range[1]} of {total} rows
+                </div>
+              );
+            },
           }}
           rowSelection={false}
         />

@@ -35,7 +35,7 @@ const RegisterPage = () => {
                 <div className={styles.container} >
                     <section className={styles.wrapper} >
                         <div className={styles.heading} >
-                            <h2 className={`${styles.text} ${styles["text-large"]}`}> Account Registration </h2>
+                            <h2 className={`${styles.text} text-2xl font-semibold text-center`}> Account Registration </h2>
                             <Divider />
                         </div>
                         <Form<IUser>
@@ -46,7 +46,7 @@ const RegisterPage = () => {
                         >
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
-                                label="Full Name"
+                                label={<span className="text-md font-semibold">Full Name</span>}
                                 name="name"
                                 rules={[{ required: true, message: 'Full name is required!' }]}
                             >
@@ -55,7 +55,7 @@ const RegisterPage = () => {
 
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
-                                label="Email"
+                                label={<span className="text-md font-semibold">Email</span>}
                                 name="email"
                                 rules={[{ required: true, message: 'Email is required!' }]}
                             >
@@ -64,7 +64,7 @@ const RegisterPage = () => {
 
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
-                                label="Password"
+                                label={<span className="text-md font-semibold">Password</span>}
                                 name="password"
                                 rules={[{ required: true, message: 'Password is required!' }]}
                             >
@@ -73,7 +73,7 @@ const RegisterPage = () => {
 
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
-                                label="Age"
+                                label={<span className="text-md font-semibold">Age</span>}
                                 name="age"
                                 rules={[{ required: true, message: 'Age is required!' }]}
                             >
@@ -82,8 +82,7 @@ const RegisterPage = () => {
 
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
-                                name="gender"
-                                label="Gender"
+                                label={<span className="text-md font-semibold">Gender</span>}
                                 rules={[{ required: true, message: 'Gender is required!' }]}
                             >
                                 <Select
@@ -97,22 +96,22 @@ const RegisterPage = () => {
 
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
-                                label="Address"
+                                label={<span className="text-md font-semibold">Address</span>}
                                 name="address"
                                 rules={[{ required: true, message: 'Address is required!' }]}
                             >
                                 <Input />
                             </Form.Item>
 
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit" loading={isSubmit} >
+                            <Form.Item className='text-right'>
+                                <Button className="text-md px-4" type="primary" htmlType="submit" loading={isSubmit} >
                                     Register
                                 </Button>
                             </Form.Item>
 
                             <Divider> Or </Divider>
-                            <p className="text text-normal"> Already have an account?
-                                <span>
+                            <p className="text-center"> Already have an account?
+                                <span  className="font-bold text-lg hover:text-blue-600">
                                     <Link to='/login'> Login </Link>
                                 </span>
                             </p>

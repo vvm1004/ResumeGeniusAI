@@ -27,6 +27,7 @@ import { JobNotificationService } from './websocket/JobNotificationService';
 import { JobNotificationModule } from './websocket/JobNotificationModule';
 import { NotificationsModule } from './notifications/notifications.module';
 import { HrRegistrationModule } from './hr-registration/hr-registration.module';
+import { SavedJobModule } from './save-new-job/save-new-job.module';
 
 @Module({
   imports: [
@@ -91,6 +92,8 @@ import { HrRegistrationModule } from './hr-registration/hr-registration.module';
     NotificationsModule,
 
     HrRegistrationModule,
+
+    SavedJobModule,
   ],
   controllers: [AppController],
   // providers: [AppService,

@@ -33,7 +33,6 @@ const HrRegister = () => {
   const navigate = useNavigate(); // Hook to handle redirection
 
   const API_URL = import.meta.env.VITE_BACKEND_URL + "/api/v1/hr-registration/";
-  const token = localStorage.getItem("access_token");
   const user = useSelector((state: any) => state.account.user);
 
   const [loading, setLoading] = useState(false);
@@ -44,7 +43,7 @@ const HrRegister = () => {
     const res = await callFetchCompany(
       `current=1&pageSize=100&name=/${name}/i`
     );
-    console.log("resssL: ", companies)
+    console.log("resssL: ", companies);
     if (res && res.data) {
       const list = res.data.result;
       return list.map((item) => ({
@@ -260,8 +259,8 @@ const HrRegister = () => {
       </div>
 
       {/* Registration Form */}
-      <div className="form-container">
-        <h3 className="title">Register to Become an HR</h3>
+      <div className="form-container mb-4 rounded-md">
+        <h3 className="title p-2 rounded-md">Register to Become an HR</h3>
         <Spin spinning={loading} tip="Registering...">
           <Form
             name="hr_register"
@@ -298,15 +297,14 @@ const HrRegister = () => {
               name="age"
               rules={[{ required: true, message: "Please enter your age!" }]}
             >
-              <Input
-                type="number"
-                placeholder="Age"
-              />
+              <Input type="number" placeholder="Age" />
             </Form.Item>
 
             <Form.Item
               name="gender"
-              rules={[{ required: true, message: "Please select your gender!" }]}
+              rules={[
+                { required: true, message: "Please select your gender!" },
+              ]}
             >
               <Input placeholder="Gender" />
             </Form.Item>
@@ -359,8 +357,8 @@ const HrRegister = () => {
                     value
                       ? Promise.resolve()
                       : Promise.reject(
-                        "You must agree to the terms and conditions!"
-                      ),
+                          "You must agree to the terms and conditions!"
+                        ),
                 },
               ]}
             >
@@ -382,7 +380,6 @@ const HrRegister = () => {
                 Register
               </Button>
             </Form.Item>
-
           </Form>
         </Spin>
       </div>
