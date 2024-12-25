@@ -102,6 +102,7 @@ export interface IJob {
   deletedAt?: boolean | null;
   createdAt?: string;
   updatedAt?: string;
+  job_description_file_name: string
 }
 
 export interface IResume {

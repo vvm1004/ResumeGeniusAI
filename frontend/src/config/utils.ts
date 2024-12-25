@@ -76,7 +76,7 @@ export const SKILLS_LIST =
         { label: "Vĩnh Long", value: "VINHLONG" },
         { label: "Vĩnh Phúc", value: "VINHPHUC" },
         { label: "Yên Bái", value: "YENBAI" },
-        { label: "Tất cả thành phố", value: "ALL" },
+        // { label: "Tất cả thành phố", value: "ALL" },
     ];
     
 
