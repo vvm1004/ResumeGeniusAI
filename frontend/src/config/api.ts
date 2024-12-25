@@ -131,6 +131,13 @@ export const callFetchCompany = (query: string) => {
   );
 };
 
+export const callFetchCompanyAdmin = (query: string) => {
+  return axios.get<IBackendRes<IModelPaginate<ICompany>>>(
+    `/api/v1/companies/admin?${query}`
+  );
+};
+
+
 export const callFetchCompanyById = (id: string) => {
   return axios.get<IBackendRes<ICompany>>(`/api/v1/companies/${id}`);
 };

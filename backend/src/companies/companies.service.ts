@@ -57,6 +57,39 @@ export class CompaniesService {
 
   }
 
+  async findAllWithAdminPage(currentPage: number, limit: number, qs: string, user: IUser) {
+    const { filter, sort, projection, population } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+    if (user.company && user.company._id) {
+      filter._id = user.company._id
+    }
+    let offset = (currentPage - 1) * (limit);
+    let defaultLimit = limit ? limit : 10;
+
+    const totalItems = (await this.companyModel.find(filter)).length
+    const totalPages = Math.ceil(totalItems / defaultLimit);
+
+
+    const result = await this.companyModel.find(filter)
+      .skip(offset)
+      .limit(limit)
+      .sort(sort as any)
+      .populate(population)
+      .exec()
+
+    return {
+      meta: {
+        current: currentPage, //trang hien tai
+        pageSize: limit,  //so luong ban ghi da lay
+        pages: totalPages, //tong so trang voi dieu kien query
+        total: totalItems //tong so phan tu (so ban ghi)
+      },
+      result //kết quả query
+    }
+
+  }
+
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id))
       return `Not found company with id ${id}`

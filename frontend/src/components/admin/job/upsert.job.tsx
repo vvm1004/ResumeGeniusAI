@@ -6,7 +6,7 @@ import styles from 'styles/admin.module.scss';
 import { LOCATION_LIST, SKILLS_LIST } from "@/config/utils";
 import { ICompanySelect } from "../user/modal.user";
 import { useState, useEffect } from 'react';
-import { callCreateJob, callFetchCompany, callFetchJobById, callUpdateJob, callSendNewJob } from "@/config/api";
+import { callCreateJob, callFetchCompany, callFetchCompanyAdmin, callFetchJobById, callUpdateJob, callSendNewJob } from "@/config/api";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { CheckSquareOutlined } from "@ant-design/icons";
@@ -59,7 +59,7 @@ const ViewUpsertJob = (props: any) => {
 
     // Usage of DebounceSelect
     async function fetchCompanyList(name: string): Promise<ICompanySelect[]> {
-        const res = await callFetchCompany(`current=1&pageSize=100&name=/${name}/i`);
+        const res = await callFetchCompanyAdmin(`current=1&pageSize=100&name=/${name}/i`);
         if (res && res.data) {
             const list = res.data.result;
             const temp = list.map(item => {
@@ -199,8 +199,8 @@ const ViewUpsertJob = (props: any) => {
                                     name="skills"
                                     label="Kỹ năng yêu cầu"
                                     options={SKILLS_LIST}
-                                    placeholder="Please select a skill"
-                                    rules={[{ required: true, message: 'Vui lòng chọn kỹ năng!' }]}
+                                    placeholder="You can enter or select a skill"
+                                    rules={[{ required: true, message: 'Please enter or select a skill!' }]}
                                     allowClear
                                     // mode="multiple"
                                     mode="tags"

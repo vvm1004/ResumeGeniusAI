@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -27,7 +27,17 @@ export class CompaniesController {
   ) {
     return this.companiesService.findAll(+currentPage, +limit, qs);
   }
-
+  @Get('admin')
+  @SkipCheckPermission()
+  @ResponseMessage('Fetch List Company with admin page')
+  findAllWithAdminPage(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string,
+    @User() user: IUser
+  ) {
+    return this.companiesService.findAllWithAdminPage(+currentPage, +limit, qs, user);
+  }
   @Get(':id')
   @Public()
   findOne(@Param('id') id: string) {

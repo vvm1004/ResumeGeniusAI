@@ -615,30 +615,6 @@ export const INIT_PERMISSIONS = [
         "deletedAt": null,
     },
     {
-        "name": "Fetch List Job with admin page",
-        "apiPath": "/api/v1/jobs/admin",
-        "method": "GET",
-        "module": "JOBS",
-        "createdBy": {
-            "_id": "647b5108a8a243e8191855b5",
-            "email": "vovanminhv23@gmail.com"
-        },
-        "isDeleted": false,
-        "deletedAt": null,
-    },
-    {
-        "name": "Fetch List Resume with admin page",
-        "apiPath": "/api/v1/resumes/admin",
-        "method": "GET",
-        "module": "RESUMES",
-        "createdBy": {
-            "_id": "647b5108a8a243e8191855b5",
-            "email": "vovanminhv23@gmail.com"
-        },
-        "isDeleted": false,
-        "deletedAt": null,
-    },
-    {
         "name": "Create Hr Registration",
         "apiPath": "/api/v1/hr-registration",
         "method": "POST",

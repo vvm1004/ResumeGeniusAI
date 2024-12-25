@@ -35,6 +35,7 @@ export class ResumeController {
     return this.resumeService.findAll(+currentPage, +limit, qs);
   }
   @Get('admin')
+  @SkipCheckPermission()
   @ResponseMessage('Fetch List Resume with admin page')
   findAllWithAdminPage(
     @Query("current") currentPage: string,

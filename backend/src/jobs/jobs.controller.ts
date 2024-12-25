@@ -36,6 +36,7 @@ export class JobsController {
     return await this.jobsService.findMatchingJobsByUserId(userId);
   }
   @Get('admin')
+  @SkipCheckPermission()
   @ResponseMessage('Fetch List Job with admin page')
   findAllWithAdminPage(
     @Query("current") currentPage: string,
