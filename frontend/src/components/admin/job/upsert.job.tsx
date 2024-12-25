@@ -251,7 +251,6 @@ const ViewUpsertJob = (props: any) => {
                                         MIDDLE: 'MIDDLE',
                                         SENIOR: 'SENIOR',
                                     }}
-                                     mode="tags"
                                     placeholder="Please select a level"
                                     rules={[{ required: true, message: 'Vui lòng chọn level!' }]}
                                 />
