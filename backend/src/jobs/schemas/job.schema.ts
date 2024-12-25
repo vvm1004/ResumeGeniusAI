@@ -27,8 +27,8 @@ export class Job {
   @Prop()
   quantity: number;
 
- @Prop({ type: [String] })  // Đảm bảo level là mảng các chuỗi
-  level: string[];
+  @Prop()
+  level: string;
 
   @Prop()
   description: string;
