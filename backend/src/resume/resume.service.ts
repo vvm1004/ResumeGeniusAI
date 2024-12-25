@@ -9,12 +9,15 @@ import { IUser } from 'src/users/users.interface';
 import mongoose from 'mongoose';
 import { JobNotificationGateway } from 'src/websocket/jobNotificationGateway';
 import { JobNotificationService } from 'src/websocket/jobNotificationService';
+import { Job, JobDocument } from 'src/jobs/schemas/job.schema';
 
 @Injectable()
 export class ResumeService {
   constructor(
     @InjectModel(Resume.name)
     private resumeModel: SoftDeleteModel<ResumeDocument>,
+    @InjectModel(Job.name)
+    private jobModel: SoftDeleteModel<JobDocument>,
     private readonly jobNotificationService: JobNotificationService,
   ) {}
 
@@ -88,38 +91,57 @@ export class ResumeService {
   }
 
   async findAllWithAdminPage(currentPage: number, limit: number, qs: string, user: IUser) {
-    const { filter, sort, projection, population } = aqp(qs);
+    const { filter, sort, projection, population } = aqp(qs);  // Parse query string
     delete filter.current;
     delete filter.pageSize;
+  
+    console.log(filter['jobId']);  // Log to see the filter for jobId
+    
     if (user.company && user.company._id) {
-      filter['companyId'] = user.company._id
+      filter['companyId'] = user.company._id;
     }
-
-    let offset = (currentPage - 1) * (limit);
+  
+    if (filter['jobId']) {
+      const jobName = filter['jobId'];  
+  
+     const jobs = await this.jobModel.find({ name: { $regex: jobName, $options: 'i' } }).exec();
+  
+     const jobIds = jobs.map(job => job._id);
+  
+      if (jobIds.length > 0) {
+        filter['jobId'] = { $in: jobIds };  
+      } else {
+        filter['jobId'] = { $in: [] };
+      }
+    }
+  
+    // Pagination logic
+    let offset = (currentPage - 1) * limit;
     let defaultLimit = limit ? limit : 10;
-
-    const totalItems = (await this.resumeModel.find(filter)).length
+  
+    // Get the total count of resumes based on the current filter
+    const totalItems = await this.resumeModel.countDocuments(filter).exec();
     const totalPages = Math.ceil(totalItems / defaultLimit);
-
-
+  
+    // Fetch the results with the current filter and pagination
     const result = await this.resumeModel.find(filter)
       .skip(offset)
       .limit(limit)
       .sort(sort as any)
       .populate(population)
-      .exec()
-
+      .exec();
+  
     return {
       meta: {
-        current: currentPage, //trang hien tai
-        pageSize: limit,  //so luong ban ghi da lay
-        pages: totalPages, //tong so trang voi dieu kien query
-        total: totalItems //tong so phan tu (so ban ghi)
+        current: currentPage, // current page number
+        pageSize: limit,      // number of items per page
+        pages: totalPages,    // total number of pages
+        total: totalItems     // total number of items (resumes)
       },
-      result //kết quả query
-    }
-
+      result // the actual resumes data
+    };
   }
+  
 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id))

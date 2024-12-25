@@ -81,9 +81,18 @@ const ResumePage = () => {
 
         {
             title: 'Job',
-            dataIndex: ["jobId", "name"],
-            // hideInSearch: true,
+            dataIndex: 'jobId',
+            render: (text, record) => {
+                // Kiểm tra xem jobId có phải là đối tượng hay không
+                const job = record?.jobId;
+                if (typeof job === 'string') {
+                    return 'N/A'; // Nếu là chuỗi (ID), trả về 'N/A' hoặc ID nếu bạn muốn
+                }
+                // Nếu jobId là một đối tượng, trả về tên công việc
+                return job?.name || 'N/A';
+            }
         },
+        
         {
             title: 'Company',
             dataIndex: ["companyId", "name"],
@@ -203,6 +212,7 @@ const ResumePage = () => {
             clone.status = clone.status.join(",");
         }
 
+            
         let temp = queryString.stringify(clone);
 
         let sortBy = "";
