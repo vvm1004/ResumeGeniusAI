@@ -65,6 +65,10 @@ const ClientJobDetailPage = (props: any) => {
     checkIfJobIsSaved();
   }, [userId, id, isJobSaved]);
 
+  const handleNotificationClick = () => {
+    navigate("/saved-jobs");
+  };
+
   const handleSaveJob = async () => {
     if (isJobSaved) {
       try {
@@ -94,6 +98,7 @@ const ClientJobDetailPage = (props: any) => {
           description:
             "The job has been successfully added to your saved list.",
           placement: "topRight",
+          onClick: handleNotificationClick,
         });
       } catch (error) {
         console.error("Error saving job:", error);
