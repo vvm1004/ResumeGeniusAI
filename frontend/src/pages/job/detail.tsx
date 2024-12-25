@@ -19,9 +19,12 @@ import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { IoLocationSharp } from "react-icons/io5";
 import {
   FaAddressBook,
+  FaCode,
   FaHeart,
   FaRegBell,
   FaRegClock,
+  FaStar,
+  FaTools,
   FaUser,
 } from "react-icons/fa";
 import { IoIosSend, IoMdHeartEmpty } from "react-icons/io";
@@ -287,7 +290,7 @@ const ClientJobDetailPage = (props: any) => {
                         {jobDetail?.company?.name}
                       </Col>
                       <Col md={24} className="flex items-center mt-4">
-                        <div className="w-1/3 flex items-center">
+                        <div className="w-1/4 flex items-center">
                           <div>
                             <RiMoneyDollarCircleLine
                               className="mr-2"
@@ -300,7 +303,7 @@ const ClientJobDetailPage = (props: any) => {
                             {jobDetail?.salary}
                           </div>
                         </div>
-                        <div className="w-1/3 flex items-center">
+                        <div className="w-1/4 flex items-center">
                           <div>
                             <IoLocationSharp
                               className="mr-2"
@@ -315,7 +318,7 @@ const ClientJobDetailPage = (props: any) => {
                             {getLocationName(jobDetail?.location)}
                           </div>
                         </div>
-                        <div className="w-1/3 flex items-center">
+                        <div className="w-1/4 flex items-center">
                           <div>
                             <FaAddressBook
                               className="mr-2"
@@ -328,6 +331,31 @@ const ClientJobDetailPage = (props: any) => {
                               Experience
                             </div>
                             {jobDetail?.level}
+                          </div>
+                        </div>
+                        <div className="w-1/4 flex items-center">
+                          <div>
+                            <FaStar   
+                              className="mr-2"
+                              size={40}
+                              color="blue"
+                            />
+                          </div>
+                          <div>
+                            <div className="mb-2 text-md font-semibold">Skills</div>
+                            <div className="flex flex-wrap">
+                              {jobDetail?.skills.map((skill, index) => (
+                                <div
+                                  key={index}
+                                  className="mb-2 mr-4 text-blue-600 border bg-gray-200 rounded-sm"
+                                  style={{fontSize: "12px"}}
+                                >
+                                  <h3 className="px-2 font-semibold">
+                                    {skill}
+                                  </h3>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </Col>
