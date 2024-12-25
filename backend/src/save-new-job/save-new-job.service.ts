@@ -11,10 +11,10 @@ export class SavedJobService {
     @InjectModel(SavedJob.name) private readonly savedJobModel: Model<SavedJob>,
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(Job.name) private readonly jobModel: Model<Job>,
-  ) {}
+  ) { }
 
   // Phương thức để lưu công việc
-  async saveJob(userId: string, jobId: string): Promise<SavedJob> {
+  async saveJob(userId: string, jobId: string) {
     // Kiểm tra người dùng có tồn tại không
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -46,7 +46,7 @@ export class SavedJobService {
   }
 
   // Phương thức để lấy các công việc đã lưu của người dùng
-  async getSavedJobs(userId: string): Promise<SavedJob[]> {
+  async getSavedJobs(userId: string) {
     // Lấy tất cả các công việc đã lưu của người dùng
     return this.savedJobModel
       .find({ userId })  // Sử dụng userId thay vì user
@@ -54,7 +54,7 @@ export class SavedJobService {
   }
 
   // Phương thức để xóa công việc đã lưu
-  async removeSavedJob(userId: string, jobId: string): Promise<void> {
+  async removeSavedJob(userId: string, jobId: string) {
     const result = await this.savedJobModel.deleteOne({ userId, jobId }); // Sử dụng userId và jobId
     if (result.deletedCount === 0) {
       throw new NotFoundException('Saved job not found');
