@@ -30,7 +30,7 @@ export class HrRegistrationController {
     @Body() createHrRegisDto: CreateHrRegisDto,
     @User() user: IUser,
   ) {
-    console.log(createHrRegisDto, '\n\n', user, '\n');
+    // console.log(createHrRegisDto, '\n\n', user, '\n');
     return this.hrRegistrationService.create(createHrRegisDto, user);
   }
 
