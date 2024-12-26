@@ -13,7 +13,7 @@ export class ResumeController {
 
   @Post()
   @ResponseMessage('Create new resume')
-
+  @SkipCheckPermission()
   create(@Body() createUserCvDto: CreateUserCvDto, @User() user: IUser) {
     return this.resumeService.create(createUserCvDto, user);
   }
