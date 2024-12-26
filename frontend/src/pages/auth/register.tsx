@@ -83,6 +83,7 @@ const RegisterPage = () => {
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
                                 label={<span className="text-md font-semibold">Gender</span>}
+                                name="gender"
                                 rules={[{ required: true, message: 'Gender is required!' }]}
                             >
                                 <Select
