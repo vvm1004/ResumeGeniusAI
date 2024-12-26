@@ -22,11 +22,14 @@ import { isMobile } from "react-device-detect";
 import type { MenuProps } from "antd";
 import { setLogoutAction } from "@/redux/slice/accountSlide";
 import { ALL_PERMISSIONS } from "@/config/permissions";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const { Content, Footer, Sider } = Layout;
 
 const LayoutAdmin = () => {
   const location = useLocation();
+  const userId = useSelector((state) => state.account.user._id);
 
   const [collapsed, setCollapsed] = useState(false);
   const [activeMenu, setActiveMenu] = useState("");
@@ -37,7 +40,22 @@ const LayoutAdmin = () => {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [data, setData] = useState([]);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/${userId}`
+      );
+      setData(response.data.data);
+      if (response.data.data.avatar) {
+        setAvatarUrl(response.data.data.avatar); // Set the avatar URL if exists
+      }
+    } catch (error) {
+      console.log("Error fetching data: ", error);
+    }
+  };
   useEffect(() => {
     if (permissions?.length) {
       const viewCompany = permissions.find(
@@ -163,6 +181,12 @@ const LayoutAdmin = () => {
     setActiveMenu(location.pathname);
   }, [location]);
 
+  useEffect(() => {
+    if (userId) {
+      fetchData();
+    }
+  }, [userId]);
+
   const handleLogout = async () => {
     const res = await callLogout();
     if (res && res.data) {
@@ -255,10 +279,10 @@ const LayoutAdmin = () => {
               <Dropdown menu={{ items: itemsDropdown }} trigger={["click"]}>
                 <Space style={{ cursor: "pointer" }}>
                   Welcome {user?.name}
-                  <Avatar>
-                    {" "}
-                    {user?.name?.substring(0, 2)?.toUpperCase()}{" "}
-                  </Avatar>
+                  <Avatar src={avatarUrl || undefined}>
+                  {/* If avatarUrl is available, use it. Otherwise, display initials */}
+                  {!avatarUrl && user?.name?.substring(0, 2)?.toUpperCase()}
+                </Avatar>
                 </Space>
               </Dropdown>
             </div>
