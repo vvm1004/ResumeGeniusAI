@@ -2,10 +2,10 @@ import React from "react";
 
 const General = ({ data, selectedColor }) => {
   return (
-    <div className="flex flex-row border border-gray-300 h-full w-full">
+    <div className="flex flex-row border border-gray-300 min-h-full w-full">
       {/* Sidebar */}
       <div
-        className="bg-blue-900 text-white p-6 flex flex-col w-1/3  flex-shrink-0"
+        className="bg-blue-900 text-white p-6 flex flex-col w-1/3 flex-shrink-0"
         style={{
           background:
             data?.settings?.colors?.background?.length > 0
