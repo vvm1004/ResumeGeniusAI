@@ -85,9 +85,9 @@ function ViewResume() {
             </div>
           </div>
         </div>
-        <div className="md:mx-70 lg:mx-36 flex justify-center items-center tranform scale-75">
-          <div id="print-area" className="w-[50%]">
-            <div className="h-[118.5vh] overflow-auto">
+        <div className=" md:mx-70 lg:mx-36 justify-center transform scale-75 bg-slate-900">
+          <div id="print-area">
+            <div className="h-[152.9vh] overflow-auto">
               <ResumePreview />
             </div>
           </div>

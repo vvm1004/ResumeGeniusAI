@@ -25,7 +25,6 @@ export class HrRegistrationService {
 
   async create(createHrRegisDto: CreateHrRegisDto, user: IUser) {
     const { email } = createHrRegisDto;
-
     // Kiểm tra nếu email đã tồn tại trong hệ thống đăng ký HR
     const isExist = await this.hrRegistrationModel.findOne({ email });
     if (isExist) {
@@ -38,11 +37,10 @@ export class HrRegistrationService {
     const newHrRegis = await this.hrRegistrationModel.create({
       ...createHrRegisDto,
       createdBy: {
-        _id: null,
-        email: null,
+        _id: user?._id || null,
+        email: user?.email || null,
       },
     });
-    console.log(newHrRegis);
 
     return {
       success: true,
@@ -159,6 +157,7 @@ export class HrRegistrationService {
         },
         user,
       );
+      console.log(newUser);
       // Gửi email thông tin tài khoản HR
       await this.mailerService.sendHrAccountEmail(updateHrRegisDto.email, {
         email: updateHrRegisDto.email,

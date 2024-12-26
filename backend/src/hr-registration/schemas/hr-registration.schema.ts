@@ -9,12 +9,11 @@ export type HrRegistrationDocument = HydratedDocument<HrRegistration>;
 export class HrRegistration {
   // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   // userId: mongoose.Schema.Types.ObjectId; // ID của người dùng đăng ký HR
-
+  @Prop({ type: Object })
   company: {
     _id: mongoose.Schema.Types.ObjectId;
     name: string;
   };
-
   @Prop({ required: true })
   email: string; // Email của HR đăng ký
 
