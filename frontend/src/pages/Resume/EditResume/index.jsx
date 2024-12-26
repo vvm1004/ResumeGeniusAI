@@ -70,6 +70,7 @@ function EditResume() {
   const [showTemplateSelection, setShowTemplateSelection] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState();
   const [templates, setTemplates] = useState([]);
+  const [selectedColor, setSelectedColor] = useState();
 
   useEffect(() => {
     const fetchResume = async () => {
@@ -103,10 +104,11 @@ function EditResume() {
         console.error("Error fetching template data!", error);
       }
     };
-
+    setSelectedColor(data?.template?.settings?.colors[0]);
     fetchTemplateData();
     fetchResume();
   }, [id, access_token]);
+  console.log(data);
   const handleView = () => {
     if (id) {
       navigate(`/resumes/view/${id}`);
@@ -129,6 +131,8 @@ function EditResume() {
         selectedTemplate,
         setSelectedTemplate,
         templates,
+        selectedColor,
+        setSelectedColor,
       }}
     >
       <div>

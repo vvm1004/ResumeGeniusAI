@@ -389,21 +389,9 @@
 
 // export default HrRegister;
 
-
 import React, { useState, useRef } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Checkbox,
-  notification,
-  Spin,
-} from "antd";
-import {
-  UserOutlined,
-  MailOutlined,
-  PhoneOutlined,
-} from "@ant-design/icons";
+import { Form, Input, Button, Checkbox, notification, Spin } from "antd";
+import { UserOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
 import { DebounceSelect } from "@/components/admin/user/debouce.select"; // Import the DebounceSelect component
 import { callFetchCompany } from "@/config/api"; // Assuming you have this API call available
 import "./hr_register.css"; // Use custom CSS for styling
@@ -501,17 +489,17 @@ const HrRegister = () => {
               activities.
             </li>
             <li>
-              3. We reserve the right to modify or update these terms at any time.
-              All changes will be communicated via email or a notice on the
-              platform.
+              3. We reserve the right to modify or update these terms at any
+              time. All changes will be communicated via email or a notice on
+              the platform.
             </li>
             <li>
               4. All information you provide will be kept confidential and will
               not be shared with third parties without your consent.
             </li>
             <li>
-              5. You are responsible for ensuring the accuracy of the information
-              in your HR profile.
+              5. You are responsible for ensuring the accuracy of the
+              information in your HR profile.
             </li>
             <li>
               6. You may request the deletion of your account at any time by
@@ -527,8 +515,9 @@ const HrRegister = () => {
               platform or disrupt other users' access.
             </li>
             <li>
-              9. You acknowledge that the platform is not responsible for any data
-              loss, system downtime, or damages arising from using the service.
+              9. You acknowledge that the platform is not responsible for any
+              data loss, system downtime, or damages arising from using the
+              service.
             </li>
             <li>
               10. You agree to abide by all local and international laws when
@@ -536,14 +525,14 @@ const HrRegister = () => {
               intellectual property laws, and labor laws.
             </li>
             <li>
-              11. You acknowledge that you have read, understood, and agree to the
-              platform's privacy policy, which outlines how your personal data
-              will be handled.
+              11. You acknowledge that you have read, understood, and agree to
+              the platform's privacy policy, which outlines how your personal
+              data will be handled.
             </li>
             <li>
-              12. All content you post must comply with our community guidelines.
-              We prohibit any form of hate speech, discrimination, harassment, or
-              illegal content.
+              12. All content you post must comply with our community
+              guidelines. We prohibit any form of hate speech, discrimination,
+              harassment, or illegal content.
             </li>
             <li>
               13. The platform may change or discontinue any service or feature
@@ -552,12 +541,12 @@ const HrRegister = () => {
             </li>
             <li>
               14. You understand that the platform may have restrictions for
-              certain countries or regions. Access to the platform may be limited
-              or blocked based on geographic location.
+              certain countries or regions. Access to the platform may be
+              limited or blocked based on geographic location.
             </li>
             <li>
-              15. You may not transfer or assign your account to another person or
-              entity without prior written consent from the platform.
+              15. You may not transfer or assign your account to another person
+              or entity without prior written consent from the platform.
             </li>
             <li>
               16. The platform reserves the right to take legal action against
@@ -565,9 +554,9 @@ const HrRegister = () => {
               fraudulent activities.
             </li>
             <li>
-              17. You are responsible for maintaining the confidentiality of your
-              login credentials, and you agree to notify the platform immediately
-              in case of any unauthorized use of your account.
+              17. You are responsible for maintaining the confidentiality of
+              your login credentials, and you agree to notify the platform
+              immediately in case of any unauthorized use of your account.
             </li>
             <li>
               18. You agree not to engage in spamming or send unsolicited
@@ -581,11 +570,15 @@ const HrRegister = () => {
             <li>
               20. These terms and conditions are governed by the laws of the
               country in which the platform operates, and any disputes will be
-              subject to the exclusive jurisdiction of the courts in that country.
+              subject to the exclusive jurisdiction of the courts in that
+              country.
             </li>
             {/* Add more terms as necessary */}
           </ul>
-          <p>By agreeing to these terms, you can proceed to the registration form.</p>
+          <p>
+            By agreeing to these terms, you can proceed to the registration
+            form.
+          </p>
           <Form
             onFinish={() => setShowTerms(false)} // Hide terms and show the form
           >
@@ -598,14 +591,17 @@ const HrRegister = () => {
                     value
                       ? Promise.resolve()
                       : Promise.reject(
-                        "You must agree to the terms and conditions!"
-                      ),
+                          "You must agree to the terms and conditions!"
+                        ),
                 },
               ]}
             >
               <Checkbox>
                 I agree to the{" "}
-                <a href="#terms" onClick={() => termsRef.current?.scrollIntoView()}>
+                <a
+                  href="#terms"
+                  onClick={() => termsRef.current?.scrollIntoView()}
+                >
                   Terms and Conditions
                 </a>
               </Checkbox>
@@ -685,7 +681,9 @@ const HrRegister = () => {
               <Form.Item
                 name="company"
                 label=""
-                rules={[{ required: true, message: "Please select a company!" }]}
+                rules={[
+                  { required: true, message: "Please select a company!" },
+                ]}
               >
                 <DebounceSelect
                   allowClear

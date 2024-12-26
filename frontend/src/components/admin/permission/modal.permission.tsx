@@ -31,12 +31,12 @@ const ModalPermission = (props: IProps) => {
 
             const res = await callUpdatePermission(permission, dataInit._id);
             if (res.data) {
-                message.success("Cập nhật permission thành công");
+                message.success("Permission update successful");
                 handleReset();
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -48,12 +48,12 @@ const ModalPermission = (props: IProps) => {
             }
             const res = await callCreatePermission(permission);
             if (res.data) {
-                message.success("Thêm mới permission thành công");
+                message.success("New permission added successfully");
                 handleReset();
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -69,7 +69,7 @@ const ModalPermission = (props: IProps) => {
     return (
         <>
             <ModalForm
-                title={<>{dataInit?._id ? "Cập nhật Permission" : "Tạo mới Permission"}</>}
+                title={<>{dataInit?._id ? "Update Permission" : "Create New Permission"}</>}
                 open={openModal}
                 modalProps={{
                     onCancel: () => { handleReset() },
@@ -78,8 +78,8 @@ const ModalPermission = (props: IProps) => {
                     width: isMobile ? "100%" : 900,
                     keyboard: false,
                     maskClosable: false,
-                    okText: <>{dataInit?._id ? "Cập nhật" : "Tạo mới"}</>,
-                    cancelText: "Hủy"
+                    okText: <>{dataInit?._id ? "Update" : "Create new"}</>,
+                    cancelText: "Cancel"
                 }}
                 scrollToFirstError={true}
                 preserve={false}
@@ -90,12 +90,12 @@ const ModalPermission = (props: IProps) => {
                 <Row gutter={16}>
                     <Col lg={12} md={12} sm={24} xs={24}>
                         <ProFormText
-                            label="Tên Permission"
+                            label="Permission Name"
                             name="name"
                             rules={[
-                                { required: true, message: 'Vui lòng không bỏ trống' },
+                                { required: true, message: 'Please do not leave blank' },
                             ]}
-                            placeholder="Nhập name"
+                            placeholder="Enter name"
                         />
                     </Col>
                     <Col lg={12} md={12} sm={24} xs={24}>
@@ -103,9 +103,9 @@ const ModalPermission = (props: IProps) => {
                             label="API Path"
                             name="apiPath"
                             rules={[
-                                { required: true, message: 'Vui lòng không bỏ trống' },
+                                { required: true, message: 'Please do not leave blank' },
                             ]}
-                            placeholder="Nhập path"
+                            placeholder="Enter path"
                         />
                     </Col>
 
@@ -121,16 +121,16 @@ const ModalPermission = (props: IProps) => {
                                 DELETE: 'DELETE',
                             }}
                             placeholder="Please select a method"
-                            rules={[{ required: true, message: 'Vui lòng chọn method!' }]}
+                            rules={[{ required: true, message: 'Please select method!' }]}
                         />
                     </Col>
                     <Col lg={12} md={12} sm={24} xs={24}>
                         <ProFormSelect
                             name="module"
-                            label="Thuộc Module"
+                            label="Belongs to Module"
                             valueEnum={ALL_MODULES}
                             placeholder="Please select a module"
-                            rules={[{ required: true, message: 'Vui lòng chọn module!' }]}
+                            rules={[{ required: true, message: 'Please select module!' }]}
                         />
                     </Col>
 

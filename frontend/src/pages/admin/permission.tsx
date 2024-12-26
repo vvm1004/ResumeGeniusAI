@@ -31,11 +31,11 @@ const PermissionPage = () => {
         if (_id) {
             const res = await callDeletePermission(_id);
             if (res && res.data) {
-                message.success('Xóa Permission thành công');
+                message.success('Delete Permission Successfully');
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -141,11 +141,11 @@ const PermissionPage = () => {
                     >
                         <Popconfirm
                             placement="leftTop"
-                            title={"Xác nhận xóa permission"}
-                            description={"Bạn có chắc chắn muốn xóa permission này ?"}
+                            title={"Confirm permission deletion"}
+                            description={"Are you sure you want to delete this permission?"}
                             onConfirm={() => handleDeletePermission(entity._id)}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
+                            okText="Confirm"
+                            cancelText="Cancel"
                         >
                             <span style={{ cursor: "pointer", margin: "0 10px" }}>
                                 <DeleteOutlined
@@ -210,7 +210,7 @@ const PermissionPage = () => {
             >
                 <DataTable<IPermission>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Permissions (Quyền Hạn)"
+                    headerTitle="List of Permissions"
                     rowKey="_id"
                     loading={isFetching}
                     columns={columns}
@@ -237,7 +237,7 @@ const PermissionPage = () => {
                                 type="primary"
                                 onClick={() => setOpenModal(true)}
                             >
-                                Thêm mới
+                                Add new
                             </Button>
                         );
                     }}
