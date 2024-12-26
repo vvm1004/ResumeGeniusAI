@@ -3,15 +3,15 @@ import mongoose from 'mongoose';
 import { HydratedDocument } from 'mongoose';
 export type TemplateDocument = HydratedDocument<Template>;
 @Schema({ timestamps: true })
-export class Template{
+export class Template {
   @Prop({ required: true })
-  name: string; 
+  name: string;
 
   @Prop({ required: true })
-  description: string; 
+  description: string;
 
   @Prop({ required: true })
-  layout: string; 
+  layout: string;
 
   @Prop()
   previewImage: string;
@@ -32,24 +32,24 @@ export class Template{
 
   @Prop({ type: Object })
   updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId,
-    email: string
-  }
+    _id: mongoose.Schema.Types.ObjectId;
+    email: string;
+  };
 
   @Prop({ type: Object })
   createdBy: {
-    _id: mongoose.Schema.Types.ObjectId,
-    email: string
-  }
+    _id: mongoose.Schema.Types.ObjectId;
+    email: string;
+  };
 
   @Prop({ type: Object })
   deletedBy: {
-    _id: mongoose.Schema.Types.ObjectId,
-    email: string
-  }
+    _id: mongoose.Schema.Types.ObjectId;
+    email: string;
+  };
   @Prop()
   createdAt: Date;
-  
+
   @Prop()
   updatedAt: Date;
 }
