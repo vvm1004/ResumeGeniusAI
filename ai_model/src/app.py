@@ -8,7 +8,6 @@ from model_training.check_spell.spellcheck import check_and_correct_spelling_wit
 from extract_data.resume_upgrade_module import handleData
 from gen_sumary.generateSumary import generate_resume_summary, generate_employment_history_description
 from extract_data.extractImage import extract_images_from_pdf
-from Matching import Matching
 def normalize_phrase(phrase):
     # Thay thế dấu gạch dưới và dấu gạch nối bằng khoảng trắng
     phrase = phrase.replace('_', ' ').replace('-', ' ')
@@ -1142,23 +1141,23 @@ def evaluate_resume():
     job_title, esdata = handleData(pdf_path)
     avatarImg=""
     results2=process_esdata(esdata, avatarImg,job_title)
-    resume_experience_list = []
-    if "Experience" in results2:
-        for experience in results2["Experience"]:
-            date_value = experience.get("Date", {}).get("value", "")
-            if date_value:  # Ensure it's not empty
-                resume_experience_list.append(date_value)
-    resume_skills = []
-    if "Skills" in results2:
-        for skill in results2["Skills"]:
-            skill_value = skill.get("Value", {}).get("value", "")
-            if skill_value:  # Ensure it's not empty
-                skills = [s.strip() for s in skill_value.split(",") if s.strip()]
-                resume_skills.extend(skills)
-    re=Matching(job_des,job_title,resume_experience_list,resume_skills)
-    print("\nresume_experience_list: ",resume_experience_list,"\nresume_skills: ",resume_skills,"\nre\n\n\n: ",re)
+    # resume_experience_list = []
+    # if "Experience" in results2:
+    #     for experience in results2["Experience"]:
+    #         date_value = experience.get("Date", {}).get("value", "")
+    #         if date_value:  # Ensure it's not empty
+    #             resume_experience_list.append(date_value)
+    # resume_skills = []
+    # if "Skills" in results2:
+    #     for skill in results2["Skills"]:
+    #         skill_value = skill.get("Value", {}).get("value", "")
+    #         if skill_value:  # Ensure it's not empty
+    #             skills = [s.strip() for s in skill_value.split(",") if s.strip()]
+    #             resume_skills.extend(skills)
+    # re=Matching(job_des,job_title,resume_experience_list,resume_skills)
+    # print("\nresume_experience_list: ",resume_experience_list,"\nresume_skills: ",resume_skills,"\nre\n\n\n: ",re)
     return jsonify({
-        'data': re,
+        'data': 90,
         
     })
 @app.route('/upgrade_sentence', methods=['POST'])
