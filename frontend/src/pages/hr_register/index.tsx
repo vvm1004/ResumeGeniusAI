@@ -460,6 +460,7 @@ const HrRegister = () => {
         name: values.company.label,
       },
     };
+    console.log("registrationData", registrationData)
 
     try {
       const response = await axios.post(API_URL, registrationData);
