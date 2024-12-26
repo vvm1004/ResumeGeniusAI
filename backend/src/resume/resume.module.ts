@@ -6,11 +6,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JobNotificationModule } from 'src/websocket/JobNotificationModule';
 import { JobNotificationService } from 'src/websocket/jobNotificationService';
 import { Job, JobSchema } from 'src/jobs/schemas/job.schema';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Resume.name, schema: ResumeSchema }])
-    ,JobNotificationModule,
+    ,JobNotificationModule,HttpModule,
     MongooseModule.forFeature([{ name: Job.name, schema: JobSchema }])
 
   ],

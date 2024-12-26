@@ -2,7 +2,7 @@ import { IsMongoId, IsNotEmpty } from "class-validator";
 import mongoose from "mongoose";
 
 export class CreateResumeDto {
-    
+
     @IsNotEmpty({
         message: "Email không được để trống"
     })
@@ -33,7 +33,7 @@ export class CreateResumeDto {
     })
     jobId: mongoose.Schema.Types.ObjectId;
 
-}   
+}
 
 
 export class CreateUserCvDto {
@@ -46,16 +46,16 @@ export class CreateUserCvDto {
         message: "url không được để trống"
     })
     url: string;
-
+    jobDescription: string;
     @IsNotEmpty({
         message: "companyId không được để trống"
     })
-    @IsMongoId({ message: 'companyId is a mongo id'})
+    @IsMongoId({ message: 'companyId is a mongo id' })
     companyId: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty({
         message: "jobId không được để trống"
     })
-    @IsMongoId({ message: 'jobId is a mongo id'})
+    @IsMongoId({ message: 'jobId is a mongo id' })
     jobId: mongoose.Schema.Types.ObjectId;
 }

@@ -10,6 +10,8 @@ import mongoose from 'mongoose';
 import { JobNotificationGateway } from 'src/websocket/jobNotificationGateway';
 import { JobNotificationService } from 'src/websocket/jobNotificationService';
 import { Job, JobDocument } from 'src/jobs/schemas/job.schema';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class ResumeService {
@@ -19,11 +21,15 @@ export class ResumeService {
     @InjectModel(Job.name)
     private jobModel: SoftDeleteModel<JobDocument>,
     private readonly jobNotificationService: JobNotificationService,
-  ) {}
+    private readonly httpService: HttpService,
+  ) { }
+  private readonly apiUrl = 'http://127.0.0.1:5000/evaluate_resume';
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
-    const { url, typeUrl, companyId, jobId } = createUserCvDto;
-    let newResume = await this.resumeModel.create({
+    const { url, typeUrl, companyId, jobId, jobDescription } = createUserCvDto;
+
+    // Tạo bản ghi mới trong MongoDB
+    const newResume = await this.resumeModel.create({
       url,
       typeUrl,
       companyId,
@@ -46,6 +52,7 @@ export class ResumeService {
         email: user.email,
       },
     });
+
     const jobIdString: string = jobId.toString(); // Chuyển ObjectId thành string
 
     this.jobNotificationService.sendJobApplicationNotification(
@@ -53,8 +60,26 @@ export class ResumeService {
       user._id,
     );
 
+    let evaluationResult;
+
+    try {
+      // Gọi API Python evaluate_resume
+      const response = await lastValueFrom(
+        this.httpService.post(this.apiUrl, {
+          pdf_path: url,
+          job_des: jobDescription,
+        }),
+      );
+
+      evaluationResult = response.data.data;
+    } catch (error) {
+      console.error('Error calling evaluate_resume API:', error.message);
+
+    }
+
     return {
       _id: newResume?._id,
+      evaluationResult, // Kết quả từ API evaluate_resume
       createdAt: newResume?.createdAt,
     };
   }
@@ -94,35 +119,35 @@ export class ResumeService {
     const { filter, sort, projection, population } = aqp(qs);  // Parse query string
     delete filter.current;
     delete filter.pageSize;
-  
+
     console.log(filter['jobId']);  // Log to see the filter for jobId
-    
+
     if (user.company && user.company._id) {
       filter['companyId'] = user.company._id;
     }
-  
+
     if (filter['jobId']) {
-      const jobName = filter['jobId'];  
-  
-     const jobs = await this.jobModel.find({ name: { $regex: jobName, $options: 'i' } }).exec();
-  
-     const jobIds = jobs.map(job => job._id);
-  
+      const jobName = filter['jobId'];
+
+      const jobs = await this.jobModel.find({ name: { $regex: jobName, $options: 'i' } }).exec();
+
+      const jobIds = jobs.map(job => job._id);
+
       if (jobIds.length > 0) {
-        filter['jobId'] = { $in: jobIds };  
+        filter['jobId'] = { $in: jobIds };
       } else {
         filter['jobId'] = { $in: [] };
       }
     }
-  
+
     // Pagination logic
     let offset = (currentPage - 1) * limit;
     let defaultLimit = limit ? limit : 10;
-  
+
     // Get the total count of resumes based on the current filter
     const totalItems = await this.resumeModel.countDocuments(filter).exec();
     const totalPages = Math.ceil(totalItems / defaultLimit);
-  
+
     // Fetch the results with the current filter and pagination
     const result = await this.resumeModel.find(filter)
       .skip(offset)
@@ -130,7 +155,7 @@ export class ResumeService {
       .sort(sort as any)
       .populate(population)
       .exec();
-  
+
     return {
       meta: {
         current: currentPage, // current page number
@@ -141,7 +166,7 @@ export class ResumeService {
       result // the actual resumes data
     };
   }
-  
+
 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id))

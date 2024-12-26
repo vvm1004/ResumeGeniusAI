@@ -36,17 +36,7 @@ export class ResumeUpgradeService {
 
         await fsPromises.mkdir(uploadDir, { recursive: true });
 
-        // try {
-        //     await fsPromises.access(filePath);
-        //     await fsPromises.unlink(filePath);
-        //     console.log(`Tệp cũ ${file.originalname} đã bị xóa.`);
-        // } catch (error) {
-        //     if (error.code !== 'ENOENT') {
-        //         throw error;
-        //     }
-        // }
-        // const writeStream = createWriteStream(filePath);
-        // writeStream.write(file.buffer);
+
         try {
             // Ghi file trực tiếp, tự động ghi đè nếu file đã tồn tại
             await fsPromises.writeFile(filePath, file.buffer);
@@ -59,7 +49,7 @@ export class ResumeUpgradeService {
         const formattedPath = filePath.replace(/\\/g, '\\\\');
 
 
-        //console.log("\n", formattedPath, "\n", filePath)
+        console.log("\n", formattedPath, "\n", filePath)
         try {
             const response = await firstValueFrom(
                 this.httpService.post(`${this.url}/process_resume`, { pdf_path: formattedPath }, {
@@ -109,7 +99,7 @@ export class ResumeUpgradeService {
 
             const errors = response.data.corrections;
             const correctedSentence = response.data.corrected_sentence;
-            
+
             return {
                 corrected_sentence: correctedSentence,
                 corrections: errors,
