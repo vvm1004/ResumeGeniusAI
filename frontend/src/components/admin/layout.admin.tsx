@@ -167,7 +167,7 @@ const LayoutAdmin = () => {
     const res = await callLogout();
     if (res && res.data) {
       dispatch(setLogoutAction({}));
-      message.success("Đăng xuất thành công");
+      message.success("Logout successful");
       navigate("/");
     }
   };
@@ -185,13 +185,13 @@ const LayoutAdmin = () => {
 
   const itemsDropdown = [
     {
-      label: <Link to={"/"}>Trang chủ</Link>,
+      label: <Link to={"/"}>Home</Link>,
       key: "home",
     },
     {
       label: (
         <label style={{ cursor: "pointer" }} onClick={() => handleLogout()}>
-          Đăng xuất
+          Logout
         </label>
       ),
       key: "logout",

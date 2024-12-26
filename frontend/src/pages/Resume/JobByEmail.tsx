@@ -27,10 +27,10 @@ const JobByEmail = (props: any) => {
       skills: skills ? skills : [],
     });
     if (res.data) {
-      message.success("Cập nhật thông tin thành công");
+      message.success("Information updated successfully");
     } else {
       notification.error({
-        message: "Có lỗi xảy ra",
+        message: "An error occurred.",
         description: res.message,
       });
     }
@@ -42,10 +42,10 @@ const JobByEmail = (props: any) => {
         <Row gutter={[20, 20]}>
           <Col span={24}>
             <Form.Item
-              label={"Kỹ năng"}
+              label={"Skill"}
               name={"skills"}
               rules={[
-                { required: true, message: "Vui lòng chọn ít nhất 1 skill!" },
+                { required: true, message: "Please select at least 1 skill!" },
               ]}
             >
               <Select
@@ -55,7 +55,7 @@ const JobByEmail = (props: any) => {
                 style={{ width: "100%" }}
                 placeholder={
                   <>
-                    <MonitorOutlined /> Tìm theo kỹ năng...
+                    <MonitorOutlined /> Search by skill...
                   </>
                 }
                 optionLabelProp="label"
@@ -64,7 +64,7 @@ const JobByEmail = (props: any) => {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Button onClick={() => form.submit()}>Cập nhật</Button>
+            <Button onClick={() => form.submit()}>Update</Button>
           </Col>
         </Row>
       </Form>

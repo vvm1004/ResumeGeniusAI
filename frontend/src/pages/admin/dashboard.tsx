@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, Row, Statistic } from "antd";
-import { Line } from '@ant-design/charts';
+import { Button, Card, Col, Row, Statistic, Table } from "antd";
+import { Line, Pie } from '@ant-design/charts';
 import CountUp from 'react-countup';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
 import './dashboard.css';
@@ -30,6 +30,80 @@ const DashboardPage = () => {
     const [isMax, setIsMax] = useState(false);
 
     const [curDate, setCurDate] = useState<Date>(new Date());  // Khởi tạo với đối tượng Date
+    const fakeData = {
+        // totalJobs: 1200,
+        // totalUsers: 850,
+        // totalCompanies: 350,
+        // totalResumesToday: 80,
+        // newSubscribers: 30,
+        jobTypes: [
+            { type: 'Frontend', value: 400 },
+            { type: 'Backend', value: 350 },
+            { type: 'Full Stack', value: 250 },
+            { type: 'Data Scientist', value: 150 },
+            { type: 'DevOps', value: 100 },
+        ],
+        usersByRole: [
+            { role: 'Admin', count: 50 },
+            { role: 'Recruiter', count: 100 },
+            { role: 'User', count: 700 },
+            { role: 'Guest', count: 50 },
+        ],
+        //     companiesByRegion: [
+        //       { region: 'Hà Nội', count: 120, latitude: 21.0285, longitude: 105.8542 },
+        //       { region: 'Hồ Chí Minh', count: 250, latitude: 10.8231, longitude: 106.6297 },
+        //       { region: 'Đà Nẵng', count: 100, latitude: 16.0471, longitude: 108.2068 },
+        //       { region: 'Cần Thơ', count: 80, latitude: 10.0455, longitude: 105.7469 },
+        //   ],
+        //     resumesData: [
+        //         { date: '2024-05-01', count: 20 },
+        //         { date: '2024-05-02', count: 35 },
+        //         { date: '2024-05-03', count: 50 },
+        //         { date: '2024-05-04', count: 45 },
+        //         { date: '2024-05-05', count: 60 },
+        //     ],
+            // jobLevelData: [
+            //     { type: 'Junior', value: 300 },
+            //     { type: 'Mid', value: 500 },
+            //     { type: 'Senior', value: 400 },
+            // ],
+        //     topCompanies: [
+        //         { company: 'ABC Corp', jobs: 120 },
+        //         { company: 'XYZ Ltd', jobs: 95 },
+        //         { company: 'TechPro', jobs: 80 },
+        //         { company: 'InnovateX', jobs: 70 },
+        //         { company: 'DevFactory', jobs: 65 },
+        //     ],
+        //     resumesTableData: [
+        //         { key: '1', name: 'John Doe', email: 'john@example.com', date: '2024-05-05' },
+        //         { key: '2', name: 'Jane Smith', email: 'jane@example.com', date: '2024-05-05' },
+        //         { key: '3', name: 'Alice Brown', email: 'alice@example.com', date: '2024-05-04' },
+        //     ],
+        //     notifications: [
+        //         { key: '1', message: 'New job posted: Frontend Developer at ABC Corp', date: '2024-05-05' },
+        //         { key: '2', message: 'Jane Smith submitted a resume', date: '2024-05-04' },
+        //         { key: '3', message: 'New subscriber: Tech World', date: '2024-05-03' },
+        //     ],
+    };
+    const [usersByRole, setUsersByRole] = useState<any[]>([]);
+    const [jobTypes, setJobTypes] = useState<any[]>([]);
+
+        useEffect(() => {
+            // Load fake data
+            // setTotalJobs(fakeData.totalJobs);
+            // setTotalUsers(fakeData.totalUsers);
+            // setTotalCompanies(fakeData.totalCompanies);
+            // setTotalResumesToday(fakeData.totalResumesToday);
+            // setNewSubscribers(fakeData.newSubscribers);
+            setJobTypes(fakeData.jobTypes);
+            setUsersByRole(fakeData.usersByRole);
+            // setCompaniesByRegion(fakeData.companiesByRegion);
+            // setResumesData(fakeData.resumesData);
+            // setJobLevelData(fakeData.jobLevelData);
+            // setTopCompanies(fakeData.topCompanies);
+            // setResumesTableData(fakeData.resumesTableData);
+            // setNotifications(fakeData.notifications);
+        }, []);
     const getMonthDates = (monthOffset: number = 0) => {
 
 
@@ -174,12 +248,34 @@ const DashboardPage = () => {
                         />
                     </Card>
                 </Col>
+
+                <Col span={12}>
+                    <Card title="Users by Role">
+                        <Table
+                            dataSource={usersByRole}
+                            columns={[
+                                { title: 'Role', dataIndex: 'role' },
+                                { title: 'User Count', dataIndex: 'count' },
+                            ]}
+                        />
+                    </Card>
+                </Col>
+                <Col span={12}>
+                    <Card title="Job Types Distribution">
+                         <Pie
+                           data={jobTypes}
+                          angleField="value"
+                        colorField="type"
+                        label={{ type: 'inner', offset: '-50%', content: '{percentage}' }}
+                    />
+                     </Card>
+                 </Col>
             </Row>
         </div>
     );
 };
 
-export default DashboardPage;   
+export default DashboardPage;
 
 
 

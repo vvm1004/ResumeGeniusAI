@@ -19,6 +19,7 @@ export class ResumeController {
   }
 
   @Post('by-user')
+  @SkipCheckPermission()
   @ResponseMessage('Get resume by User')
   getResumesByUser(@User() user: IUser) {
     return this.resumeService.findByUsers(user);
