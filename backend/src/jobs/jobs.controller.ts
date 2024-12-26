@@ -47,6 +47,17 @@ export class JobsController {
     return this.jobsService.findAllWithAdminPage(+currentPage, +limit, qs, user);
   }
 
+  @Get('job-levels')
+  @SkipCheckPermission()
+  async getJobLevelsCount() {
+    return this.jobsService.getJobLevelsCount();
+  }
+
+  @Get('top-companies')
+  @SkipCheckPermission()
+  async getTopCompanies() {
+    return this.jobsService.getTopCompanies();
+  }
   @Public()
   @Get(':id')
   @ResponseMessage("Fetch job by id")

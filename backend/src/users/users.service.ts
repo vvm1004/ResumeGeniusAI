@@ -188,4 +188,38 @@ export class UsersService {
       )
       .exec()
   }
+
+  async countUsersByRole() {
+    const result = await this.userModel.aggregate([
+      {
+        $lookup: {
+          from: 'roles',  // The name of the collection for roles
+          localField: 'role',
+          foreignField: '_id',
+          as: 'roleInfo',
+        },
+      },
+      {
+        $unwind: '$roleInfo',  // Unwind the role array to get the role info
+      },
+      {
+        $group: {
+          _id: '$roleInfo.name',  // Group by role name
+          count: { $sum: 1 },      // Count users for each role
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          role: '$_id',
+          count: 1,
+        },
+      },
+      {
+        $sort: { role: 1 },  // Optional: sort by role name
+      },
+    ]);
+
+    return result;
+  }
 }
