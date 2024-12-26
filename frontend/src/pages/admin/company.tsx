@@ -29,11 +29,11 @@ const CompanyPage = () => {
         if (_id) {
             const res = await callDeleteCompany(_id);
             if (res && res.data) {
-                message.success('Xóa Company thành công');
+                message.success('Delete Company Successfully');
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -92,7 +92,7 @@ const CompanyPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Quy mô công ty',
+            title: 'Company size',
             width: 200,
             sorter: (a, b) => {
                 const minScaleA = a.minScale || 0;
@@ -100,7 +100,7 @@ const CompanyPage = () => {
                 return minScaleA - minScaleB; 
             },            
             render: (_, record) => (
-                <>{record.minScale} - {record.maxScale} nhân viên</>
+                <>{record.minScale} - {record.maxScale} staff</>
             ),
             hideInSearch: true,
         },
@@ -149,11 +149,11 @@ const CompanyPage = () => {
                     <Access permission={ALL_PERMISSIONS.COMPANIES.DELETE} hideChildren>
                         <Popconfirm
                             placement="leftTop"
-                            title={"Xác nhận xóa company"}
-                            description={"Bạn có chắc chắn muốn xóa company này ?"}
+                            title={"Confirm company deletion"}
+                            description={"Are you sure you want to delete this company ?"}
                             onConfirm={() => handleDeleteCompany(entity._id)}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
+                            okText="Confirm"
+                            cancelText="Cancel"
                         >
                             <span style={{ cursor: "pointer", margin: "0 10px" }}>
                                 <DeleteOutlined
@@ -214,7 +214,7 @@ const CompanyPage = () => {
             >
                 <DataTable<ICompany>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Công Ty"
+                    headerTitle="Company List"
                     rowKey="_id"
                     loading={isFetching}
                     columns={columns}
@@ -230,7 +230,7 @@ const CompanyPage = () => {
                             pageSize: meta.pageSize,
                             showSizeChanger: true,
                             total: meta.total,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} of {total} rows</div>) }
                         }
                     }
                     rowSelection={false}
@@ -245,7 +245,7 @@ const CompanyPage = () => {
                                     type="primary"
                                     onClick={() => setOpenModal(true)}
                                 >
-                                    Thêm mới
+                                    Add new
                                 </Button>
                             </Access>
                         );

@@ -31,11 +31,11 @@ const ResumePage = () => {
         if (_id) {
             const res = await callDeleteResume(_id);
             if (res && res.data) {
-                message.success('Xóa Resume thành công');
+                message.success('Delete Resume Successfully');
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -60,7 +60,7 @@ const ResumePage = () => {
         },
 
         {
-            title: 'Trạng Thái',
+            title: 'Status',
             dataIndex: 'status',
             sorter: true,
             renderFormItem: (item, props, form) => (
@@ -121,6 +121,7 @@ const ResumePage = () => {
                     </a>
                 );
             },
+            hideInSearch: true,
         },
 
         {
@@ -181,11 +182,11 @@ const ResumePage = () => {
                     >
                         <Popconfirm
                             placement="leftTop"
-                            title={"Xác nhận xóa resume"}
-                            description={"Bạn có chắc chắn muốn xóa resume này?"}
+                            title={"Confirm delete resume"}
+                            description={"Are you sure you want to delete this resume?"}
                             onConfirm={() => handleDeleteResume(entity._id)} // Xử lý xóa resume
-                            okText="Xác nhận"
-                            cancelText="Hủy"
+                            okText="Confirm"
+                            cancelText="Cancel"
                         >
                             <span style={{ cursor: "pointer", margin: "0 10px" }}>
                                 <DeleteOutlined
@@ -245,7 +246,7 @@ const ResumePage = () => {
             >
                 <DataTable<IResume>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Resumes"
+                    headerTitle="List of Resumes"
                     rowKey="_id"
                     loading={isFetching}
                     columns={columns}

@@ -30,11 +30,11 @@ const UserPage = () => {
         if (_id) {
             const res = await callDeleteUser(_id);
             if (res && res.data) {
-                message.success('Xóa User thành công');
+                message.success('Delete User Successfully');
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -127,11 +127,11 @@ const UserPage = () => {
                     >
                         <Popconfirm
                             placement="leftTop"
-                            title={"Xác nhận xóa user"}
-                            description={"Bạn có chắc chắn muốn xóa user này ?"}
+                            title={"Confirm user deletion"}
+                            description={"Are you sure you want to delete this user ?"}
                             onConfirm={() => handleDeleteUser(entity._id)}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
+                            okText="Confirm"
+                            cancelText="Cancel"
                         >
                             <span style={{ cursor: "pointer", margin: "0 10px" }}>
                                 <DeleteOutlined
@@ -188,7 +188,7 @@ const UserPage = () => {
             >
                 <DataTable<IUser>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Users"
+                    headerTitle="List of Users"
                     rowKey="_id"
                     loading={isFetching}
                     columns={columns}
@@ -204,7 +204,7 @@ const UserPage = () => {
                             pageSize: meta.pageSize,
                             showSizeChanger: true,
                             total: meta.total,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} of {total} rows</div>) }
                         }
                     }
                     rowSelection={false}
@@ -215,7 +215,7 @@ const UserPage = () => {
                                 type="primary"
                                 onClick={() => setOpenModal(true)}
                             >
-                                Thêm mới
+                                Add new
                             </Button>
                         );
                     }}

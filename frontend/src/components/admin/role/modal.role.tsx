@@ -111,12 +111,12 @@ const ModalRole = (props: IProps) => {
       };
       const res = await callUpdateRole(role, singleRole._id);
       if (res.data) {
-        message.success("Cập nhật role thành công");
+        message.success("Role update successful");
         handleReset();
         reloadTable();
       } else {
         notification.error({
-          message: "Có lỗi xảy ra",
+          message: "An error occurred.",
           description: res.message,
         });
       }
@@ -130,12 +130,12 @@ const ModalRole = (props: IProps) => {
       };
       const res = await callCreateRole(role);
       if (res.data) {
-        message.success("Thêm mới role thành công");
+        message.success("New role added successfully");
         handleReset();
         reloadTable();
       } else {
         notification.error({
-          message: "Có lỗi xảy ra",
+          message: "An error occurred.",
           description: res.message,
         });
       }
@@ -151,7 +151,7 @@ const ModalRole = (props: IProps) => {
   return (
     <>
       <ModalForm
-        title={<>{singleRole?._id ? "Cập nhật Role" : "Tạo mới Role"}</>}
+        title={<>{singleRole?._id ? "Update Role" : "Create New Role"}</>}
         open={openModal}
         modalProps={{
           onCancel: () => {
@@ -173,23 +173,23 @@ const ModalRole = (props: IProps) => {
             icon: <CheckSquareOutlined />,
           },
           searchConfig: {
-            resetText: "Hủy",
-            submitText: <>{singleRole?._id ? "Cập nhật" : "Tạo mới"}</>,
+            resetText: "Cancel",
+            submitText: <>{singleRole?._id ? "Update" : "Create new"}</>,
           },
         }}
       >
         <Row gutter={16}>
           <Col lg={12} md={12} sm={24} xs={24}>
             <ProFormText
-              label="Tên Role"
+              label="Role Name"
               name="name"
-              rules={[{ required: true, message: "Vui lòng không bỏ trống" }]}
-              placeholder="Nhập name"
+              rules={[{ required: true, message: "Please do not leave blank" }]}
+              placeholder="Enter name"
             />
           </Col>
           <Col lg={12} md={12} sm={24} xs={24}>
             <ProFormSwitch
-              label="Trạng thái"
+              label="Status"
               name="isActive"
               checkedChildren="ACTIVE"
               unCheckedChildren="INACTIVE"
@@ -202,10 +202,10 @@ const ModalRole = (props: IProps) => {
 
           <Col span={24}>
             <ProFormTextArea
-              label="Miêu tả"
+              label="Description"
               name="description"
-              rules={[{ required: true, message: "Vui lòng không bỏ trống" }]}
-              placeholder="Nhập miêu tả role"
+              rules={[{ required: true, message: "Please do not leave blank" }]}
+              placeholder="Enter role description"
               fieldProps={{
                 autoSize: { minRows: 2 },
               }}
@@ -213,8 +213,8 @@ const ModalRole = (props: IProps) => {
           </Col>
           <Col span={24}>
             <ProCard
-              title="Quyền hạn"
-              subTitle="Các quyền hạn được phép cho vai trò này"
+              title="Permission"
+              subTitle="Permissions allowed for this role"
               headStyle={{ color: "#d81921" }}
               style={{ marginBottom: 20 }}
               headerBordered

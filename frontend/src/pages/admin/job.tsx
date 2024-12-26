@@ -26,11 +26,11 @@ const JobPage = () => {
         if (_id) {
             const res = await callDeleteJob(_id);
             if (res && res.data) {
-                message.success('Xóa Job thành công');
+                message.success('Job deleted successfully');
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -56,12 +56,12 @@ const JobPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Tên Job',
+            title: 'Job Name',
             dataIndex: 'name',
             sorter: true,
         },
         {
-            title: 'Mức lương',
+            title: 'Salary',
             dataIndex: 'salary',
             sorter: true,
             render(dom, entity, index, action, schema) {
@@ -85,12 +85,12 @@ const JobPage = () => {
                         MIDDLE: 'MIDDLE',
                         SENIOR: 'SENIOR',
                     }}
-                    placeholder="Chọn level"
+                    placeholder="Select level"
                 />
             ),
         },
         {
-            title: 'Trạng thái',
+            title: 'Status',
             dataIndex: 'isActive',
             render(dom, entity, index, action, schema) {
                 return <>
@@ -154,11 +154,11 @@ const JobPage = () => {
                     >
                         <Popconfirm
                             placement="leftTop"
-                            title={"Xác nhận xóa job"}
-                            description={"Bạn có chắc chắn muốn xóa job này ?"}
+                            title={"Confirm job deletion"}
+                            description={"Are you sure you want to delete this job?"}
                             onConfirm={() => handleDeleteJob(entity._id)}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
+                            okText="Confirm"
+                            cancelText="Cancel"
                         >
                             <span style={{ cursor: "pointer", margin: "0 10px" }}>
                                 <DeleteOutlined
@@ -217,7 +217,7 @@ const JobPage = () => {
             >
                 <DataTable<IJob>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Jobs"
+                    headerTitle="Jobs List"
                     rowKey="_id"
                     loading={isFetching}
                     columns={columns}
@@ -233,7 +233,7 @@ const JobPage = () => {
                             pageSize: meta.pageSize,
                             showSizeChanger: true,
                             total: meta.total,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} of {total} rows</div>) }
                         }
                     }
                     rowSelection={false}
@@ -244,7 +244,7 @@ const JobPage = () => {
                                 type="primary"
                                 onClick={() => navigate('upsert')}
                             >
-                                Thêm mới
+                               Add new
                             </Button>
                         );
                     }}

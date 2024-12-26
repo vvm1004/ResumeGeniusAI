@@ -14,7 +14,7 @@ const ViewDetailUser = (props: IProps) => {
     return (
         <>
             <Drawer
-                title="Thông Tin User"
+                title="User Information"
                 placement="right"
                 onClose={() => { onClose(false); setDataInit(null) }}
                 open={open}
@@ -22,24 +22,24 @@ const ViewDetailUser = (props: IProps) => {
                 maskClosable={false}
             >
                 <Descriptions title="" bordered column={2} layout="vertical">
-                    <Descriptions.Item label="Tên hiển thị">{dataInit?.name}</Descriptions.Item>
+                    <Descriptions.Item label="Name">{dataInit?.name}</Descriptions.Item>
                     <Descriptions.Item label="Email">{dataInit?.email}</Descriptions.Item>
 
-                    <Descriptions.Item label="Giới Tính">{dataInit?.gender}</Descriptions.Item>
-                    <Descriptions.Item label="Tuổi">{dataInit?.age}</Descriptions.Item>
+                    <Descriptions.Item label="Gender">{dataInit?.gender}</Descriptions.Item>
+                    <Descriptions.Item label="Age">{dataInit?.age}</Descriptions.Item>
 
-                    <Descriptions.Item label="Vai trò" >
+                    <Descriptions.Item label="Role" >
                         <Badge status="processing" text={<>{dataInit?.role}</>} />
                     </Descriptions.Item>
-                    <Descriptions.Item label="Địa chỉ" >{dataInit?.address}</Descriptions.Item>
-                    <Descriptions.Item label="Thông tin công ty" span={2}>
+                    <Descriptions.Item label="Address" >{dataInit?.address}</Descriptions.Item>
+                    <Descriptions.Item label="Company information" span={2}>
                         Id: {dataInit?.company?._id ?? "-"}
                         <br />
-                        Tên: {dataInit?.company?.name ?? "-"}
+                        Name: {dataInit?.company?.name ?? "-"}
                         <br />
                     </Descriptions.Item>
-                    <Descriptions.Item label="Ngày tạo">{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
-                    <Descriptions.Item label="Ngày sửa">{dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
+                    <Descriptions.Item label="Date created">{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
+                    <Descriptions.Item label="Date updated">{dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
 
                 </Descriptions>
             </Drawer>

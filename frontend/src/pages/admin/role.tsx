@@ -27,11 +27,11 @@ const RolePage = () => {
     if (_id) {
       const res = await callDeleteRole(_id);
       if (res && res.data) {
-        message.success("Xóa Role thành công");
+        message.success("Role deleted successfully");
         reloadTable();
       } else {
         notification.error({
-          message: "Có lỗi xảy ra",
+          message: "An error occurred.",
           description: res.message,
         });
       }
@@ -58,7 +58,7 @@ const RolePage = () => {
       sorter: true,
     },
     {
-      title: "Trạng thái",
+      title: "Status",
       dataIndex: "isActive",
       render(dom, entity, index, action, schema) {
         return (
@@ -113,11 +113,11 @@ const RolePage = () => {
           <Access permission={ALL_PERMISSIONS.ROLES.DELETE} hideChildren>
             <Popconfirm
               placement="leftTop"
-              title={"Xác nhận xóa role"}
-              description={"Bạn có chắc chắn muốn xóa role này ?"}
+              title={"Confirm role deletion"}
+              description={"Are you sure you want to delete this role?"}
               onConfirm={() => handleDeleteRole(entity._id)}
-              okText="Xác nhận"
-              cancelText="Hủy"
+              okText="Confirm"
+              cancelText="Cancel"
             >
               <span style={{ cursor: "pointer", margin: "0 10px" }}>
                 <DeleteOutlined
@@ -168,7 +168,7 @@ const RolePage = () => {
       <Access permission={ALL_PERMISSIONS.ROLES.GET_PAGINATE}>
         <DataTable<IRole>
           actionRef={tableRef}
-          headerTitle="Danh sách Roles (Vai Trò)"
+          headerTitle="List of Roles"
           rowKey="_id"
           loading={isFetching}
           columns={columns}
@@ -200,7 +200,7 @@ const RolePage = () => {
                 type="primary"
                 onClick={() => setOpenModal(true)}
               >
-                Thêm mới
+                Add New
               </Button>
             );
           }}

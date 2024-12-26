@@ -23,13 +23,13 @@ const ViewDetailResume = (props: IProps) => {
         const status = form.getFieldValue('status');
         const res = await callUpdateResumeStatus(dataInit?._id, status)
         if (res.data) {
-            message.success("Update Resume status thành công!");
+            message.success("Update Resume status successfully!");
             setDataInit(null);
             onClose(false);
             reloadTable();
         } else {
             notification.error({
-                message: 'Có lỗi xảy ra',
+                message: 'An error occurred.',
                 description: res.message
             });
         }
@@ -47,7 +47,7 @@ const ViewDetailResume = (props: IProps) => {
     return (
         <>
             <Drawer
-                title="Thông Tin Resume"
+                title="Resume Information"
                 placement="right"
                 onClose={() => { onClose(false); setDataInit(null) }}
                 open={open}
@@ -64,7 +64,7 @@ const ViewDetailResume = (props: IProps) => {
             >
                 <Descriptions title="" bordered column={2} layout="vertical">
                     <Descriptions.Item label="Email">{dataInit?.email}</Descriptions.Item>
-                    <Descriptions.Item label="Trạng thái">
+                    <Descriptions.Item label="Status">
                         <Form
                             form={form}
                         >
@@ -85,14 +85,14 @@ const ViewDetailResume = (props: IProps) => {
                         </Form>
 
                     </Descriptions.Item>
-                    <Descriptions.Item label="Tên Job">
+                    <Descriptions.Item label="Job Name">
                         {dataInit?.jobId?.name}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Tên Công Ty">
+                    <Descriptions.Item label="Company Name">
                         {dataInit?.companyId?.name}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Ngày tạo">{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
-                    <Descriptions.Item label="Ngày sửa">{dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
+                    <Descriptions.Item label="Date created">{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
+                    <Descriptions.Item label="Date updated">{dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
 
                 </Descriptions>
             </Drawer>

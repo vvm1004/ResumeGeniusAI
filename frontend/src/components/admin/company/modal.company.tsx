@@ -61,11 +61,11 @@ const ModalCompany = (props: IProps) => {
         const { name, address, linkUrl, minScale, maxScale } = valuesForm;
 
         if (dataLogo.length === 0 && !dataInit?.logo) {
-            message.error('Vui lòng upload ảnh Logo')
+            message.error('Please upload Logo image')
             return;
         }
         if (dataImage.length === 0 && !dataInit?.image) {
-            message.error('Vui lòng upload ảnh Công Ty')
+            message.error('Please upload Company photo')
             return;
         }
 
@@ -73,12 +73,12 @@ const ModalCompany = (props: IProps) => {
             //update
             const res = await callUpdateCompany(dataInit._id, name, address, value,  dataLogo.length > 0 ? dataLogo[0].name : dataInit.logo, dataImage.length > 0 ? dataImage[0].name : dataInit.image, linkUrl, minScale, maxScale);
             if (res.data) {
-                message.success("Cập nhật company thành công");
+                message.success("Company update successful");
                 handleReset();
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -86,12 +86,12 @@ const ModalCompany = (props: IProps) => {
             //create
             const res = await callCreateCompany(name, address, value, dataLogo[0].name, dataImage[0].name, linkUrl, minScale, maxScale);
             if (res.data) {
-                message.success("Thêm mới company thành công");
+                message.success("New company added successfully");
                 handleReset();
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred.',
                     description: res.message
                 });
             }
@@ -159,7 +159,7 @@ const ModalCompany = (props: IProps) => {
         }
         if (info.file.status === 'error') {
             setLoadingUpload(false);
-            message.error(info?.file?.error?.event?.message ?? "Đã có lỗi xảy ra khi upload file.")
+            message.error(info?.file?.error?.event?.message ?? "An error occurred while uploading the file.")
         }
     };
 
@@ -172,7 +172,7 @@ const ModalCompany = (props: IProps) => {
         }
         if (info.file.status === 'error') {
             setLoadingUploadImage(false);
-            message.error(info?.file?.error?.event?.message ?? "Đã có lỗi xảy ra khi upload file.")
+            message.error(info?.file?.error?.event?.message ?? "An error occurred while uploading the file.")
         }
     };
 
@@ -215,7 +215,7 @@ const ModalCompany = (props: IProps) => {
             {openModal &&
                 <>
                     <ModalForm
-                        title={<>{dataInit?._id ? "Cập nhật Company" : "Tạo mới Company"}</>}
+                        title={<>{dataInit?._id ? "Company Update" : "Create new Company"}</>}
                         open={openModal}
                         modalProps={{
                             onCancel: () => { handleReset() },
@@ -239,36 +239,36 @@ const ModalCompany = (props: IProps) => {
                                 icon: <CheckSquareOutlined />
                             },
                             searchConfig: {
-                                resetText: "Hủy",
-                                submitText: <>{dataInit?._id ? "Cập nhật" : "Tạo mới"}</>,
+                                resetText: "Cancel",
+                                submitText: <>{dataInit?._id ? "Update" : "Create new"}</>,
                             }
                         }}
                     >
                         <Row gutter={16}>
                             <Col span={24}>
                                 <ProFormText
-                                    label="Tên công ty"
+                                    label="Company name"
                                     name="name"
-                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                    placeholder="Nhập tên công ty"
+                                    rules={[{ required: true, message: 'Please do not leave blank' }]}
+                                    placeholder="Enter company name"
                                 />
                             </Col>
                             <Col span={24}>
                                 <ProFormText
                                     label="Link URL"
                                     name="linkUrl"
-                                    rules={[{ required: true, type: 'url', message: 'Vui lòng nhập một URL hợp lệ' }]}
-                                    placeholder="Nhập đường dẫn liên kết tới trang công ty"
+                                    rules={[{ required: true, type: 'url', message: 'Please enter a valid URL' }]}
+                                    placeholder="Enter a link to your company page"
                                 />
                             </Col>
                             <Col span={24}>
                                 <Form.Item
-                                    label="Quy mô công ty"
+                                    label="Company size"
                                     required
                                 >
                                     <Form.Item
                                         name="minScale"
-                                        rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                        rules={[{ required: true, message: 'Please do not leave blank' }]}
                                         style={{ display: "inline-block", width: "35%" }}
                                     >
                                         <InputNumber
@@ -276,10 +276,10 @@ const ModalCompany = (props: IProps) => {
                                             style={{ width: "100%" }}
                                         />
                                     </Form.Item>
-                                    <span style={{ display: "inline-block", width: "5%", textAlign: "center" }}> đến </span>
+                                    <span style={{ display: "inline-block", width: "5%", textAlign: "center" }}> to </span>
                                     <Form.Item
                                         name="maxScale"
-                                        rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                        rules={[{ required: true, message: 'Please do not leave blank' }]}
                                         style={{ display: "inline-block", width: "35%" }}
                                     >
                                         <InputNumber
@@ -287,18 +287,18 @@ const ModalCompany = (props: IProps) => {
                                             style={{ width: "100%" }}
                                         />
                                     </Form.Item>
-                                    <span> nhân viên</span>
+                                    <span> staff</span>
                                 </Form.Item>
                             </Col>
 
                             <Col span={8}>
                                 <Form.Item
                                     labelCol={{ span: 24 }}
-                                    label="Ảnh Logo"
+                                    label="Logo Image"
                                     name="logo"
                                     rules={[{
                                         required: true,
-                                        message: 'Vui lòng không bỏ trống',
+                                        message: 'Please do not leave blank',
                                         validator: () => {
                                             if (dataLogo.length > 0 || (dataInit && dataInit.logo)) return Promise.resolve();
                                             else return Promise.reject(false);
@@ -343,11 +343,11 @@ const ModalCompany = (props: IProps) => {
                             <Col span={8}>
                                 <Form.Item
                                     labelCol={{ span: 24 }}
-                                    label="Ảnh công ty"
+                                    label="Company photo"
                                     name="image"
                                     rules={[{
                                         required: true,
-                                        message: 'Vui lòng không bỏ trống',
+                                        message: 'Please do not leave blank',
                                         validator: () => {
                                             if (dataImage.length > 0 || (dataInit && dataInit.image)) return Promise.resolve();
                                             else return Promise.reject(false);
@@ -391,10 +391,10 @@ const ModalCompany = (props: IProps) => {
 
                             <Col span={16}>
                                 <ProFormTextArea
-                                    label="Địa chỉ"
+                                    label="Address"
                                     name="address"
-                                    rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                    placeholder="Nhập địa chỉ công ty"
+                                    rules={[{ required: true, message: 'Please do not leave blank' }]}
+                                    placeholder="Enter company address"
                                     fieldProps={{
                                         autoSize: { minRows: 4 }
                                     }}
@@ -402,7 +402,7 @@ const ModalCompany = (props: IProps) => {
                             </Col>
 
                             <ProCard
-                                title="Miêu tả"
+                                title="Describe"
                                 // subTitle="mô tả công ty"
                                 headStyle={{ color: '#d81921' }}
                                 style={{ marginBottom: 20 }}
