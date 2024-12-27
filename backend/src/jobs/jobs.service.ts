@@ -219,6 +219,52 @@ export class JobsService {
     return matchingJobs; // Trả về danh sách matching nếu đủ 4 job
   }
   
-  
-  
+  async getJobLevelsCount(): Promise<{ type: string, value: number }[]> {
+    const jobLevelsCount = await this.jobModel.aggregate([
+      {
+        $group: {
+          _id: "$level",  // Group by job level
+          count: { $sum: 1 },  // Count the number of jobs in each level
+        },
+      },
+      {
+        $project: {
+          type: "$_id",  // Rename _id to type
+          value: "$count",  // Rename count to value
+          _id: 0,  // Remove _id from the result
+        },
+      },
+      {
+        $sort: { value: -1 },  // Optional: sort by value in descending order
+      },
+    ]);
+
+    return jobLevelsCount;
+  }
+
+  async getTopCompanies(): Promise<{ company: string, jobs: number }[]> {
+    const topCompanies = await this.jobModel.aggregate([
+      {
+        $group: {
+          _id: '$company.name',  // Group by company name
+          jobs: { $sum: 1 },  // Count the number of jobs for each company
+        },
+      },
+      {
+        $sort: { jobs: -1 },  // Sort by job count in descending order
+      },
+      {
+        $limit: 5,  // Limit to top 5 companies
+      },
+      {
+        $project: {
+          company: '$_id',  // Rename _id to company
+          jobs: 1,  // Keep the jobs field
+          _id: 0,  // Remove _id field
+        },
+      },
+    ]);
+
+    return topCompanies;
+  }
 }

@@ -13,12 +13,13 @@ export class ResumeController {
 
   @Post()
   @ResponseMessage('Create new resume')
-
+  @SkipCheckPermission()
   create(@Body() createUserCvDto: CreateUserCvDto, @User() user: IUser) {
     return this.resumeService.create(createUserCvDto, user);
   }
 
   @Post('by-user')
+  @SkipCheckPermission()
   @ResponseMessage('Get resume by User')
   getResumesByUser(@User() user: IUser) {
     return this.resumeService.findByUsers(user);

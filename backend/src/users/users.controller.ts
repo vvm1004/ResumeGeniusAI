@@ -34,7 +34,11 @@ export class UsersController {
   ) {
     return this.usersService.findAll(+currentPage, +limit, qs);
   }
-
+  @SkipCheckPermission()
+  @Get('count-by-role')
+  async countUsersByRole() {
+    return this.usersService.countUsersByRole();
+  }
 
   @Public()
   @Get(':id')
@@ -62,4 +66,5 @@ export class UsersController {
   count() {
     return this.usersService.getCount();
   }
+ 
 }

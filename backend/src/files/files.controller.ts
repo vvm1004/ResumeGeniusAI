@@ -13,7 +13,7 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) { }
 
   @Post('upload')
-  // @SkipCheckPermission()
+   @SkipCheckPermission()
   @ResponseMessage("Upload file")
   @UseInterceptors(FileInterceptor('fileUpload'))
   @UseFilters(new HttpExceptionFilter())

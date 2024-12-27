@@ -918,7 +918,7 @@ export const INIT_JOB =
         "company": {
             "_id": "670bd5024c872eb686978a2a",
             "name": "Netflix Inc",
-            "logo": "lazada-1686575062887.png"
+            "logo": "netflix-1686706116042.png"
         },
         "location": "HANOI",
         "salary": 50000000,

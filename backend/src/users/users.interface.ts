@@ -8,7 +8,7 @@ export interface IUser {
     _id: string;
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
     role: {
         _id: string;
         name: string;

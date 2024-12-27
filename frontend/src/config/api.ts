@@ -416,3 +416,20 @@ export const callDeleteHrRegister = (id: string) => {
     `/api/v1/hr-registration/${id}`
   );
 };
+
+
+// Admin dashboard
+export const callNumberOfUserByRole  = () => {
+  return axios.get(`/api/v1/users/count-by-role`);
+};
+
+export const callJobLevelData  = () => {
+  return axios.get(`/api/v1/jobs/job-levels`);
+};
+
+
+export const callTopCompanies  = () => {
+  return axios.get(`/api/v1/jobs/top-companies`);
+};
+
+

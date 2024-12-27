@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, Row, Statistic } from "antd";
-import { Line } from '@ant-design/charts';
+import { Button, Card, Col, Row, Statistic, Table } from "antd";
+import { Bar, Line, Pie } from '@ant-design/charts';
 import CountUp from 'react-countup';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
 import './dashboard.css';
-import { callNumberOfCompany, callNumberOfJobs, callNumberOfResumeOverTime, callNumberOfUser } from '@/config/api';
+import { callNumberOfCompany, callNumberOfJobs, callNumberOfResumeOverTime, callNumberOfUser, callNumberOfUserByRole, callJobLevelData, callTopCompanies } from '@/config/api'; // Make sure the API is imported
 import { isNull } from 'lodash';
 import { backgroundClip } from 'html2canvas/dist/types/css/property-descriptors/background-clip';
 
@@ -28,8 +28,12 @@ const DashboardPage = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [isMax, setIsMax] = useState(false);
+    const [usersByRole, setUsersByRole] = useState<any[]>([]); // State to store users by role data
+    const [jobLevelData, setJobLevelData] = useState<any[]>([]);
+    const [topCompanies, setTopCompanies] = useState<{ company: string, jobs: number }[]>([]);
 
     const [curDate, setCurDate] = useState<Date>(new Date());  // Khởi tạo với đối tượng Date
+
     const getMonthDates = (monthOffset: number = 0) => {
 
 
@@ -75,6 +79,14 @@ const DashboardPage = () => {
                 setCurDate(currentDate)
                 // Fetch resume count data cho chart
                 fetchResumeData(); // Fetch resume data khi mount component
+                const roleResponse = await callNumberOfUserByRole();
+                setUsersByRole(roleResponse.data);
+
+                const jobLevelResponse = await callJobLevelData();
+                setJobLevelData(jobLevelResponse.data);
+
+                const topCompaniesResponse = await callTopCompanies();
+                setTopCompanies(topCompaniesResponse.data);
             } catch (error) {
                 console.error('Error fetching counts:', error);
             }
@@ -174,12 +186,47 @@ const DashboardPage = () => {
                         />
                     </Card>
                 </Col>
+
+                <Col span={12}>
+                    <Card title="Users by Role">
+                        <Table
+                            dataSource={usersByRole}
+                            columns={[
+                                { title: 'Role', dataIndex: 'role' },
+                                { title: 'User Count', dataIndex: 'count' },
+                            ]}
+                        />
+                    </Card>
+                </Col>
+                <Col span={12}>
+                    <Card title="Job Levels Distribution">
+                        <Pie
+                            data={jobLevelData}
+                            angleField="value"
+                            colorField="type"
+                            label={{ type: 'inner', offset: '-50%', content: '{percentage}' }}
+                        />
+                    </Card>
+                </Col>
+            </Row>
+            <Row gutter={[20, 20]} style={{ marginTop: '20px' }}>
+                <Col span={24}>
+                    <Card title="Top 5 Companies by Job Count">
+                        <Bar
+                            data={topCompanies}
+                            xField="company"
+                            yField="jobs"
+                            color="lightblue"
+                            legend={false}
+                        />
+                    </Card>
+                </Col>
             </Row>
         </div>
     );
 };
 
-export default DashboardPage;   
+export default DashboardPage;
 
 
 

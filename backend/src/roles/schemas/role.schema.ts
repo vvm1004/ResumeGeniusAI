@@ -35,6 +35,7 @@ export class Role {
     _id: mongoose.Schema.Types.ObjectId;
     email: string;
   };
+
   @Prop()
   createdAt: Date;
 
@@ -42,4 +43,9 @@ export class Role {
   updatedAt: Date;
 }
 
+// Create the schema for the Role class
 export const RoleSchema = SchemaFactory.createForClass(Role);
+
+RoleSchema.index({ name: 1 });  // Tạo chỉ mục đơn trên trường `name` (theo thứ tự tăng dần)
+RoleSchema.index({ isActive: 1 });  // Tạo chỉ mục đơn trên trường `name` (theo thứ tự tăng dần)
+
