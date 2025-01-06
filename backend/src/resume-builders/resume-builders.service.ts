@@ -164,4 +164,112 @@ export class ResumeBuildersService {
 
     return await this.resumeBuidlerModel.aggregate(pipeline);
   }
+  async getRandomResume() {
+    const count = await this.resumeBuidlerModel.countDocuments();
+    if (count === 0) {
+      throw new BadRequestException('No resumes available');
+    }
+    const randomIndex = Math.floor(Math.random() * count);
+    const randomResume = await this.resumeBuidlerModel.findOne().skip(randomIndex);
+    return this.generateResumeText(randomResume);
+  }
+
+
+  generateResumeText(resume) {
+    if (!resume) return "No resume data provided.";
+
+    const {
+      personalInformation,
+      experience,
+      education,
+      projects,
+      activities,
+      awards,
+      skills,
+      languages,
+      certifications,
+    } = resume;
+
+    const sections = [];
+
+    if (personalInformation?.address) {
+      sections.push(`Address: ${personalInformation.address}`);
+    }
+
+    if (experience?.length) {
+      const experienceText = experience
+        .map((exp) => {
+          const expDetails = [];
+          if (exp.title) expDetails.push(`Title: ${exp.title}`);
+          if (exp.position) expDetails.push(`Position: ${exp.position}`);
+          if (exp.description) expDetails.push(`Description: ${exp.description}`);
+          return `,${expDetails.join(" ")}`;
+        })
+        .join(" ");
+      sections.push(`Experience:${experienceText}`);
+    }
+
+    if (education?.length) {
+      const educationText = education
+        .map((edu) => {
+          const eduDetails = [];
+          if (edu.degree) eduDetails.push(`Degree: ${edu.degree}`);
+          if (edu.major) eduDetails.push(`Major: ${edu.major}`);
+          if (edu.institution) eduDetails.push(`Institution: ${edu.institution}`);
+          return `,${eduDetails.join("  ")}`;
+        })
+        .join(" ");
+      sections.push(`Education:${educationText}`);
+    }
+
+    if (projects?.length) {
+      const projectsText = projects
+        .map((proj) => {
+          const projDetails = [];
+          if (proj.title) projDetails.push(`Title: ${proj.title}`);
+          if (proj.technologies) projDetails.push(`Technologies: ${proj.technologies}`);
+          if (proj.tool) projDetails.push(`Tool: ${proj.tool}`);
+          return `,${projDetails.join("  ")}`;
+        })
+        .join(" ");
+      sections.push(`Projects:${projectsText}`);
+    }
+
+    if (activities?.length) {
+      const activitiesText = activities
+        .map((act) => `,Title: ${act.title}`)
+        .join(" ");
+      sections.push(`Activities:${activitiesText}`);
+    }
+
+    if (awards?.length) {
+      const awardsText = awards
+        .map((award) => `,Title: ${award.title}`)
+        .join(" ");
+      sections.push(`Awards:${awardsText}`);
+    }
+
+    if (skills?.length) {
+      const skillsText = skills
+        .map((skill) => `,${skill.value}`)
+        .join(" ");
+      sections.push(`Skills:${skillsText}`);
+    }
+
+    if (languages?.length) {
+      const languagesText = languages
+        .map((lang) => `,${lang.title}`)
+        .join(" ");
+      sections.push(`Languages:${languagesText}`);
+    }
+
+    if (certifications?.length) {
+      const certificationsText = certifications
+        .map((cert) => `,Name: ${cert.name}`)
+        .join("");
+      sections.push(`Certifications:${certificationsText}`);
+    }
+
+    return sections.join(" ");
+  }
 }

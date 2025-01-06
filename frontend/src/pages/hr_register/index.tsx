@@ -591,8 +591,8 @@ const HrRegister = () => {
                     value
                       ? Promise.resolve()
                       : Promise.reject(
-                          "You must agree to the terms and conditions!"
-                        ),
+                        "You must agree to the terms and conditions!"
+                      ),
                 },
               ]}
             >

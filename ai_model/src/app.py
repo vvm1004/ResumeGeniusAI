@@ -8,6 +8,7 @@ from model_training.check_spell.spellcheck import check_and_correct_spelling_wit
 from extract_data.resume_upgrade_module import handleData
 from gen_sumary.generateSumary import generate_resume_summary, generate_employment_history_description
 from extract_data.extractImage import extract_images_from_pdf
+from extract_data.resume_parser_module import check_and_correct_spelling_with_gemini
 def normalize_phrase(phrase):
     # Thay thế dấu gạch dưới và dấu gạch nối bằng khoảng trắng
     phrase = phrase.replace('_', ' ').replace('-', ' ')
@@ -604,7 +605,8 @@ def upgrade_sentences():
 def check_spell():
     data = request.json
     sentence = data.get('sentence')
-    corrected_sentence, corrections=check_and_correct_spelling_with_positions(sentence)
+    corrected_sentence, corrections=check_and_correct_spelling_with_gemini(sentence)
+    print("\n\ncorrectionscorrections: \n",corrections)
     return jsonify({
         'corrected_sentence': corrected_sentence,
         'corrections': corrections

@@ -96,9 +96,10 @@ export class ResumeUpgradeService {
                     },
                 }),
             );
-
+            console.log("\nresponse,", response)
             const errors = response.data.corrections;
             const correctedSentence = response.data.corrected_sentence;
+            console.log("\nerrors,", errors)
 
             return {
                 corrected_sentence: correctedSentence,
