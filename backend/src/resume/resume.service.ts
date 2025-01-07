@@ -19,7 +19,7 @@ export class ResumeService {
     @InjectModel(Job.name)
     private jobModel: SoftDeleteModel<JobDocument>,
     private readonly jobNotificationService: JobNotificationService,
-  ) {}
+  ) { }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { url, typeUrl, companyId, jobId } = createUserCvDto;
@@ -94,35 +94,35 @@ export class ResumeService {
     const { filter, sort, projection, population } = aqp(qs);  // Parse query string
     delete filter.current;
     delete filter.pageSize;
-  
+
     console.log(filter['jobId']);  // Log to see the filter for jobId
-    
+
     if (user.company && user.company._id) {
       filter['companyId'] = user.company._id;
     }
-  
+
     if (filter['jobId']) {
-      const jobName = filter['jobId'];  
-  
-     const jobs = await this.jobModel.find({ name: { $regex: jobName, $options: 'i' } }).exec();
-  
-     const jobIds = jobs.map(job => job._id);
-  
+      const jobName = filter['jobId'];
+
+      const jobs = await this.jobModel.find({ name: { $regex: jobName, $options: 'i' } }).exec();
+
+      const jobIds = jobs.map(job => job._id);
+
       if (jobIds.length > 0) {
-        filter['jobId'] = { $in: jobIds };  
+        filter['jobId'] = { $in: jobIds };
       } else {
         filter['jobId'] = { $in: [] };
       }
     }
-  
+
     // Pagination logic
     let offset = (currentPage - 1) * limit;
     let defaultLimit = limit ? limit : 10;
-  
+
     // Get the total count of resumes based on the current filter
     const totalItems = await this.resumeModel.countDocuments(filter).exec();
     const totalPages = Math.ceil(totalItems / defaultLimit);
-  
+
     // Fetch the results with the current filter and pagination
     const result = await this.resumeModel.find(filter)
       .skip(offset)
@@ -130,7 +130,7 @@ export class ResumeService {
       .sort(sort as any)
       .populate(population)
       .exec();
-  
+
     return {
       meta: {
         current: currentPage, // current page number
@@ -141,7 +141,7 @@ export class ResumeService {
       result // the actual resumes data
     };
   }
-  
+
 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -165,7 +165,7 @@ export class ResumeService {
       ]);
   }
 
-  async update(_id: string, status: string, user: IUser) {
+  async update(_id: string, status: string, jobId: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       throw new BadRequestException('Not found resume');
     }
@@ -190,6 +190,14 @@ export class ResumeService {
           ],
         },
       },
+    );
+
+    const reciver= await this.resumeModel.findById(_id);
+    this.jobNotificationService.sendJobStatusNotification(
+      jobId,
+      user._id,
+      reciver.createdBy._id.toString(),
+      status
     );
     return updated;
   }

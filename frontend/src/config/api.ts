@@ -252,8 +252,8 @@ export const callCreateResume = (
   });
 };
 
-export const callUpdateResumeStatus = (id: any, status: string) => {
-  return axios.patch<IBackendRes<IResume>>(`/api/v1/resumes/${id}`, { status });
+export const callUpdateResumeStatus = (id: any, status: string, jobId: string) => {
+  return axios.patch<IBackendRes<IResume>>(`/api/v1/resumes/${id}`, { status, jobId });
 };
 
 export const callDeleteResume = (id: string) => {
@@ -419,16 +419,16 @@ export const callDeleteHrRegister = (id: string) => {
 
 
 // Admin dashboard
-export const callNumberOfUserByRole  = () => {
+export const callNumberOfUserByRole = () => {
   return axios.get(`/api/v1/users/count-by-role`);
 };
 
-export const callJobLevelData  = () => {
+export const callJobLevelData = () => {
   return axios.get(`/api/v1/jobs/job-levels`);
 };
 
 
-export const callTopCompanies  = () => {
+export const callTopCompanies = () => {
   return axios.get(`/api/v1/jobs/top-companies`);
 };
 
