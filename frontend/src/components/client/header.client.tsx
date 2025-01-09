@@ -99,6 +99,7 @@ interface Notification {
   contentId: string; // ID của content liên quan (có thể là job, application, ... tùy theo yêu cầu)
   receiverId: string; // ID người nhận
   senderId: string; // ID người gửi
+  link: string;
   timestamp: Date;
   isRead?: boolean;
 }
@@ -175,10 +176,15 @@ const Header = (props: any) => {
       console.error("Error marking notification as read:", error);
     }
   };
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
-
+  const handleNotificationNavigate = (link: string, id: string) => {
+    // Điều hướng đến trang chi tiết thông báo
+    navigate(`/${link}`);
+    toggleNotificationRead(id)
+  };
   useEffect(() => {
     setCurrent(location.pathname);
   }, [location]);
@@ -282,6 +288,10 @@ const Header = (props: any) => {
                               position: "relative", // Ensures that the "Read" link is positioned relative to the li
                               minHeight: "20px", // Optional: To ensure each notification has enough height
                             }}
+                            onClick={() =>
+                              handleNotificationNavigate(notification.link, notification._id)
+
+                            }
                           >
                             <br />
                             <span

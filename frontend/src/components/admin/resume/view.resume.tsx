@@ -21,9 +21,10 @@ const ViewDetailResume = (props: IProps) => {
         setIsSubmit(true);
 
         const status = form.getFieldValue('status');
-        const res = await callUpdateResumeStatus(dataInit?._id, status)
+        const res = await callUpdateResumeStatus(dataInit?._id, status,dataInit?.jobId)
         if (res.data) {
             message.success("Update Resume status successfully!");
+            
             setDataInit(null);
             onClose(false);
             reloadTable();

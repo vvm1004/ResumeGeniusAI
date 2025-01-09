@@ -76,4 +76,13 @@ export class ResumeBuildersController {
   async getResumeCountByDate(@Query('startDate') startDate: string, @Query('endDate') endDate: string) {
     return this.resumeBuildersService.getResumeCountByDate(startDate, endDate);
   }
+  @Public()
+  @SkipCheckPermission()
+  @ResponseMessage("Testing")
+  @Post('test')
+  Testing() {
+    return this.resumeBuildersService.getRandomResume();
+  }
+
+
 }

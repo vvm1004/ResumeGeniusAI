@@ -27,6 +27,7 @@ export class JobNotificationService {
 
   async sendJobApplicationNotification(jobId: string, userId: string) {
     const job = await this.jobModel.findById(jobId).exec();
+    const link="admin/resume"
 
     if (!job) {
       console.error(`Job with ID ${jobId} not found.`);
@@ -36,6 +37,18 @@ export class JobNotificationService {
 
     const message = `There is new candidate in ${job.name} !`;
 
-    this.jobNotificationGateway.sendNotificationToHr(jobId,hrId, userId, message);
+    this.jobNotificationGateway.sendNotificationToHr(jobId,hrId, userId, message,link);
+  }
+  async sendJobStatusNotification(jobId: string, userId: string,reciverId: string,status:String) {
+    const job = await this.jobModel.findById(jobId).exec();
+    const link="spread-cv"
+    if (!job) {
+      console.error(`Job with ID ${jobId} not found.`);
+      return;
+    }
+
+    const message = `You have been ${status.toLowerCase()} for job ${job.name}, please check your email for details!!`;
+
+    this.jobNotificationGateway.sendNotificationToHr(jobId,reciverId, userId, message,link);
   }
 }

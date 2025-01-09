@@ -50,14 +50,15 @@ export class JobNotificationGateway implements OnGatewayConnection, OnGatewayDis
         }
     }
 
-    async sendNotificationToHr(jobId: string, hrId: string, userId: string, message: string) {
-        const hrClients = this.userConnections.get(hrId);
+    async sendNotificationToHr(contentId: string, receiverId: string, senderId: string, message: string,link:string) {
+        const reciver = this.userConnections.get(receiverId);
         try {
             const notificationData = {
                 message,
-                contentId: jobId,
-                receiverId: hrId,
-                senderId: userId,
+                contentId: contentId,
+                receiverId: receiverId,
+                senderId: senderId,
+                link:link,             
                 timestamp: new Date(),
             };
 
@@ -67,14 +68,15 @@ export class JobNotificationGateway implements OnGatewayConnection, OnGatewayDis
         } catch (error) {
             console.error('Error creating notification:', error);
         }
-        if (hrClients) {
-            hrClients.forEach((client) => {
+        if (reciver) {
+            reciver.forEach((client) => {
                 console.log(`Sending notification to client ${client.id}`);  // Log khi gửi thông báo
                 client.emit('jobNotification', {
                     message: message,
-                    jobId: jobId,
-                    userId: userId,
-                    hrId: hrId,
+                    contentId: contentId,
+                    senderId: senderId,
+                    receiverId: receiverId,
+                    link:link,
                     timestamp: new Date(),
                 });
 
@@ -82,7 +84,7 @@ export class JobNotificationGateway implements OnGatewayConnection, OnGatewayDis
             });
 
         } else {
-            console.log(`No HR clients found for userId: ${hrId}`);
+            console.log(`No  clients found for Id: ${receiverId}`);
         }
     }
 }

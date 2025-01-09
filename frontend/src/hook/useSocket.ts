@@ -17,13 +17,11 @@ export const useSocket = (userId: string) => {
         });
         setSocket(newSocket);
 
-        // Lắng nghe sự kiện 'jobNotification' và cập nhật thông báo
         newSocket.on('jobNotification', (data: string) => {
             console.log("jobNotification\n", data)
             setNotifications((prevNotifications) => [...prevNotifications, data]);
         });
 
-        // Dọn dẹp khi component bị unmount
         return () => {
             newSocket.disconnect();
         };

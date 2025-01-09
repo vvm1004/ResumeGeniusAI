@@ -4,5 +4,6 @@ export class CreateNotificationDto {
     receiverId: string; // ID người nhận
     senderId: string;   // ID người gửi
     timestamp: Date;
+    link:String;
     isRead?: boolean;   // Trạng thái thông báo đã đọc, mặc định là false nếu không có
 }

@@ -130,7 +130,9 @@ function Education() {
       const result = await spellCheckText(contentText.replace(/<\/?p>/g, ''));
 
       setCorrectedText(result.data.corrected_sentence);
-      const corrections = Object.values(result.data.corrections).map(corr => [corr[0], corr[1]]);
+
+      const corrections = result.data.corrections.map(corr => [corr.original, corr.corrected]);
+      console.log("corrections1", corrections)
       const highlightedText = applyCorrections(contentText, corrections);
 
 
@@ -354,7 +356,7 @@ function Education() {
                       />
                     </div>
 
-                    
+
                   </div>
                 )}
 
