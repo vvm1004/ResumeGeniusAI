@@ -38,7 +38,7 @@ This document provides a detailed guide on how to set up and run the project, wh
 
 #### b. Download Required Model Files
 1. Access the following link to download the necessary model files: [Download Models](https://drive.google.com/drive/folders/1gGirUGvocg8Mz_2Ja-IVl9GTmEmv6mG1?usp=drive_link).
-2. Place these files in the `ai_model` directory of the project.
+2. Place these files in the `ai_model/model` directory of the project.
 
 #### c. Create a Virtual Environment (Optional)
 To avoid library conflicts:
